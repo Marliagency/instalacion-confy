@@ -70,6 +70,9 @@ cd instalacion-confy
 pip3 install -r requirements.txt
 ```
 
+> En cualquier momento puedes ejecutar `python3 check_setup.py` para que te diga
+> qué te falta (Python, dependencias, Node, la API key y los workflows).
+
 ### Paso 1 — Guardar la API key de RunPod
 
 ```bash
