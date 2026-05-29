@@ -1,20 +1,38 @@
 [
   {
-    "id": "v01",
+    "id": "vid01",
+    "tipo": "video",
     "prompt": "A ceramic coffee cup on a wooden table, steam rising slowly, cozy morning kitchen, warm cinematic style, slow push-in camera, soft golden window light, vertical 9:16",
-    "duracion": 5,
-    "formato": "9:16"
+    "negativo": "blurry, low quality, distorted, watermark, text",
+    "formato": "9:16",
+    "width": 480,
+    "height": 832,
+    "frames": 81
   },
   {
-    "id": "v02",
+    "id": "vid02",
+    "tipo": "video",
     "prompt": "A ceramic coffee cup being filled with espresso, close-up of the pour, marble countertop, premium product style, static macro shot, bright top light, vertical 9:16",
-    "duracion": 5,
-    "formato": "9:16"
+    "formato": "9:16",
+    "width": 480,
+    "height": 832,
+    "frames": 81
   },
   {
-    "id": "v03",
-    "prompt": "A ceramic coffee cup on a balcony railing, city skyline behind, lifestyle aesthetic, slow orbit camera, blue hour ambient light, vertical 9:16",
-    "duracion": 5,
-    "formato": "9:16"
+    "id": "img01",
+    "tipo": "imagen",
+    "prompt": "A ceramic coffee cup on a balcony railing, city skyline behind, lifestyle aesthetic, blue hour ambient light, premium product photography, vertical 9:16",
+    "negativo": "blurry, low quality, watermark, text, deformed",
+    "formato": "9:16",
+    "width": 832,
+    "height": 1216
+  },
+  {
+    "id": "img02",
+    "tipo": "imagen",
+    "prompt": "Flat lay of coffee beans and a ceramic cup on linen fabric, soft natural light, minimalist editorial style, top-down shot, vertical 9:16",
+    "formato": "9:16",
+    "width": 832,
+    "height": 1216
   }
 ]

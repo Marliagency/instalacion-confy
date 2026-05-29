@@ -1,7 +1,7 @@
-# Pipeline de producción en masa: RunPod + ComfyUI + Claude Code
+# Pipeline de producción en masa (imágenes y video): RunPod + ComfyUI + Claude Code
 
 Das un brief → Claude Code expande el lote de prompts → enciende una GPU en la
-nube → genera todos los videos → te los descarga → apaga la GPU.
+nube → genera todas las **imágenes y/o videos** → te los descarga → apaga la GPU.
 
 **Coste objetivo:** lo más cerca de cero posible. Solo pagas los minutos de GPU
 encendida (~$0.34–0.39/hora una RTX 4090) más el almacenamiento del Network
@@ -33,11 +33,13 @@ descarga los resultados.
 | Archivo | Para qué sirve |
 |---|---|
 | `CLAUDE.md` | Reglas de orquestación. Claude Code lo lee solo y controla coste, encendido/apagado y expansión del brief. |
-| `comfy_batch.py` | Script puente: envía cada prompt a ComfyUI, espera y descarga los `.mp4`. |
+| `comfy_batch.py` | Script puente: inyecta cada prompt en ComfyUI, espera y descarga los archivos (`.mp4` video / `.png` imagen). Soporta `--dry-run`. |
+| `workflows/sdxl_t2i.json` | Workflow de **imágenes** (SDXL). Usable casi tal cual (solo ajusta el checkpoint). |
+| `workflows/wan_t2v.template.json` | Plantilla del workflow de **video** (WAN). La reemplazas por tu export real. |
+| `workflows/README.md` | Cómo ajustar/exportar cada workflow. |
 | `requirements.txt` | Dependencias del script puente (`requests`, `websocket-client`). |
-| `batch_prompts.example.json` | Ejemplo del formato de prompts del lote. |
-| `wan_workflow.json` | **NO incluido** — lo exportas tú una vez desde ComfyUI (ver Paso 4b). |
-| `.gitignore` | Evita subir videos, secretos y el workflow pesado. |
+| `batch_prompts.example.json` | Ejemplo del formato de prompts (mezcla imagen + video). |
+| `.gitignore` | Evita subir videos generados y secretos. |
 
 > El pipeline **se ejecuta desde tu Mac** (donde tienes Claude Code, tu cuenta de
 > RunPod y donde quieres recibir los videos). Este repositorio solo aloja los
@@ -139,21 +141,35 @@ Para (stop) el pod actual de RunPod para no seguir pagando.
 
 Con `stop`, el network volume conserva todo; solo dejas de pagar la GPU.
 
-### Paso 4b — Exportar tu `wan_workflow.json` (una vez)
+### Paso 4b — Preparar los workflows (una vez)
 
 ComfyUI **no genera desde texto plano**: necesita un *workflow* (grafo de nodos)
-en formato API. Con el pod encendido y ComfyUI abierto:
+en formato API. Hay uno por tipo de salida, en la carpeta `workflows/`.
 
-1. Carga el workflow WAN que quieras usar (text-to-video) en la UI de ComfyUI.
-2. Genera UN video de prueba para confirmar que funciona end-to-end.
-3. Activa el formato API: menú de ajustes (engranaje) → activa **"Enable Dev
-   mode Options"**. Aparecerá el botón **"Save (API Format)"**.
-4. Pulsa **Save (API Format)** y guarda el archivo como `wan_workflow.json` en la
-   raíz de este proyecto.
+**Imágenes (`workflows/sdxl_t2i.json`)** — ya incluido y usable. Único ajuste:
+abre el archivo y, en el nodo `4` (`CheckpointLoaderSimple`), pon en `ckpt_name`
+el nombre exacto del checkpoint SDXL instalado en tu pod (lo ves en el desplegable
+"Load Checkpoint" de la UI de ComfyUI).
 
-El script `comfy_batch.py` localiza dentro de ese workflow el nodo de texto
-(prompt positivo) y le inyecta cada prompt del lote. Si tu workflow usa una
-estructura distinta, ajusta `find_positive_prompt_node()` en el script.
+**Video (`workflows/wan_t2v.json`)** — debes exportarlo tú una vez:
+
+1. Con el pod encendido, abre ComfyUI (puerto 8188).
+2. Carga un workflow WAN **text-to-video** y genera UN video de prueba.
+3. Ajustes (engranaje) → activa **"Enable Dev mode Options"** → aparece el botón
+   **"Save (API Format)"**.
+4. Pulsa **Save (API Format)** y guarda el archivo como `workflows/wan_t2v.json`.
+
+El script localiza automáticamente el nodo de prompt positivo/negativo (siguiendo
+los enlaces del sampler), la semilla, la resolución y el nº de fotogramas, e
+inyecta los valores de cada item. Valida que tu workflow es compatible sin gastar
+GPU:
+
+```bash
+python3 comfy_batch.py --dry-run \
+  --prompts ./batch_prompts.example.json \
+  --workflow-image ./workflows/sdxl_t2i.json \
+  --workflow-video ./workflows/wan_t2v.json
+```
 
 ---
 
@@ -162,20 +178,30 @@ estructura distinta, ajusta `find_positive_prompt_node()` en el script.
 En cada sesión de producción, abre Claude Code en esta carpeta y di algo como:
 
 ```
-Lee CLAUDE.md. Quiero 40 variaciones sobre este brief:
+Lee CLAUDE.md. Quiero 40 videos variando este brief:
 "[tu brief general aquí]". Estilo cinematográfico, 9:16, 5 segundos cada uno.
 Encárgate de todo: enciende el pod, genera el lote y devuélveme los videos.
 ```
 
+O para imágenes:
+
+```
+Lee CLAUDE.md. Quiero 30 imágenes verticales 9:16 sobre este brief:
+"[tu brief]". Encárgate de todo y devuélveme los archivos.
+```
+
+Puedes mezclar: "20 imágenes y 10 videos sobre …".
+
 Claude Code hará automáticamente:
 
-1. Expandir tu brief en 40 prompts distintos (`batch_prompts.json`).
+1. Expandir tu brief en N prompts distintos (`batch_prompts.json`), marcando cada
+   uno como imagen o video.
 2. Mostrarte 3-5 prompts de ejemplo + coste estimado y esperar tu OK.
 3. Arrancar el pod (`start`, ya no re-descarga nada) y esperar a ComfyUI.
 4. Ejecutar `comfy_batch.py` con los prompts.
-5. Descargar los `.mp4` a `./outputs/`.
+5. Descargar los archivos a `./outputs/` (`.mp4` video / `.png` imagen).
 6. **APAGAR el pod.**
-7. Darte el reporte: nº de videos, tiempo y coste estimado.
+7. Darte el reporte: nº de archivos, tiempo y coste estimado.
 
 ### Ejecución manual del script (si la quieres lanzar tú)
 
@@ -184,7 +210,8 @@ python3 comfy_batch.py \
   --comfy-url https://XXXX-8188.proxy.runpod.net \
   --prompts ./batch_prompts.json \
   --out ./outputs \
-  --workflow ./wan_workflow.json
+  --workflow-video ./workflows/wan_t2v.json \
+  --workflow-image ./workflows/sdxl_t2i.json
 ```
 
 ---
