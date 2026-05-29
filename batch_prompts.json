@@ -1,12 +1,32 @@
 [
   {
-    "id": "comfytest01",
-    "tipo": "imagen",
-    "prompt": "a sleek glass perfume bottle on a marble pedestal, soft studio lighting, elegant product photography, highly detailed",
-    "negativo": "blurry, low quality, watermark, text, deformed, ugly",
-    "formato": "1:1",
-    "width": 512,
-    "height": 512,
-    "seed": 12345
+    "id": "perfume_v01",
+    "tipo": "video",
+    "prompt": "elegant glass perfume bottle on a polished marble pedestal, slow cinematic camera push-in, soft golden studio light, delicate water droplets glistening on the glass, luxury product commercial, shallow depth of field, vertical 9:16",
+    "negativo": "blurry, low quality, distorted, static, watermark, text, deformed, extra objects, jitter, flicker",
+    "formato": "9:16",
+    "width": 480,
+    "height": 832,
+    "frames": 81
+  },
+  {
+    "id": "perfume_v02",
+    "tipo": "video",
+    "prompt": "luxury perfume bottle rotating slowly on a reflective black surface, swirling golden mist around it, dramatic rim lighting, premium fragrance advertisement, smooth orbiting camera move, cinematic, vertical 9:16",
+    "negativo": "blurry, low quality, distorted, static, watermark, text, deformed, extra objects, jitter, flicker",
+    "formato": "9:16",
+    "width": 480,
+    "height": 832,
+    "frames": 81
+  },
+  {
+    "id": "perfume_v03",
+    "tipo": "video",
+    "prompt": "frosted glass perfume bottle among soft white peonies and silk fabric, gentle breeze moving the petals, bright airy natural light, dreamy elegant product shot, slow dolly camera move, cinematic, vertical 9:16",
+    "negativo": "blurry, low quality, distorted, static, watermark, text, deformed, extra objects, jitter, flicker",
+    "formato": "9:16",
+    "width": 480,
+    "height": 832,
+    "frames": 81
   }
 ]
