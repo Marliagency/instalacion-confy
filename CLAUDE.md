@@ -24,6 +24,27 @@ Infra ya provisionada en la cuenta RunPod del usuario:
 - El entorno tiene Network access = **Custom** con `*.proxy.runpod.net`,
   `api.runpod.io`, `rest.runpod.io` (+ defaults).
 - `RUNPOD_API_KEY` está como variable de entorno del entorno.
+
+> ⚠️ **VERIFICADO 2026-05-29 — BLOQUEO DE RED REAL.** En la práctica el allowlist
+> del entorno **NO** incluía `*.proxy.runpod.net`: todo el egress pasa por un proxy
+> que devuelve `Host not in allowlist` (`x-deny-reason: host_not_allowed`) para
+> cualquier host de RunPod proxy, **incluso por IP cruda, TCP directo o con el
+> sandbox desactivado**. Solo funcionan `github.com`, `*.githubusercontent.com`,
+> `pypi.org`, `files.pythonhosted.org`, `rest.runpod.io`, `api.runpod.io`.
+> Consecuencia: se puede **controlar pods por API** pero **NO hablar con su ComfyUI**
+> → el pipeline de generación es imposible hasta arreglarlo.
+>
+> **CÓMO ARREGLARLO (acción del usuario):** Settings del entorno → Network access =
+> Custom → añadir `*.proxy.runpod.net`. **El cambio NO aplica a sesiones en curso:**
+> la política de red se fija al arrancar el contenedor, así que hay que **abrir una
+> SESIÓN NUEVA** después de guardar. Al inicio de cada sesión, COMPROBAR primero:
+> `curl -s https://gy9p9fryeh1yex-8188.proxy.runpod.net/system_stats` — si responde
+> `Host not in allowlist`, el allowlist sigue mal: avisar al usuario y NO gastar GPU.
+>
+> **FALLBACK SIN RED (solo imágenes):** workflow `.github/workflows/comfy-image.yml`
+> corre ComfyUI en CPU dentro de GitHub Actions con SDXL-Turbo (`workflows/
+> sdxl_turbo.json`) y commitea el PNG a `outputs/`. Útil para imágenes de prueba sin
+> tocar RunPod. **No sirve para vídeo WAN** (modelos enormes + CPU = inviable).
 - Flujo autónomo: arrancar pod por API → esperar ComfyUI (`/system_stats`) →
   construir/inyectar el workflow vía API de ComfyUI → generar → descargar a
   `./outputs` → **ENTREGAR al usuario con SendUserFile** → **APAGAR pod por API**.
