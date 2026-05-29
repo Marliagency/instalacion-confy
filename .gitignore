@@ -17,3 +17,7 @@ venv/
 # Secretos — NUNCA subir claves
 .env
 *.key
+
+# Artefactos temporales de orquestación (reintento de pod)
+.retry_pod.py
+.pod_result.json
