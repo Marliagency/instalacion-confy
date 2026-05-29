@@ -1,0 +1,20 @@
+[
+  {
+    "id": "v01",
+    "prompt": "A ceramic coffee cup on a wooden table, steam rising slowly, cozy morning kitchen, warm cinematic style, slow push-in camera, soft golden window light, vertical 9:16",
+    "duracion": 5,
+    "formato": "9:16"
+  },
+  {
+    "id": "v02",
+    "prompt": "A ceramic coffee cup being filled with espresso, close-up of the pour, marble countertop, premium product style, static macro shot, bright top light, vertical 9:16",
+    "duracion": 5,
+    "formato": "9:16"
+  },
+  {
+    "id": "v03",
+    "prompt": "A ceramic coffee cup on a balcony railing, city skyline behind, lifestyle aesthetic, slow orbit camera, blue hour ambient light, vertical 9:16",
+    "duracion": 5,
+    "formato": "9:16"
+  }
+]

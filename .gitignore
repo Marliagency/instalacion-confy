@@ -1,0 +1,19 @@
+# Videos generados y reportes del lote
+outputs/
+
+# Prompts del lote en curso (se regeneran en cada producción)
+batch_prompts.json
+
+# Workflow real exportado de ComfyUI (puede ser pesado / específico de tu setup)
+# Quítalo de aquí si quieres versionarlo en el repo.
+wan_workflow.json
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Secretos — NUNCA subir claves
+.env
+*.key
