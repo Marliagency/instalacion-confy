@@ -34,6 +34,28 @@ Restricciones del entorno (importantes):
 - El usuario **no domina ComfyUI**: NO le pidas manipular nodos en la interfaz;
   haz todo por la API (`/object_info`, `/prompt`, `/history`, `/view`).
 
+### RUNBOOK AUTÓNOMO (al abrir una sesión nueva con red Custom)
+
+1. `git checkout claude/nice-sagan-5V8LQ` si no estás ya en esa rama.
+2. Verifica acceso/API: `python3 runpod_ctl.py list` (debe listar el pod). Si da
+   403 o falla DNS, la red Custom o `RUNPOD_API_KEY` no están bien → avisa al usuario.
+3. Arranca y espera ComfyUI:
+   `python3 runpod_ctl.py start gy9p9fryeh1yex --wait-comfy`
+4. Descubre los modelos/nodos reales por API antes de construir nada:
+   `curl -s https://gy9p9fryeh1yex-8188.proxy.runpod.net/object_info` y localiza
+   los loaders WAN (UNETLoader/CLIPLoader/VAELoader o equivalentes), el nodo de
+   latente de vídeo, el sampler y el nodo de guardado de vídeo. Construye un
+   workflow t2v en formato API con los **nombres de archivo reales** y guárdalo en
+   `workflows/wan_t2v.json`. Itera contra `/prompt` leyendo errores hasta que valide.
+5. Genera el lote:
+   `python3 comfy_batch.py --comfy-url <URL> --prompts ./batch_prompts.json --out ./outputs --workflow-video ./workflows/wan_t2v.json`
+6. **Entrega** los archivos de `./outputs` al usuario con SendUserFile.
+7. **APAGA** el pod SIEMPRE, pase lo que pase:
+   `python3 runpod_ctl.py stop gy9p9fryeh1yex`
+8. (Imágenes) Si el usuario quiere imágenes, descarga una vez un checkpoint SDXL
+   a `models/checkpoints` del volumen (terminal/Jupyter del pod) y usa
+   `workflows/sdxl_t2i.json`.
+
 ## Imágenes vs. video (elige el tipo correcto)
 
 - Si el usuario pide **imágenes**, marca cada item con `"tipo": "imagen"` (usa el
