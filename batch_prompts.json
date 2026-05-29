@@ -1,0 +1,12 @@
+[
+  {
+    "id": "comfytest01",
+    "tipo": "imagen",
+    "prompt": "a sleek glass perfume bottle on a marble pedestal, soft studio lighting, elegant product photography, highly detailed",
+    "negativo": "blurry, low quality, watermark, text, deformed, ugly",
+    "formato": "1:1",
+    "width": 512,
+    "height": 512,
+    "seed": 12345
+  }
+]
