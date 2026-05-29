@@ -8,6 +8,32 @@ puente `comfy_batch.py`.
 
 **Prioridad absoluta: coste mínimo.**
 
+## ESTADO ACTUAL DE LA INFRAESTRUCTURA (actualizado 2026-05-29)
+
+Infra ya provisionada en la cuenta RunPod del usuario:
+- **Network Volume**: ID `fp8ebhvznp`, 100 GB, datacenter **EUR-IS-1**.
+- **Pod**: ID `gy9p9fryeh1yex` (verificar por API al arrancar), GPU **H100 SXM**
+  (CARA, ~$3/h — al rearrancar, preferir 4090/3090 en EUR-IS-1 si hay stock),
+  plantilla HearmemanAI "One Click ComfyUI Wan 2.2 (CUDA 12.8)", puerto 8188.
+- **URL ComfyUI**: `https://gy9p9fryeh1yex-8188.proxy.runpod.net`
+- **Modelos**: WAN (vídeo) instalados. **NO hay checkpoint SDXL** para imágenes
+  todavía; si el usuario quiere imágenes, descargar un SDXL a
+  `models/checkpoints` del volumen (vía terminal/Jupyter del pod) una vez.
+
+**Modo de operación elegido: AUTONOMÍA TOTAL** desde Claude Code on the web:
+- El entorno tiene Network access = **Custom** con `*.proxy.runpod.net`,
+  `api.runpod.io`, `rest.runpod.io` (+ defaults).
+- `RUNPOD_API_KEY` está como variable de entorno del entorno.
+- Flujo autónomo: arrancar pod por API → esperar ComfyUI (`/system_stats`) →
+  construir/inyectar el workflow vía API de ComfyUI → generar → descargar a
+  `./outputs` → **ENTREGAR al usuario con SendUserFile** → **APAGAR pod por API**.
+
+Restricciones del entorno (importantes):
+- El Mac del usuario es **macOS Mojave** y NO puede correr Claude Code nativo;
+  no dependas de un `claude` local.
+- El usuario **no domina ComfyUI**: NO le pidas manipular nodos en la interfaz;
+  haz todo por la API (`/object_info`, `/prompt`, `/history`, `/view`).
+
 ## Imágenes vs. video (elige el tipo correcto)
 
 - Si el usuario pide **imágenes**, marca cada item con `"tipo": "imagen"` (usa el
