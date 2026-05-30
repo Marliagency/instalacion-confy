@@ -1,38 +1,83 @@
 {
   "1": {
     "class_type": "UNETLoader",
-    "inputs": { "unet_name": "wan2.1_t2v_1.3B_fp16.safetensors", "weight_dtype": "default" },
-    "_meta": { "title": "Load WAN UNet" }
+    "inputs": {
+      "unet_name": "wan2.1_t2v_1.3B_bf16.safetensors",
+      "weight_dtype": "default"
+    },
+    "_meta": {
+      "title": "Load WAN UNet"
+    }
   },
   "2": {
     "class_type": "CLIPLoader",
-    "inputs": { "clip_name": "umt5_xxl_fp8_e4m3fn_scaled.safetensors", "type": "wan" },
-    "_meta": { "title": "Load CLIP" }
+    "inputs": {
+      "clip_name": "umt5-xxl-enc-bf16.safetensors",
+      "type": "wan"
+    },
+    "_meta": {
+      "title": "Load CLIP"
+    }
   },
   "3": {
     "class_type": "VAELoader",
-    "inputs": { "vae_name": "wan_2.1_vae.safetensors" },
-    "_meta": { "title": "Load VAE" }
+    "inputs": {
+      "vae_name": "Wan2_1_VAE_bf16.safetensors"
+    },
+    "_meta": {
+      "title": "Load VAE"
+    }
   },
   "4": {
     "class_type": "ModelSamplingSD3",
-    "inputs": { "shift": 8.0, "model": ["1", 0] },
-    "_meta": { "title": "Model Sampling" }
+    "inputs": {
+      "shift": 8.0,
+      "model": [
+        "1",
+        0
+      ]
+    },
+    "_meta": {
+      "title": "Model Sampling"
+    }
   },
   "6": {
     "class_type": "CLIPTextEncode",
-    "inputs": { "text": "PLACEHOLDER POSITIVE PROMPT", "clip": ["2", 0] },
-    "_meta": { "title": "Positive Prompt" }
+    "inputs": {
+      "text": "PLACEHOLDER POSITIVE PROMPT",
+      "clip": [
+        "2",
+        0
+      ]
+    },
+    "_meta": {
+      "title": "Positive Prompt"
+    }
   },
   "7": {
     "class_type": "CLIPTextEncode",
-    "inputs": { "text": "blurry, low quality, distorted, static, watermark", "clip": ["2", 0] },
-    "_meta": { "title": "Negative Prompt" }
+    "inputs": {
+      "text": "blurry, low quality, distorted, static, watermark",
+      "clip": [
+        "2",
+        0
+      ]
+    },
+    "_meta": {
+      "title": "Negative Prompt"
+    }
   },
   "5": {
     "class_type": "EmptyHunyuanLatentVideo",
-    "inputs": { "width": 480, "height": 832, "length": 81, "batch_size": 1 },
-    "_meta": { "title": "Empty Latent Video" }
+    "inputs": {
+      "width": 480,
+      "height": 832,
+      "length": 81,
+      "batch_size": 1
+    },
+    "_meta": {
+      "title": "Empty Latent Video"
+    }
   },
   "10": {
     "class_type": "KSampler",
@@ -43,17 +88,42 @@
       "sampler_name": "uni_pc",
       "scheduler": "simple",
       "denoise": 1,
-      "model": ["4", 0],
-      "positive": ["6", 0],
-      "negative": ["7", 0],
-      "latent_image": ["5", 0]
+      "model": [
+        "4",
+        0
+      ],
+      "positive": [
+        "6",
+        0
+      ],
+      "negative": [
+        "7",
+        0
+      ],
+      "latent_image": [
+        "5",
+        0
+      ]
     },
-    "_meta": { "title": "KSampler" }
+    "_meta": {
+      "title": "KSampler"
+    }
   },
   "11": {
     "class_type": "VAEDecode",
-    "inputs": { "samples": ["10", 0], "vae": ["3", 0] },
-    "_meta": { "title": "VAE Decode" }
+    "inputs": {
+      "samples": [
+        "10",
+        0
+      ],
+      "vae": [
+        "3",
+        0
+      ]
+    },
+    "_meta": {
+      "title": "VAE Decode"
+    }
   },
   "12": {
     "class_type": "VHS_VideoCombine",
@@ -67,8 +137,13 @@
       "save_metadata": true,
       "pingpong": false,
       "save_output": true,
-      "images": ["11", 0]
+      "images": [
+        "11",
+        0
+      ]
     },
-    "_meta": { "title": "Video Combine (MP4)" }
+    "_meta": {
+      "title": "Video Combine (MP4)"
+    }
   }
 }
