@@ -12,7 +12,7 @@
   "2": {
     "class_type": "CLIPLoader",
     "inputs": {
-      "clip_name": "umt5-xxl-enc-bf16.safetensors",
+      "clip_name": "umt5_xxl_fp8_e4m3fn_scaled.safetensors",
       "type": "wan"
     },
     "_meta": {
