@@ -1,0 +1,12 @@
+{
+  "_NOTA": "PLANTILLA (Wan 2.2 14B T2V con look selfie para UGC). Sustitúyela por tu export real. Para lip-sync, añade en ComfyUI los nodos de ComfyUI-LatentSyncWrapper (entrada de audio) detrás del VAEDecode y reexporta; el orquestador seguirá parcheando prompt/seed/dimensiones. La voz (TTS ElevenLabs) la mezcla comfy_generate.py si audio.source: tts.",
+  "10": {"class_type": "UNETLoader", "inputs": {"unet_name": "wan2_2-T2V-A14B_fp8.safetensors", "weight_dtype": "fp8_e4m3fn"}},
+  "11": {"class_type": "CLIPLoader", "inputs": {"clip_name": "umt5_xxl_fp8_e4m3fn_scaled.safetensors", "type": "wan"}},
+  "12": {"class_type": "VAELoader", "inputs": {"vae_name": "wan_2.1_vae.safetensors"}},
+  "6": {"class_type": "CLIPTextEncode", "inputs": {"text": "", "clip": ["11", 0]}, "_meta": {"title": "positive"}},
+  "7": {"class_type": "CLIPTextEncode", "inputs": {"text": "", "clip": ["11", 0]}, "_meta": {"title": "negative"}},
+  "5": {"class_type": "EmptyHunyuanLatentVideo", "inputs": {"width": 720, "height": 1280, "length": 120, "batch_size": 1}},
+  "3": {"class_type": "KSampler", "inputs": {"seed": 42, "steps": 20, "cfg": 6.0, "sampler_name": "euler", "scheduler": "simple", "denoise": 1.0, "model": ["10", 0], "positive": ["6", 0], "negative": ["7", 0], "latent_image": ["5", 0]}},
+  "8": {"class_type": "VAEDecode", "inputs": {"samples": ["3", 0], "vae": ["12", 0]}},
+  "9": {"class_type": "VHS_VideoCombine", "inputs": {"frame_rate": 24, "loop_count": 0, "filename_prefix": "marli_ugc", "format": "video/h264-mp4", "pingpong": false, "save_output": true, "images": ["8", 0]}}
+}

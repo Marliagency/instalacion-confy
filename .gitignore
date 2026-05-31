@@ -30,3 +30,6 @@ content-engine/semanas/*/edited/
 content-engine/semanas/*/manifest.json
 content-engine/semanas/*/inputs/audio/*
 !content-engine/semanas/*/inputs/audio/.gitkeep
+
+# Marli: salidas de anuncios (vídeos/imágenes generados) — no versionar.
+marli/outputs/
