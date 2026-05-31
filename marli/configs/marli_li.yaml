@@ -1,0 +1,108 @@
+# ───────────────────────────────────────────────────────────────────────────
+# Marli Agency — anuncio "Conoce a Li" (IA para psicólogos)
+# 30 s · 9:16 · Persona 1 (psicóloga saturada). Diferenciador: pago único.
+# Marca: rojo #E24B4A / acento #FF3B30 / crema #FAF6F1 / texto #2C2C2C / Inter.
+# Li se COMPONE desde la foto real (assets/li_cutout.png) → siempre idéntico.
+# Voz: locuciones es-ES en assets/vo/vo_<id>.mp3 (Edge-TTS).
+# ───────────────────────────────────────────────────────────────────────────
+
+name: marli_li
+fps: 24
+resolution: [1080, 1920]
+style: editorial
+seed: 7
+
+music: music_calm.wav
+audio_mix:
+  music_vol: 0.10
+
+image_workflow: image_sdxl_quality.json
+gen_resolution: [896, 1152]
+video_backend: image          # imagen IA de calidad + Ken Burns
+mascota_cutout: assets/li_cutout.png
+vo_dir: assets/vo
+
+brand:
+  signature: marli
+  accent_color: "#E24B4A"
+  bg_color: "#FAF6F1"
+  text_color: "#2C2C2C"
+  fonts:
+    headline: fonts/Inter-Bold.ttf
+    body: fonts/Inter-Bold.ttf
+
+estilo_prompt: >
+  ultra clean 3D render, Octane and Unreal Engine look, soft cinematic lighting,
+  modern minimalist psychology consultation room, warm cream tones, premium
+  editorial advertising, no neon, no cyberpunk, high detail, 8k
+
+beats:
+  - n: 1
+    type: cinematic
+    id: hook
+    dur: 5
+    headline: Tu consulta depende 100% de ti.
+    prompt: >
+      a tired female psychologist sitting alone late at night at her desk in a
+      modern minimalist office, surrounded by stacks of paper reports, warm desk
+      lamp, looking overwhelmed, cinematic, cream and warm tones
+
+  - n: 2
+    type: textcard
+    id: problema
+    dur: 5
+    kicker: El problema
+    headline: +8 horas a la semana en gestión.
+    subhead: Tiempo que no dedicas a tus pacientes.
+    prompt: >
+      premium abstract cream background with a soft warm gradient and a subtle
+      minimalist clock motif, lots of negative space, 3D render
+
+  - n: 3
+    type: cinematic
+    id: conoce_li
+    dur: 5
+    li: hero
+    headline: Conoce a Li.
+    prompt: >
+      a bright modern minimalist psychology office, soft volumetric morning light,
+      a calm female psychologist smiling softly on the left, large empty space on
+      the right side of the frame, warm cream tones, premium 3D render
+
+  - n: 4
+    type: slideshow5
+    id: sistema
+    dur: 5
+    slide_dur: 1.25
+    li: corner
+    texts: ["Confirma tus citas", "Redacta informes en segundos", "Responde 24/7", "Ordena tu consulta"]
+    slides:
+      - a clean modern calendar app showing confirmed appointments, cream background, soft light, 3D render
+      - a professional clinical report document on a floating glass screen, cream background, 3D render
+      - a smartphone chat answering a patient at night, soft glow, cream background, 3D render
+      - a perfectly tidy minimalist desk with organized patient folders, cream background, 3D render
+
+  - n: 5
+    type: cinematic
+    id: beneficio
+    dur: 5
+    li: side
+    headline: Li te acompaña a ti.
+    prompt: >
+      a calm happy female psychologist leaving her bright modern office on time at
+      golden hour, relaxed and smiling, large empty space on the right, warm cream
+      tones, premium editorial 3D render
+
+  - n: 6
+    type: textcard
+    id: cta
+    dur: 5
+    li: corner
+    kicker: Marli
+    headline: Pago único. Para siempre.
+    subhead: Instálalo en menos de una hora. Sin cuotas.
+    cta_pill: true
+    cta: marliagency.com
+    prompt: >
+      premium abstract cream background with a soft deep-red glow, lots of negative
+      space on the left, minimal, 3D render

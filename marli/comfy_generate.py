@@ -117,6 +117,40 @@ def make_kenburns(still, dst, dur, fps):
     return dst
 
 
+def overlay_li(clip_in, clip_out, cutout, placement, dur, fps):
+    """Compone la mascota Li (PNG con alfa) sobre el clip, con un flote sutil.
+    placement: hero | side | corner | center."""
+    cfgp = {
+        "hero":   (0.74, "W-w-W*0.03"),
+        "side":   (0.58, "W-w-W*0.03"),
+        "center": (0.80, "(W-w)/2"),
+        "corner": (0.26, "W-w-W*0.06"),
+    }.get(placement, (0.6, "W-w-W*0.04"))
+    frac, x = cfgp
+    ih = int(H * frac)
+    if placement == "corner":
+        y = f"H*0.60+8*sin(2*PI*t/3.5)"
+    else:
+        y = f"H-h+10*sin(2*PI*t/3.5)"          # anclado abajo, flote suave
+    fc = (f"[1:v]scale=-1:{ih}:flags=lanczos[li];"
+          f"[0:v][li]overlay=x={x}:y='{y}':format=auto[v]")
+    run(["ffmpeg", "-y", "-i", clip_in, "-loop", "1", "-i", cutout,
+         "-filter_complex", fc, "-map", "[v]", "-map", "0:a?",
+         "-t", f"{dur}", "-r", str(fps),
+         "-c:v", "libx264", "-preset", "veryfast", "-crf", "20",
+         "-pix_fmt", "yuv420p", "-c:a", "copy", clip_out])
+    return clip_out
+
+
+def add_vo(clip_in, clip_out, vo_path, dur):
+    """Sustituye el audio del beat por la locución (recortada/rellenada a dur)."""
+    run(["ffmpeg", "-y", "-i", clip_in, "-i", vo_path,
+         "-filter_complex", f"[1:a]apad,atrim=0:{dur},asetpts=PTS-STARTPTS[a]",
+         "-map", "0:v:0", "-map", "[a]",
+         "-c:v", "copy", "-c:a", "aac", "-b:a", "160k", clip_out])
+    return clip_out
+
+
 def normalize_clip(src, dst, dur, fps):
     """Lleva cualquier clip a 1080x1920, fps fijo, duración exacta y audio (silencio
     si no trae), para que la concatenación final sea perfecta."""
@@ -543,6 +577,24 @@ def process_beat(beat, idx, cfg, comfy, simular, beats_dir, tmproot):
 
     else:
         raise SystemExit(f"Tipo de beat desconocido: {btype}")
+
+    # --- Composite de la mascota Li (desde la foto real, recortada) ---
+    li_place = beat.get("li")
+    cutout = cfg.get("mascota_cutout")
+    if li_place and cutout:
+        cpath = cutout if os.path.isabs(cutout) else os.path.join(HERE, cutout)
+        if os.path.exists(cpath):
+            tmp = os.path.join(tmpdir, "li.mp4")
+            overlay_li(out, tmp, cpath, li_place, dur, fps)
+            os.replace(tmp, out)
+
+    # --- Voz en off del beat (mp3 pregenerado en vo_dir/vo_<id>.mp3) ---
+    vo_dir = cfg.get("vo_dir", "assets/vo")
+    vpath = os.path.join(HERE, vo_dir, f"vo_{bid}.mp3")
+    if os.path.exists(vpath):
+        tmp = os.path.join(tmpdir, "vo.mp4")
+        add_vo(out, tmp, vpath, dur)
+        os.replace(tmp, out)
 
     print(f"  beat{n} [{btype}/{bid}] {dur}s -> {os.path.basename(out)}")
     return out
