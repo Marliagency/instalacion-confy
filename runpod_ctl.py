@@ -76,6 +76,34 @@ def stop_pod(pod_id):
     return api("POST", f"/pods/{pod_id}/stop")
 
 
+def delete_pod(pod_id):
+    return api("DELETE", f"/pods/{pod_id}")
+
+
+def create_pod(name, template_id=None, image=None, network_volume_id=None,
+               datacenters=None, gpu_types=None, gpu_count=1,
+               container_disk_gb=60, ports=("8188/http", "8888/http")):
+    """Crea un pod NUEVO (cae en un host con hueco, a diferencia de start, que
+    reintenta en el mismo host). Devuelve el dict del pod creado.
+
+    OJO: crear pod gasta GPU desde ya. Apágalo/elimínalo al terminar.
+    Si pasas network_volume_id, el pod queda fijado a su datacenter.
+    gpu_types es una lista por PRIORIDAD (RunPod elige el primero disponible)."""
+    body = {"name": name, "gpuCount": gpu_count,
+            "containerDiskInGb": container_disk_gb, "ports": list(ports)}
+    if template_id:
+        body["templateId"] = template_id
+    if image:
+        body["imageName"] = image
+    if network_volume_id:
+        body["networkVolumeId"] = network_volume_id
+    if datacenters:
+        body["dataCenterIds"] = list(datacenters)
+    if gpu_types:
+        body["gpuTypeIds"] = list(gpu_types)
+    return api("POST", "/pods", json=body)
+
+
 def _status_of(pod):
     if not isinstance(pod, dict):
         return "?"
@@ -114,10 +142,19 @@ def wait_comfy(pod_id, timeout=900, interval=10):
 
 def main():
     ap = argparse.ArgumentParser(description="Control de pod RunPod por API.")
-    ap.add_argument("action", choices=["status", "list", "start", "stop", "url"])
+    ap.add_argument("action", choices=["status", "list", "start", "stop", "url",
+                                       "create", "delete"])
     ap.add_argument("pod_id", nargs="?", default=DEFAULT_POD_ID)
     ap.add_argument("--wait", action="store_true", help="esperar a estado RUNNING")
     ap.add_argument("--wait-comfy", action="store_true", help="esperar a que ComfyUI responda")
+    # opciones de create
+    ap.add_argument("--name", default="marli-comfy")
+    ap.add_argument("--template", default="758dsjwiqz", help="templateId de ComfyUI")
+    ap.add_argument("--volume", default="fp8ebhvznp", help="networkVolumeId con los modelos")
+    ap.add_argument("--dc", default="EUR-IS-1", help="datacenter (debe coincidir con el volumen)")
+    ap.add_argument("--gpus", default="NVIDIA A40,NVIDIA RTX A6000,NVIDIA L40S,"
+                                      "NVIDIA A100-SXM4-80GB,NVIDIA H100 80GB HBM3",
+                    help="lista de gpuTypeIds por prioridad (coma)")
     args = ap.parse_args()
 
     if args.action == "list":
@@ -154,6 +191,27 @@ def main():
         print(f"[i] Apagando pod {args.pod_id}...")
         stop_pod(args.pod_id)
         print("[i] Orden de stop enviada.")
+        return
+
+    if args.action == "create":
+        print(f"[i] Creando pod '{args.name}' en {args.dc} (volumen {args.volume})...")
+        pod = create_pod(args.name, template_id=args.template,
+                         network_volume_id=args.volume, datacenters=[args.dc],
+                         gpu_types=[g.strip() for g in args.gpus.split(",") if g.strip()])
+        pid = pod.get("id") if isinstance(pod, dict) else None
+        gpu = (pod.get("machine") or {}).get("gpuTypeId") if isinstance(pod, dict) else "?"
+        print(f"[i] Creado: {pid}  GPU={gpu}")
+        print(f"    ComfyUI (cuando cargue): {comfy_url(pid)}")
+        if args.wait or args.wait_comfy:
+            wait_running(pid)
+        if args.wait_comfy:
+            wait_comfy(pid)
+        return
+
+    if args.action == "delete":
+        print(f"[i] ELIMINANDO pod {args.pod_id} (definitivo)...")
+        delete_pod(args.pod_id)
+        print("[i] Eliminado.")
         return
 
 

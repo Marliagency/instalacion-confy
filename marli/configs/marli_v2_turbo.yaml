@@ -1,0 +1,91 @@
+name: marli_v2_turbo
+fps: 24
+resolution:
+- 1080
+- 1920
+style: editorial
+camera: slow-push-in
+seed: 42
+music: music.wav
+audio_mix:
+  music_vol: 0.18
+brand:
+  signature: marli
+  accent_color: '#7a0c0c'
+  fonts:
+    headline: fonts/DMSerifDisplay-Regular.ttf
+    body: fonts/SpaceGrotesk-Regular.ttf
+beats:
+- n: 1
+  type: cinematic
+  id: hook
+  dur: 5
+  style: cinematic
+  camera: slow-push-in
+  prompt: 'a friendly deep-red carbon-fiber robot mascot named Marli standing in a
+    sleek minimal studio, glossy floor, soft volumetric light
+
+    '
+- n: 2
+  type: textcard
+  id: problem
+  dur: 5
+  style: editorial
+  kicker: El problema
+  headline: ¿Anuncios que nadie recuerda?
+  subhead: Producir vídeo a escala cuesta tiempo y dinero.
+  prompt: premium abstract cream background, soft warm gradients, subtle paper texture
+- n: 3
+  type: slideshow5
+  id: razones
+  dur: 5
+  slide_dur: 1.0
+  style: studio
+  texts:
+  - 1 · Rápido
+  - 2 · Barato
+  - 3 · Tuyo
+  - 4 · Escalable
+  - 5 · Premium
+  slides:
+  - close-up of a glowing red stopwatch on cream background, product photography
+  - stack of coins next to a small red robot, soft studio light
+  - a smartphone showing a vertical video ad, clean mockup
+  - many vertical video thumbnails arranged in a grid, red accents
+  - luxury editorial still life with deep red and cream tones
+- n: 4
+  type: ugc
+  id: testimonial
+  dur: 5
+  style: handheld
+  camera: handheld
+  prompt: 'young woman talking enthusiastically to the camera at home, natural light,
+    casual, authentic
+
+    '
+- n: 5
+  type: cinematic
+  id: demo
+  dur: 5
+  style: editorial
+  camera: slow-orbit
+  prompt: 'elegant slow product reveal of a smartphone with the Marli app on screen,
+    premium tabletop, cream and deep red palette
+
+    '
+- n: 6
+  type: textcard
+  id: cta
+  dur: 5
+  style: editorial
+  kicker: Empieza hoy
+  headline: Tus anuncios, en minutos.
+  subhead: Prueba Marli gratis.
+  cta_pill: true
+  cta: marli.app
+  prompt: premium abstract cream background with a soft deep-red glow, minimal
+image_workflow: image_sdxl_turbo.json
+video_backend: image
+gen_resolution:
+- 832
+- 1216

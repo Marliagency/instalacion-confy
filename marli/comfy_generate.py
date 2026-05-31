@@ -103,6 +103,20 @@ def _font(brand, clave, defecto):
     return None
 
 
+def make_kenburns(still, dst, dur, fps):
+    """Convierte una imagen fija en un clip con movimiento (zoom-in suave).
+    Fallback de vídeo cuando no hay modelo Wan: imagen IA real + movimiento."""
+    nframes = max(1, int(round(dur * fps)))
+    vf = (f"scale={W}:{H}:force_original_aspect_ratio=increase,crop={W}:{H},"
+          f"scale={2 * W}:{2 * H},"
+          f"zoompan=z='min(zoom+0.0012,1.18)':d={nframes}:"
+          f"x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)':s={W}x{H}:fps={fps},"
+          f"setsar=1,format=yuv420p")
+    run(["ffmpeg", "-y", "-i", still, "-vf", vf, "-t", f"{dur}", "-r", str(fps),
+         "-c:v", "libx264", "-preset", "veryfast", "-crf", "20", dst])
+    return dst
+
+
 def normalize_clip(src, dst, dur, fps):
     """Lleva cualquier clip a 1080x1920, fps fijo, duración exacta y audio (silencio
     si no trae), para que la concatenación final sea perfecta."""
@@ -128,19 +142,27 @@ def has_audio(src):
 # ===========================================================================
 # Cliente ComfyUI (urllib)
 # ===========================================================================
+# Cloudflare (proxy de RunPod) rechaza con 403 el User-Agent por defecto de urllib;
+# hay que enviar uno de navegador.
+_UA = ("Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
+       "(KHTML, like Gecko) Chrome/120.0 Safari/537.36")
+
+
 class Comfy:
     def __init__(self, host):
         self.host = host.rstrip("/")
         self.cid = str(uuid.uuid4())
 
     def _get(self, path, timeout=30):
-        with urllib.request.urlopen(self.host + path, timeout=timeout) as r:
+        req = urllib.request.Request(self.host + path, headers={"User-Agent": _UA})
+        with urllib.request.urlopen(req, timeout=timeout) as r:
             return json.loads(r.read().decode("utf-8"))
 
     def queue(self, workflow):
         data = json.dumps({"prompt": workflow, "client_id": self.cid}).encode()
         req = urllib.request.Request(self.host + "/prompt", data=data,
-                                     headers={"Content-Type": "application/json"})
+                                     headers={"Content-Type": "application/json",
+                                              "User-Agent": _UA})
         with urllib.request.urlopen(req, timeout=60) as r:
             return json.loads(r.read().decode("utf-8"))["prompt_id"]
 
@@ -172,8 +194,8 @@ class Comfy:
                                          "subfolder": item.get("subfolder", ""),
                                          "type": item.get("type", "output")})
         os.makedirs(os.path.dirname(os.path.abspath(dest)), exist_ok=True)
-        with urllib.request.urlopen(self.host + "/view?" + params, timeout=300) as r, \
-                open(dest, "wb") as f:
+        req = urllib.request.Request(self.host + "/view?" + params, headers={"User-Agent": _UA})
+        with urllib.request.urlopen(req, timeout=300) as r, open(dest, "wb") as f:
             f.write(r.read())
         return dest
 
@@ -197,7 +219,7 @@ def _title(node):
     return (node.get("_meta", {}).get("title") or "").lower()
 
 
-def patch_workflow(wf, positive, negative, seed, frames=None):
+def patch_workflow(wf, positive, negative, seed, frames=None, gw=W, gh=H):
     """Parchea prompt+/prompt-/seed/dimensiones/nº de frames sobre una copia."""
     wf = copy.deepcopy(wf)
     wf = {k: v for k, v in wf.items() if isinstance(v, dict) and "class_type" in v}
@@ -232,9 +254,9 @@ def patch_workflow(wf, positive, negative, seed, frames=None):
         # Dimensiones (cualquier nodo Empty*Latent*)
         if "Empty" in ct and "Latent" in ct:
             if "width" in ins:
-                ins["width"] = W
+                ins["width"] = int(gw)
             if "height" in ins:
-                ins["height"] = H
+                ins["height"] = int(gh)
             if frames is not None and "length" in ins:
                 ins["length"] = int(frames)
     return wf
@@ -286,19 +308,22 @@ def sim_video(dest, label, idx, dur, fps):
     return dest
 
 
-def gen_image(comfy, simular, wf_name, positive, negative, seed, dest, label, idx):
+def gen_image(comfy, simular, wf_name, positive, negative, seed, dest, label, idx,
+              gw=W, gh=H):
     if simular:
         return sim_image(dest, label, idx)
-    wf = patch_workflow(load_workflow(wf_name), positive, negative, seed)
+    wf = patch_workflow(load_workflow(wf_name), positive, negative, seed, gw=gw, gh=gh)
     pid = comfy.queue(wf)
     return comfy.wait_download(pid, dest)
 
 
-def gen_video(comfy, simular, wf_name, positive, negative, seed, dest, label, idx, dur, fps):
+def gen_video(comfy, simular, wf_name, positive, negative, seed, dest, label, idx, dur, fps,
+              gw=W, gh=H):
     if simular:
         return sim_video(dest, label, idx, dur, fps)
     frames = int(round(dur * fps))
-    wf = patch_workflow(load_workflow(wf_name), positive, negative, seed, frames=frames)
+    wf = patch_workflow(load_workflow(wf_name), positive, negative, seed, frames=frames,
+                        gw=gw, gh=gh)
     pid = comfy.queue(wf)
     return comfy.wait_download(pid, dest)
 
@@ -336,22 +361,24 @@ def make_textcard(bg_png, beat, cfg, dur, fps, dest, tmpdir):
     accent = brand.get("accent_color", "#7a0c0c").lstrip("#")
     sig = brand.get("signature", "marli")
 
+    # Sombra para que el texto se lea sobre cualquier fondo (claro u oscuro).
+    SH = "shadowcolor=black@0.6:shadowx=4:shadowy=4"
     draws = []
     if beat.get("kicker"):
         tf = _txt(tmpdir, "kicker", beat["kicker"].upper())
         draws.append(f"drawtext=fontfile='{body_font}':textfile='{tf}':expansion=none:"
-                     f"fontcolor=0x{accent}:fontsize=h/34:x=(w-text_w)/2:y=h*0.20")
+                     f"{SH}:fontcolor=white:fontsize=h/34:x=(w-text_w)/2:y=h*0.20")
     if beat.get("headline"):
         fs = H / 14
         tf = _txt(tmpdir, "headline", _wrap(beat["headline"], fs, factor=0.50))
         draws.append(f"drawtext=fontfile='{headline_font}':textfile='{tf}':expansion=none:"
-                     f"text_align=center:fontcolor=white:fontsize={int(fs)}:line_spacing=14:"
-                     f"box=1:boxcolor=black@0.30:boxborderw=28:x=(w-text_w)/2:y=h*0.36")
+                     f"{SH}:text_align=center:fontcolor=white:fontsize={int(fs)}:line_spacing=14:"
+                     f"box=1:boxcolor=black@0.35:boxborderw=28:x=(w-text_w)/2:y=h*0.36")
     if beat.get("subhead"):
         fs = H / 30
         tf = _txt(tmpdir, "subhead", _wrap(beat["subhead"], fs, factor=0.46))
         draws.append(f"drawtext=fontfile='{body_font}':textfile='{tf}':expansion=none:"
-                     f"text_align=center:fontcolor=white:fontsize={int(fs)}:line_spacing=10:"
+                     f"{SH}:text_align=center:fontcolor=white:fontsize={int(fs)}:line_spacing=10:"
                      f"x=(w-text_w)/2:y=h*0.56")
     if beat.get("cta_pill"):
         tf = _txt(tmpdir, "cta", beat.get("cta", "Empieza ya"))
@@ -363,7 +390,7 @@ def make_textcard(bg_png, beat, cfg, dur, fps, dest, tmpdir):
     # Firma de marca abajo.
     tf = _txt(tmpdir, "sig", sig)
     draws.append(f"drawtext=fontfile='{headline_font}':textfile='{tf}':expansion=none:"
-                 f"fontcolor=white@0.9:fontsize=h/26:x=(w-text_w)/2:y=h*0.90")
+                 f"{SH}:fontcolor=white@0.95:fontsize=h/26:x=(w-text_w)/2:y=h*0.90")
 
     vf = (f"scale={W}:{H}:force_original_aspect_ratio=increase,crop={W}:{H},setsar=1,"
           + ",".join(draws) + f",format=yuv420p")
@@ -457,13 +484,25 @@ def process_beat(beat, idx, cfg, comfy, simular, beats_dir, tmproot):
     os.makedirs(tmpdir, exist_ok=True)
 
     out = os.path.join(beats_dir, f"beat{n}_{btype}_{bid}.mp4")
+    # Workflow de imagen (FLUX por defecto; SDXL-Turbo u otro si se indica en el YAML).
+    img_wf = cfg.get("image_workflow", "image_flux_dev.json")
+    # Backend de vídeo: 'wan' (real) o 'image' (imagen IA + Ken Burns, si no hay Wan).
+    video_backend = cfg.get("video_backend", "wan")
+    gw, gh = (cfg.get("gen_resolution") or [W, H])[:2]
 
     if btype in ("cinematic", "ugc"):
-        prompt = build_prompt(beat.get("prompt", ""), style, camera, is_video=True)
-        raw = os.path.join(tmpdir, "raw.mp4")
-        gen_video(comfy, simular, WORKFLOW_BY_TYPE[btype], prompt, neg, seed,
-                  raw, bid, idx, dur, fps)
-        clip = normalize_clip(raw, os.path.join(tmpdir, "norm.mp4"), dur, fps)
+        if video_backend == "image":
+            prompt = build_prompt(beat.get("prompt", ""), style, camera, is_video=False)
+            still = os.path.join(tmpdir, "still.png")
+            gen_image(comfy, simular, img_wf, prompt, neg, seed, still, bid, idx, gw, gh)
+            clip = make_kenburns(still, os.path.join(tmpdir, "kb.mp4"), dur, fps)
+            clip = normalize_clip(clip, os.path.join(tmpdir, "norm.mp4"), dur, fps)
+        else:
+            prompt = build_prompt(beat.get("prompt", ""), style, camera, is_video=True)
+            raw = os.path.join(tmpdir, "raw.mp4")
+            gen_video(comfy, simular, WORKFLOW_BY_TYPE[btype], prompt, neg, seed,
+                      raw, bid, idx, dur, fps, gw, gh)
+            clip = normalize_clip(raw, os.path.join(tmpdir, "norm.mp4"), dur, fps)
         # UGC: voz opcional (TTS) encima.
         if btype == "ugc":
             audio = beat.get("audio", {}) or {}
@@ -479,7 +518,7 @@ def process_beat(beat, idx, cfg, comfy, simular, beats_dir, tmproot):
         prompt = build_prompt(beat.get("prompt", "premium abstract background, soft gradients"),
                               style, camera, is_video=False)
         bg = os.path.join(tmpdir, "bg.png")
-        gen_image(comfy, simular, WORKFLOW_BY_TYPE[btype], prompt, neg, seed, bg, bid, idx)
+        gen_image(comfy, simular, img_wf, prompt, neg, seed, bg, bid, idx, gw, gh)
         card = make_textcard(bg, beat, cfg, dur, fps, os.path.join(tmpdir, "card.mp4"), tmpdir)
         normalize_clip(card, out, dur, fps)
 
@@ -489,8 +528,8 @@ def process_beat(beat, idx, cfg, comfy, simular, beats_dir, tmproot):
         for i, sp in enumerate(slides):
             prompt = build_prompt(sp, style, camera, is_video=False)
             dst = os.path.join(tmpdir, f"slide_{i:02d}.png")
-            gen_image(comfy, simular, WORKFLOW_BY_TYPE[btype], prompt, neg,
-                      seed + i, dst, bid, idx + i)
+            gen_image(comfy, simular, img_wf, prompt, neg,
+                      seed + i, dst, bid, idx + i, gw, gh)
             pngs.append(dst)
         show = make_slideshow(pngs, beat, cfg, dur, fps,
                               os.path.join(tmpdir, "show.mp4"), tmpdir)
