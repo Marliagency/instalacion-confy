@@ -318,10 +318,11 @@ def gen_image(comfy, simular, wf_name, positive, negative, seed, dest, label, id
 
 
 def gen_video(comfy, simular, wf_name, positive, negative, seed, dest, label, idx, dur, fps,
-              gw=W, gh=H):
+              gw=W, gh=H, frames=None):
     if simular:
         return sim_video(dest, label, idx, dur, fps)
-    frames = int(round(dur * fps))
+    if frames is None:
+        frames = int(round(dur * fps))
     wf = patch_workflow(load_workflow(wf_name), positive, negative, seed, frames=frames,
                         gw=gw, gh=gh)
     pid = comfy.queue(wf)
@@ -500,8 +501,13 @@ def process_beat(beat, idx, cfg, comfy, simular, beats_dir, tmproot):
         else:
             prompt = build_prompt(beat.get("prompt", ""), style, camera, is_video=True)
             raw = os.path.join(tmpdir, "raw.mp4")
-            gen_video(comfy, simular, WORKFLOW_BY_TYPE[btype], prompt, neg, seed,
-                      raw, bid, idx, dur, fps, gw, gh)
+            vwf = cfg.get("video_workflow", WORKFLOW_BY_TYPE[btype])
+            vw, vh = (cfg.get("video_resolution") or [480, 832])[:2]
+            wan_fps = int(cfg.get("wan_fps", 16))
+            n = int(round(dur * wan_fps))
+            frames = n - (n % 4) + 1          # Wan exige longitud 4n+1
+            gen_video(comfy, simular, vwf, prompt, neg, seed,
+                      raw, bid, idx, dur, fps, vw, vh, frames=frames)
             clip = normalize_clip(raw, os.path.join(tmpdir, "norm.mp4"), dur, fps)
         # UGC: voz opcional (TTS) encima.
         if btype == "ugc":
