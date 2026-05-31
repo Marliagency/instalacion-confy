@@ -1,0 +1,21 @@
+{
+  "marca": "aera",
+  "total": 12,
+  "canales": [
+    "tiktok",
+    "ig-feed",
+    "youtube"
+  ],
+  "temas": [
+    "amortiguación",
+    "ligereza",
+    "running urbano",
+    "rutina de calentamiento"
+  ],
+  "mezcla": {
+    "educar": 0.4,
+    "entretener": 0.3,
+    "inspirar": 0.2,
+    "comunidad": 0.1
+  }
+}

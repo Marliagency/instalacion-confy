@@ -1,0 +1,34 @@
+{
+  "proyecto": "aera",
+  "marca": "Aera",
+  "descripcion": "Zapatillas de running ligeras para ciudad",
+  "estilo_visual": "fotografía de producto limpia, fondo neutro, luz natural suave",
+  "paleta": "tonos tierra, blanco roto y un acento coral",
+  "tono": "cercano, motivador y sin tecnicismos",
+  "negativo": "baja calidad, borroso, deforme, texto, marca de agua, logo ajeno",
+  "resolucion": [
+    1024,
+    1024
+  ],
+  "canales": [
+    "tiktok",
+    "ig-feed",
+    "youtube"
+  ],
+  "temas": [
+    "amortiguación",
+    "ligereza",
+    "running urbano",
+    "rutina de calentamiento"
+  ],
+  "productos": [
+    "Zapatilla Aera One"
+  ],
+  "total_semana": 12,
+  "mezcla": {
+    "educar": 0.4,
+    "entretener": 0.3,
+    "inspirar": 0.2,
+    "comunidad": 0.1
+  }
+}

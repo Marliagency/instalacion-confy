@@ -1,0 +1,275 @@
+{
+  "semana": "2026-W25",
+  "config": {
+    "formatos": [
+      "16:9",
+      "1:1",
+      "9:16"
+    ],
+    "duracion_toma": 3.5,
+    "fps": 30,
+    "transicion": 0.5,
+    "reintentos": 2,
+    "hosts": [
+      "127.0.0.1:8188"
+    ],
+    "editores": 4
+  },
+  "items": [
+    {
+      "id": "o001",
+      "template": "dato",
+      "marca": "aera",
+      "canal": "tiktok",
+      "dia": "Lunes",
+      "pilar": "educar",
+      "formatos": [
+        "9:16"
+      ],
+      "titular": "Lo que nadie te cuenta de amortiguación",
+      "cta": "Guarda este post",
+      "vars": {
+        "tema": "amortiguación",
+        "titular": "Lo que nadie te cuenta de amortiguación",
+        "idea": "amortiguación",
+        "tip": "amortiguación",
+        "cta": "Guarda este post"
+      }
+    },
+    {
+      "id": "o002",
+      "template": "lista",
+      "marca": "aera",
+      "canal": "ig-feed",
+      "dia": "Lunes",
+      "pilar": "entretener",
+      "formatos": [
+        "1:1"
+      ],
+      "titular": "POV: por fin entiendes amortiguación",
+      "cta": "Comparte con quien lo necesite",
+      "vars": {
+        "tema": "amortiguación",
+        "titular": "POV: por fin entiendes amortiguación",
+        "idea": "amortiguación",
+        "tip": "amortiguación",
+        "cta": "Comparte con quien lo necesite"
+      }
+    },
+    {
+      "id": "o003",
+      "template": "historia",
+      "marca": "aera",
+      "canal": "youtube",
+      "dia": "Martes",
+      "pilar": "inspirar",
+      "formatos": [
+        "16:9"
+      ],
+      "titular": "De cero a dominar amortiguación",
+      "cta": "Etiqueta a alguien",
+      "vars": {
+        "tema": "amortiguación",
+        "titular": "De cero a dominar amortiguación",
+        "idea": "amortiguación",
+        "tip": "amortiguación",
+        "cta": "Etiqueta a alguien"
+      }
+    },
+    {
+      "id": "o004",
+      "template": "pregunta",
+      "marca": "aera",
+      "canal": "tiktok",
+      "dia": "Martes",
+      "pilar": "comunidad",
+      "formatos": [
+        "9:16"
+      ],
+      "titular": "¿Tu mayor duda con amortiguación?",
+      "cta": "Cuéntanoslo en comentarios",
+      "vars": {
+        "tema": "amortiguación",
+        "titular": "¿Tu mayor duda con amortiguación?",
+        "idea": "amortiguación",
+        "tip": "amortiguación",
+        "cta": "Cuéntanoslo en comentarios"
+      }
+    },
+    {
+      "id": "o005",
+      "template": "tutorial",
+      "marca": "aera",
+      "canal": "ig-feed",
+      "dia": "Miércoles",
+      "pilar": "educar",
+      "formatos": [
+        "1:1"
+      ],
+      "titular": "3 errores comunes con ligereza",
+      "cta": "Guarda este post",
+      "vars": {
+        "tema": "ligereza",
+        "titular": "3 errores comunes con ligereza",
+        "idea": "ligereza",
+        "tip": "ligereza",
+        "cta": "Guarda este post"
+      }
+    },
+    {
+      "id": "o006",
+      "template": "pov",
+      "marca": "aera",
+      "canal": "youtube",
+      "dia": "Miércoles",
+      "pilar": "entretener",
+      "formatos": [
+        "16:9"
+      ],
+      "titular": "5 cosas de ligereza que no sabías",
+      "cta": "Comparte con quien lo necesite",
+      "vars": {
+        "tema": "ligereza",
+        "titular": "5 cosas de ligereza que no sabías",
+        "idea": "ligereza",
+        "tip": "ligereza",
+        "cta": "Comparte con quien lo necesite"
+      }
+    },
+    {
+      "id": "o007",
+      "template": "historia",
+      "marca": "aera",
+      "canal": "tiktok",
+      "dia": "Jueves",
+      "pilar": "inspirar",
+      "formatos": [
+        "9:16"
+      ],
+      "titular": "La historia detrás de ligereza",
+      "cta": "Etiqueta a alguien",
+      "vars": {
+        "tema": "ligereza",
+        "titular": "La historia detrás de ligereza",
+        "idea": "ligereza",
+        "tip": "ligereza",
+        "cta": "Etiqueta a alguien"
+      }
+    },
+    {
+      "id": "o008",
+      "template": "mito",
+      "marca": "aera",
+      "canal": "ig-feed",
+      "dia": "Viernes",
+      "pilar": "educar",
+      "formatos": [
+        "1:1"
+      ],
+      "titular": "La guía rápida de running urbano",
+      "cta": "Guarda este post",
+      "vars": {
+        "tema": "running urbano",
+        "titular": "La guía rápida de running urbano",
+        "idea": "running urbano",
+        "tip": "running urbano",
+        "cta": "Guarda este post"
+      }
+    },
+    {
+      "id": "o009",
+      "template": "lista",
+      "marca": "aera",
+      "canal": "youtube",
+      "dia": "Viernes",
+      "pilar": "entretener",
+      "formatos": [
+        "16:9"
+      ],
+      "titular": "Cuando descubres running urbano",
+      "cta": "Comparte con quien lo necesite",
+      "vars": {
+        "tema": "running urbano",
+        "titular": "Cuando descubres running urbano",
+        "idea": "running urbano",
+        "tip": "running urbano",
+        "cta": "Comparte con quien lo necesite"
+      }
+    },
+    {
+      "id": "o010",
+      "template": "dato",
+      "marca": "aera",
+      "canal": "tiktok",
+      "dia": "Sábado",
+      "pilar": "educar",
+      "formatos": [
+        "9:16"
+      ],
+      "titular": "¿Lo estás haciendo bien con rutina de calentamiento?",
+      "cta": "Guarda este post",
+      "vars": {
+        "tema": "rutina de calentamiento",
+        "titular": "¿Lo estás haciendo bien con rutina de calentamiento?",
+        "idea": "rutina de calentamiento",
+        "tip": "rutina de calentamiento",
+        "cta": "Guarda este post"
+      }
+    },
+    {
+      "id": "o011",
+      "template": "pov",
+      "marca": "aera",
+      "canal": "ig-feed",
+      "dia": "Sábado",
+      "pilar": "entretener",
+      "formatos": [
+        "1:1"
+      ],
+      "titular": "POV: por fin entiendes rutina de calentamiento",
+      "cta": "Comparte con quien lo necesite",
+      "vars": {
+        "tema": "rutina de calentamiento",
+        "titular": "POV: por fin entiendes rutina de calentamiento",
+        "idea": "rutina de calentamiento",
+        "tip": "rutina de calentamiento",
+        "cta": "Comparte con quien lo necesite"
+      }
+    },
+    {
+      "id": "o012",
+      "template": "tutorial",
+      "marca": "aera",
+      "canal": "youtube",
+      "dia": "Domingo",
+      "pilar": "educar",
+      "formatos": [
+        "16:9"
+      ],
+      "titular": "Lo que nadie te cuenta de amortiguación",
+      "cta": "Guarda este post",
+      "vars": {
+        "tema": "amortiguación",
+        "titular": "Lo que nadie te cuenta de amortiguación",
+        "idea": "amortiguación",
+        "tip": "amortiguación",
+        "cta": "Guarda este post"
+      }
+    },
+    {
+      "id": "c001",
+      "template": "producto",
+      "marca": "aera",
+      "formatos": [
+        "16:9",
+        "1:1",
+        "9:16"
+      ],
+      "vars": {
+        "producto": "Zapatilla Aera One",
+        "titular": "Zapatilla Aera One",
+        "cta": "Descúbrelo"
+      }
+    }
+  ]
+}

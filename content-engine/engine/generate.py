@@ -100,14 +100,14 @@ def _generar_toma(host, marca_cache, pieza, toma, dest, simular, reintentos, gen
 # ---------------------------------------------------------------------------
 # Orquestación con cola de trabajo repartida entre hosts
 # ---------------------------------------------------------------------------
-def generate(semana, simular=False):
+def generate(semana, simular=False, hosts_override=None):
     manifest = load_manifest(semana)
     cfg = manifest["config"]
     p = paths_semana(semana)
     gen_dir = p["generated"]
     os.makedirs(gen_dir, exist_ok=True)
 
-    hosts = list(cfg.get("hosts") or ["127.0.0.1:8188"])
+    hosts = list(hosts_override or cfg.get("hosts") or ["127.0.0.1:8188"])
     reintentos = int(cfg.get("reintentos", 2))
     gen_timeout = int(cfg.get("gen_timeout", 600))
 
@@ -192,8 +192,11 @@ def main():
     ap.add_argument("semana")
     ap.add_argument("--simular", action="store_true",
                     help="No usa GPU: crea frames de color de prueba con ffmpeg.")
+    ap.add_argument("--host", action="append", dest="hosts",
+                    help="Sobrescribe los hosts de ComfyUI (repetible). "
+                         "Acepta ip:puerto o una URL completa https://...")
     args = ap.parse_args()
-    generate(args.semana, simular=args.simular)
+    generate(args.semana, simular=args.simular, hosts_override=args.hosts)
 
 
 if __name__ == "__main__":

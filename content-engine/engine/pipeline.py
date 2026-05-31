@@ -48,12 +48,12 @@ def _resumen(semana):
     log(f"  Vídeos en: {p['edited']}")
 
 
-def run(semana, simular=False, reintentar=False):
+def run(semana, simular=False, reintentar=False, hosts=None):
     log(f"=== Content Engine · semana {semana} "
         f"{'[SIMULACIÓN]' if simular else '[REAL]'}"
         f"{' [REINTENTAR]' if reintentar else ''} ===")
     expand(semana, reintentar=reintentar)
-    generate(semana, simular=simular)
+    generate(semana, simular=simular, hosts_override=hosts)
     edit(semana)
     _resumen(semana)
 
@@ -65,8 +65,11 @@ def main():
                     help="No usa GPU: frames de color de prueba (valida el flujo).")
     ap.add_argument("--reintentar", action="store_true",
                     help="Reanuda solo las piezas en estado 'error'.")
+    ap.add_argument("--host", action="append", dest="hosts",
+                    help="Sobrescribe los hosts de ComfyUI (repetible). "
+                         "ip:puerto o URL completa https://... (lo usa produccion.py).")
     args = ap.parse_args()
-    run(args.semana, simular=args.simular, reintentar=args.reintentar)
+    run(args.semana, simular=args.simular, reintentar=args.reintentar, hosts=args.hosts)
 
 
 if __name__ == "__main__":

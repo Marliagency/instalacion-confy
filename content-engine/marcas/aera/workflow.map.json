@@ -1,0 +1,8 @@
+{
+  "_nota": "IDs de nodo del workflow.json. prompt/seed son obligatorios.",
+  "prompt": "6",
+  "negativo": "7",
+  "seed": "3",
+  "width": "5",
+  "height": "5"
+}

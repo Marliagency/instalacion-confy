@@ -1,0 +1,14 @@
+{
+  "descripcion": "Zapatillas de running ligeras para ciudad",
+  "vars": {
+    "estilo": "fotografía de producto limpia, fondo neutro, luz natural suave, paleta tonos tierra, blanco roto y un acento coral",
+    "marca": "Aera",
+    "tono": "cercano, motivador y sin tecnicismos"
+  },
+  "sufijo_prompt": "alta calidad, gran nitidez, composición profesional, 8k",
+  "negativo": "baja calidad, borroso, deforme, texto, marca de agua, logo ajeno",
+  "resolucion": [
+    1024,
+    1024
+  ]
+}
