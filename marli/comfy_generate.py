@@ -27,12 +27,17 @@ import argparse
 import copy
 import json
 import os
+import ssl
 import subprocess
 import sys
 import time
 import urllib.parse
 import urllib.request
 import uuid
+
+# El proxy de RunPod (Cloudflare) a veces da errores de verificación de certificado
+# en urllib; usamos un contexto sin verificar para todas las llamadas a ComfyUI.
+_SSL = ssl._create_unverified_context()
 
 try:
     import yaml
@@ -142,6 +147,29 @@ def overlay_li(clip_in, clip_out, cutout, placement, dur, fps):
     return clip_out
 
 
+def overlay_headline(clip_in, clip_out, text, cfg, dur, fps):
+    """Dibuja el titular (Inter) en la parte superior de un beat cinematográfico,
+    con sombra para legibilidad sobre cualquier fondo (Li suele ir abajo)."""
+    brand = cfg.get("brand", {})
+    font = _font(brand, "headline", "Inter-Bold.ttf")
+    if not font or not text:
+        return clip_in
+    fs = H / 16
+    wrapped = _wrap(text, fs, factor=0.50)
+    import tempfile as _t
+    fd, tf = _t.mkstemp(suffix=".txt"); os.close(fd)
+    open(tf, "w", encoding="utf-8").write(wrapped)
+    draw = (f"drawtext=fontfile='{font}':textfile='{tf}':expansion=none:"
+            f"text_align=center:fontcolor=white:fontsize={int(fs)}:line_spacing=12:"
+            f"shadowcolor=black@0.6:shadowx=4:shadowy=4:"
+            f"box=1:boxcolor=black@0.28:boxborderw=26:x=(w-text_w)/2:y=h*0.09")
+    run(["ffmpeg", "-y", "-i", clip_in, "-vf", draw, "-t", f"{dur}", "-r", str(fps),
+         "-c:v", "libx264", "-preset", "veryfast", "-crf", "20", "-pix_fmt", "yuv420p",
+         "-c:a", "copy", clip_out])
+    os.remove(tf)
+    return clip_out
+
+
 def add_vo(clip_in, clip_out, vo_path, dur):
     """Sustituye el audio del beat por la locución (recortada/rellenada a dur)."""
     run(["ffmpeg", "-y", "-i", clip_in, "-i", vo_path,
@@ -189,7 +217,7 @@ class Comfy:
 
     def _get(self, path, timeout=30):
         req = urllib.request.Request(self.host + path, headers={"User-Agent": _UA})
-        with urllib.request.urlopen(req, timeout=timeout) as r:
+        with urllib.request.urlopen(req, timeout=timeout, context=_SSL) as r:
             return json.loads(r.read().decode("utf-8"))
 
     def queue(self, workflow):
@@ -197,7 +225,7 @@ class Comfy:
         req = urllib.request.Request(self.host + "/prompt", data=data,
                                      headers={"Content-Type": "application/json",
                                               "User-Agent": _UA})
-        with urllib.request.urlopen(req, timeout=60) as r:
+        with urllib.request.urlopen(req, timeout=60, context=_SSL) as r:
             return json.loads(r.read().decode("utf-8"))["prompt_id"]
 
     def wait_download(self, prompt_id, dest, timeout=1200, poll=3):
@@ -229,7 +257,7 @@ class Comfy:
                                          "type": item.get("type", "output")})
         os.makedirs(os.path.dirname(os.path.abspath(dest)), exist_ok=True)
         req = urllib.request.Request(self.host + "/view?" + params, headers={"User-Agent": _UA})
-        with urllib.request.urlopen(req, timeout=300) as r, open(dest, "wb") as f:
+        with urllib.request.urlopen(req, timeout=300, context=_SSL) as r, open(dest, "wb") as f:
             f.write(r.read())
         return dest
 
@@ -326,9 +354,12 @@ PALETTE = ["3a0a0a", "7a0c0c", "9a1b1b", "b5651d", "2b2b2b", "0e1b2b"]
 
 
 def sim_image(dest, label, idx):
+    """Fondo de marca (crema con degradado cálido) para previsualizar el anuncio
+    sin GPU. Se sustituye por FLUX/SDXL cuando hay pod."""
     os.makedirs(os.path.dirname(dest), exist_ok=True)
-    color = PALETTE[idx % len(PALETTE)]
-    run(["ffmpeg", "-y", "-f", "lavfi", "-i", f"color=c=0x{color}:s={W}x{H}",
+    # Degradado radial crema Marli con un leve brillo cálido.
+    run(["ffmpeg", "-y", "-f", "lavfi",
+         "-i", f"gradients=s={W}x{H}:c0=0xFAF6F1:c1=0xEFE2D6:type=radial",
          "-frames:v", "1", dest])
     return dest
 
@@ -402,7 +433,7 @@ def make_textcard(bg_png, beat, cfg, dur, fps, dest, tmpdir):
     if beat.get("kicker"):
         tf = _txt(tmpdir, "kicker", beat["kicker"].upper())
         draws.append(f"drawtext=fontfile='{body_font}':textfile='{tf}':expansion=none:"
-                     f"{SH}:fontcolor=white:fontsize=h/34:x=(w-text_w)/2:y=h*0.20")
+                     f"{SH}:fontcolor=0x{accent}:fontsize=h/32:x=(w-text_w)/2:y=h*0.20")
     if beat.get("headline"):
         fs = H / 14
         tf = _txt(tmpdir, "headline", _wrap(beat["headline"], fs, factor=0.50))
@@ -411,7 +442,7 @@ def make_textcard(bg_png, beat, cfg, dur, fps, dest, tmpdir):
                      f"box=1:boxcolor=black@0.35:boxborderw=28:x=(w-text_w)/2:y=h*0.36")
     if beat.get("subhead"):
         fs = H / 30
-        tf = _txt(tmpdir, "subhead", _wrap(beat["subhead"], fs, factor=0.46))
+        tf = _txt(tmpdir, "subhead", _wrap(beat["subhead"], fs, factor=0.40))
         draws.append(f"drawtext=fontfile='{body_font}':textfile='{tf}':expansion=none:"
                      f"{SH}:text_align=center:fontcolor=white:fontsize={int(fs)}:line_spacing=10:"
                      f"x=(w-text_w)/2:y=h*0.56")
@@ -552,6 +583,11 @@ def process_beat(beat, idx, cfg, comfy, simular, beats_dir, tmproot):
                                                   audio.get("voice_id", ""), voice):
                     clip = add_voice(clip, voice, None,
                                      os.path.join(tmpdir, "voiced.mp4"), fps)
+        # Titular en pantalla (beats cinematográficos)
+        if btype == "cinematic" and beat.get("headline"):
+            hl = os.path.join(tmpdir, "hl.mp4")
+            overlay_headline(clip, hl, beat["headline"], cfg, dur, fps)
+            clip = hl
         os.replace(clip, out)
 
     elif btype == "textcard":

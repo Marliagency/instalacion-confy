@@ -61,7 +61,7 @@ beats:
   - n: 3
     type: cinematic
     id: conoce_li
-    dur: 5
+    dur: 6
     li: hero
     headline: Conoce a Li.
     prompt: >
@@ -72,7 +72,7 @@ beats:
   - n: 4
     type: slideshow5
     id: sistema
-    dur: 5
+    dur: 7
     slide_dur: 1.25
     li: corner
     texts: ["Confirma tus citas", "Redacta informes en segundos", "Responde 24/7", "Ordena tu consulta"]
@@ -96,7 +96,7 @@ beats:
   - n: 6
     type: textcard
     id: cta
-    dur: 5
+    dur: 8
     li: corner
     kicker: Marli
     headline: Pago único. Para siempre.
