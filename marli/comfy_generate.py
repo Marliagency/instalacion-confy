@@ -504,8 +504,8 @@ def process_beat(beat, idx, cfg, comfy, simular, beats_dir, tmproot):
             vwf = cfg.get("video_workflow", WORKFLOW_BY_TYPE[btype])
             vw, vh = (cfg.get("video_resolution") or [480, 832])[:2]
             wan_fps = int(cfg.get("wan_fps", 16))
-            n = int(round(dur * wan_fps))
-            frames = n - (n % 4) + 1          # Wan exige longitud 4n+1
+            nf = int(round(dur * wan_fps))
+            frames = nf - (nf % 4) + 1        # Wan exige longitud 4n+1
             gen_video(comfy, simular, vwf, prompt, neg, seed,
                       raw, bid, idx, dur, fps, vw, vh, frames=frames)
             clip = normalize_clip(raw, os.path.join(tmpdir, "norm.mp4"), dur, fps)
