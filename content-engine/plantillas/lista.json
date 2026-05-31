@@ -1,0 +1,17 @@
+{
+  "nombre": "lista",
+  "descripcion": "Lista enumerada (entretener)",
+  "tomas": [
+    {
+      "prompt": "primer elemento de una lista sobre {tema}, gráfico dinámico, {estilo}"
+    },
+    {
+      "prompt": "elemento intermedio sobre {tema}, ritmo visual, {estilo}"
+    },
+    {
+      "prompt": "elemento final de la lista sobre {tema}, remate, {estilo}"
+    }
+  ],
+  "titular": "{titular}",
+  "cta": "{cta}"
+}

@@ -1,0 +1,17 @@
+{
+  "nombre": "testimonio",
+  "descripcion": "Prueba social / cliente satisfecho",
+  "tomas": [
+    {
+      "prompt": "persona satisfecha en entorno cotidiano, retrato cálido, {estilo}"
+    },
+    {
+      "prompt": "momento de uso con expresión positiva, {estilo}"
+    },
+    {
+      "prompt": "plano de cierre acogedor y aspiracional, {estilo}"
+    }
+  ],
+  "titular": "{titular}",
+  "cta": "{cta}"
+}

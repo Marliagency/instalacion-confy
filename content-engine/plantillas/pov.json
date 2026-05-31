@@ -1,0 +1,17 @@
+{
+  "nombre": "pov",
+  "descripcion": "Punto de vista (entretener)",
+  "tomas": [
+    {
+      "prompt": "escena en primera persona (POV) viviendo {tema}, inmersivo, {estilo}"
+    },
+    {
+      "prompt": "momento de giro sobre {tema}, expresivo, {estilo}"
+    },
+    {
+      "prompt": "desenlace satisfactorio de {tema}, {estilo}"
+    }
+  ],
+  "titular": "{titular}",
+  "cta": "{cta}"
+}

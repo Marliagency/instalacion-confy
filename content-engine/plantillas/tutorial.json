@@ -1,0 +1,17 @@
+{
+  "nombre": "tutorial",
+  "descripcion": "Paso a paso (educar)",
+  "tomas": [
+    {
+      "prompt": "paso 1 de cómo {tema}, escena clara y didáctica, {estilo}"
+    },
+    {
+      "prompt": "paso 2 de {tema}, detalle de la acción, {estilo}"
+    },
+    {
+      "prompt": "resultado final de {tema}, antes y después, {estilo}"
+    }
+  ],
+  "titular": "{titular}",
+  "cta": "{cta}"
+}

@@ -1,0 +1,12 @@
+{
+  "descripcion": "Marca de ejemplo. Ajusta sufijo_prompt / negativo / resolucion a tu estilo visual.",
+  "vars": {
+    "estilo": "fotografía limpia, iluminación suave de estudio, paleta neutra"
+  },
+  "sufijo_prompt": "alta calidad, gran nitidez, composición profesional, 8k",
+  "negativo": "baja calidad, borroso, deforme, texto, marca de agua, logo, manos extra",
+  "resolucion": [
+    1024,
+    1024
+  ]
+}

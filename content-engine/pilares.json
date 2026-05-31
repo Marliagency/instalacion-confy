@@ -1,0 +1,56 @@
+{
+  "pilares": {
+    "educar": {
+      "peso": 0.4,
+      "plantillas": [
+        "dato",
+        "tutorial",
+        "mito"
+      ],
+      "cta": "Guarda este post",
+      "hooks": [
+        "Lo que nadie te cuenta de {tema}",
+        "3 errores comunes con {tema}",
+        "La guía rápida de {tema}",
+        "¿Lo estás haciendo bien con {tema}?"
+      ]
+    },
+    "entretener": {
+      "peso": 0.3,
+      "plantillas": [
+        "lista",
+        "pov"
+      ],
+      "cta": "Comparte con quien lo necesite",
+      "hooks": [
+        "POV: por fin entiendes {tema}",
+        "5 cosas de {tema} que no sabías",
+        "Cuando descubres {tema}"
+      ]
+    },
+    "inspirar": {
+      "peso": 0.2,
+      "plantillas": [
+        "historia"
+      ],
+      "cta": "Etiqueta a alguien",
+      "hooks": [
+        "De cero a dominar {tema}",
+        "La historia detrás de {tema}",
+        "Por qué {tema} lo cambia todo"
+      ]
+    },
+    "comunidad": {
+      "peso": 0.1,
+      "plantillas": [
+        "pregunta"
+      ],
+      "cta": "Cuéntanoslo en comentarios",
+      "hooks": [
+        "¿Tu mayor duda con {tema}?",
+        "¿Equipo {tema}, sí o no?",
+        "Necesitamos tu opinión sobre {tema}"
+      ]
+    }
+  }
+}

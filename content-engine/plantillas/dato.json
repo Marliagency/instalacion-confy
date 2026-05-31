@@ -1,0 +1,17 @@
+{
+  "nombre": "dato",
+  "descripcion": "Dato sorprendente (educar)",
+  "tomas": [
+    {
+      "prompt": "imagen conceptual que representa '{tema}', estilo editorial, {estilo}"
+    },
+    {
+      "prompt": "visual de un dato clave sobre {tema}, infografía limpia, {estilo}"
+    },
+    {
+      "prompt": "cierre memorable sobre {tema}, {estilo}"
+    }
+  ],
+  "titular": "{titular}",
+  "cta": "{cta}"
+}

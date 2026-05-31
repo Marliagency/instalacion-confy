@@ -1,0 +1,21 @@
+{
+  "marca": "default",
+  "total": 24,
+  "canales": [
+    "tiktok",
+    "ig-feed",
+    "youtube"
+  ],
+  "temas": [
+    "sentadilla correcta",
+    "proteína",
+    "descanso",
+    "movilidad"
+  ],
+  "mezcla": {
+    "educar": 0.4,
+    "entretener": 0.3,
+    "inspirar": 0.2,
+    "comunidad": 0.1
+  }
+}

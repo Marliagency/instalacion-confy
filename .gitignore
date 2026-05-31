@@ -21,3 +21,12 @@ venv/
 # Artefactos temporales de orquestación (reintento de pod)
 .retry_pod.py
 .pod_result.json
+
+# Content Engine: salidas pesadas y estado autogenerado por semana.
+# Se versionan plan.json / intencion.json / calendario.csv (texto, ilustrativos)
+# pero NO los frames, vídeos, manifiesto ni audios de entrada.
+content-engine/semanas/*/generated/
+content-engine/semanas/*/edited/
+content-engine/semanas/*/manifest.json
+content-engine/semanas/*/inputs/audio/*
+!content-engine/semanas/*/inputs/audio/.gitkeep

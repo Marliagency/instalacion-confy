@@ -1,0 +1,17 @@
+{
+  "nombre": "pregunta",
+  "descripcion": "Pregunta a la comunidad (comunidad)",
+  "tomas": [
+    {
+      "prompt": "imagen que invita a opinar sobre {tema}, abierta y cercana, {estilo}"
+    },
+    {
+      "prompt": "dos opciones contrapuestas sobre {tema}, {estilo}"
+    },
+    {
+      "prompt": "llamada a comentar sobre {tema}, ambiente de comunidad, {estilo}"
+    }
+  ],
+  "titular": "{titular}",
+  "cta": "{cta}"
+}

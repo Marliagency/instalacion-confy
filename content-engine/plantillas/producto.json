@@ -1,0 +1,17 @@
+{
+  "nombre": "producto",
+  "descripcion": "Lanzamiento o feature de un producto",
+  "tomas": [
+    {
+      "prompt": "{producto} sobre superficie minimalista, fondo neutro, {estilo}"
+    },
+    {
+      "prompt": "primer plano del detalle de {producto}, texturas y materiales, {estilo}"
+    },
+    {
+      "prompt": "{producto} en contexto de uso real, escena lifestyle, {estilo}"
+    }
+  ],
+  "titular": "{titular}",
+  "cta": "{cta}"
+}

@@ -1,0 +1,17 @@
+{
+  "nombre": "tip",
+  "descripcion": "Consejo rápido y accionable",
+  "tomas": [
+    {
+      "prompt": "escena que ilustra el tema '{tema}', ambiente {estilo}"
+    },
+    {
+      "prompt": "detalle que refuerza la idea: {idea}, {estilo}"
+    },
+    {
+      "prompt": "resultado de aplicar {idea}, sensación de logro, {estilo}"
+    }
+  ],
+  "titular": "{titular}",
+  "cta": "{cta}"
+}

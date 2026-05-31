@@ -1,0 +1,17 @@
+{
+  "nombre": "historia",
+  "descripcion": "Relato emocional (inspirar)",
+  "tomas": [
+    {
+      "prompt": "inicio de una historia sobre {tema}, atmósfera evocadora, {estilo}"
+    },
+    {
+      "prompt": "punto de tensión de la historia de {tema}, emotivo, {estilo}"
+    },
+    {
+      "prompt": "final inspirador sobre {tema}, luz cálida, {estilo}"
+    }
+  ],
+  "titular": "{titular}",
+  "cta": "{cta}"
+}

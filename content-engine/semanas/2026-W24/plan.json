@@ -1,0 +1,500 @@
+{
+  "semana": "2026-W24",
+  "config": {
+    "formatos": [
+      "16:9",
+      "1:1",
+      "9:16"
+    ],
+    "duracion_toma": 3.5,
+    "fps": 30,
+    "transicion": 0.5,
+    "reintentos": 2,
+    "hosts": [
+      "127.0.0.1:8188"
+    ],
+    "editores": 4
+  },
+  "items": [
+    {
+      "id": "o001",
+      "template": "dato",
+      "marca": "default",
+      "canal": "tiktok",
+      "dia": "Lunes",
+      "pilar": "educar",
+      "formatos": [
+        "9:16"
+      ],
+      "titular": "Lo que nadie te cuenta de sentadilla correcta",
+      "cta": "Guarda este post",
+      "vars": {
+        "tema": "sentadilla correcta",
+        "titular": "Lo que nadie te cuenta de sentadilla correcta",
+        "idea": "sentadilla correcta",
+        "tip": "sentadilla correcta",
+        "cta": "Guarda este post"
+      }
+    },
+    {
+      "id": "o002",
+      "template": "lista",
+      "marca": "default",
+      "canal": "ig-feed",
+      "dia": "Lunes",
+      "pilar": "entretener",
+      "formatos": [
+        "1:1"
+      ],
+      "titular": "POV: por fin entiendes sentadilla correcta",
+      "cta": "Comparte con quien lo necesite",
+      "vars": {
+        "tema": "sentadilla correcta",
+        "titular": "POV: por fin entiendes sentadilla correcta",
+        "idea": "sentadilla correcta",
+        "tip": "sentadilla correcta",
+        "cta": "Comparte con quien lo necesite"
+      }
+    },
+    {
+      "id": "o003",
+      "template": "historia",
+      "marca": "default",
+      "canal": "youtube",
+      "dia": "Lunes",
+      "pilar": "inspirar",
+      "formatos": [
+        "16:9"
+      ],
+      "titular": "De cero a dominar sentadilla correcta",
+      "cta": "Etiqueta a alguien",
+      "vars": {
+        "tema": "sentadilla correcta",
+        "titular": "De cero a dominar sentadilla correcta",
+        "idea": "sentadilla correcta",
+        "tip": "sentadilla correcta",
+        "cta": "Etiqueta a alguien"
+      }
+    },
+    {
+      "id": "o004",
+      "template": "pregunta",
+      "marca": "default",
+      "canal": "tiktok",
+      "dia": "Lunes",
+      "pilar": "comunidad",
+      "formatos": [
+        "9:16"
+      ],
+      "titular": "¿Tu mayor duda con sentadilla correcta?",
+      "cta": "Cuéntanoslo en comentarios",
+      "vars": {
+        "tema": "sentadilla correcta",
+        "titular": "¿Tu mayor duda con sentadilla correcta?",
+        "idea": "sentadilla correcta",
+        "tip": "sentadilla correcta",
+        "cta": "Cuéntanoslo en comentarios"
+      }
+    },
+    {
+      "id": "o005",
+      "template": "tutorial",
+      "marca": "default",
+      "canal": "ig-feed",
+      "dia": "Martes",
+      "pilar": "educar",
+      "formatos": [
+        "1:1"
+      ],
+      "titular": "3 errores comunes con proteína",
+      "cta": "Guarda este post",
+      "vars": {
+        "tema": "proteína",
+        "titular": "3 errores comunes con proteína",
+        "idea": "proteína",
+        "tip": "proteína",
+        "cta": "Guarda este post"
+      }
+    },
+    {
+      "id": "o006",
+      "template": "pov",
+      "marca": "default",
+      "canal": "youtube",
+      "dia": "Martes",
+      "pilar": "entretener",
+      "formatos": [
+        "16:9"
+      ],
+      "titular": "5 cosas de proteína que no sabías",
+      "cta": "Comparte con quien lo necesite",
+      "vars": {
+        "tema": "proteína",
+        "titular": "5 cosas de proteína que no sabías",
+        "idea": "proteína",
+        "tip": "proteína",
+        "cta": "Comparte con quien lo necesite"
+      }
+    },
+    {
+      "id": "o007",
+      "template": "historia",
+      "marca": "default",
+      "canal": "tiktok",
+      "dia": "Martes",
+      "pilar": "inspirar",
+      "formatos": [
+        "9:16"
+      ],
+      "titular": "La historia detrás de proteína",
+      "cta": "Etiqueta a alguien",
+      "vars": {
+        "tema": "proteína",
+        "titular": "La historia detrás de proteína",
+        "idea": "proteína",
+        "tip": "proteína",
+        "cta": "Etiqueta a alguien"
+      }
+    },
+    {
+      "id": "o008",
+      "template": "pregunta",
+      "marca": "default",
+      "canal": "ig-feed",
+      "dia": "Miércoles",
+      "pilar": "comunidad",
+      "formatos": [
+        "1:1"
+      ],
+      "titular": "¿Equipo proteína, sí o no?",
+      "cta": "Cuéntanoslo en comentarios",
+      "vars": {
+        "tema": "proteína",
+        "titular": "¿Equipo proteína, sí o no?",
+        "idea": "proteína",
+        "tip": "proteína",
+        "cta": "Cuéntanoslo en comentarios"
+      }
+    },
+    {
+      "id": "o009",
+      "template": "mito",
+      "marca": "default",
+      "canal": "youtube",
+      "dia": "Miércoles",
+      "pilar": "educar",
+      "formatos": [
+        "16:9"
+      ],
+      "titular": "La guía rápida de descanso",
+      "cta": "Guarda este post",
+      "vars": {
+        "tema": "descanso",
+        "titular": "La guía rápida de descanso",
+        "idea": "descanso",
+        "tip": "descanso",
+        "cta": "Guarda este post"
+      }
+    },
+    {
+      "id": "o010",
+      "template": "lista",
+      "marca": "default",
+      "canal": "tiktok",
+      "dia": "Miércoles",
+      "pilar": "entretener",
+      "formatos": [
+        "9:16"
+      ],
+      "titular": "Cuando descubres descanso",
+      "cta": "Comparte con quien lo necesite",
+      "vars": {
+        "tema": "descanso",
+        "titular": "Cuando descubres descanso",
+        "idea": "descanso",
+        "tip": "descanso",
+        "cta": "Comparte con quien lo necesite"
+      }
+    },
+    {
+      "id": "o011",
+      "template": "historia",
+      "marca": "default",
+      "canal": "ig-feed",
+      "dia": "Miércoles",
+      "pilar": "inspirar",
+      "formatos": [
+        "1:1"
+      ],
+      "titular": "Por qué descanso lo cambia todo",
+      "cta": "Etiqueta a alguien",
+      "vars": {
+        "tema": "descanso",
+        "titular": "Por qué descanso lo cambia todo",
+        "idea": "descanso",
+        "tip": "descanso",
+        "cta": "Etiqueta a alguien"
+      }
+    },
+    {
+      "id": "o012",
+      "template": "dato",
+      "marca": "default",
+      "canal": "youtube",
+      "dia": "Jueves",
+      "pilar": "educar",
+      "formatos": [
+        "16:9"
+      ],
+      "titular": "¿Lo estás haciendo bien con movilidad?",
+      "cta": "Guarda este post",
+      "vars": {
+        "tema": "movilidad",
+        "titular": "¿Lo estás haciendo bien con movilidad?",
+        "idea": "movilidad",
+        "tip": "movilidad",
+        "cta": "Guarda este post"
+      }
+    },
+    {
+      "id": "o013",
+      "template": "pov",
+      "marca": "default",
+      "canal": "tiktok",
+      "dia": "Jueves",
+      "pilar": "entretener",
+      "formatos": [
+        "9:16"
+      ],
+      "titular": "POV: por fin entiendes movilidad",
+      "cta": "Comparte con quien lo necesite",
+      "vars": {
+        "tema": "movilidad",
+        "titular": "POV: por fin entiendes movilidad",
+        "idea": "movilidad",
+        "tip": "movilidad",
+        "cta": "Comparte con quien lo necesite"
+      }
+    },
+    {
+      "id": "o014",
+      "template": "historia",
+      "marca": "default",
+      "canal": "ig-feed",
+      "dia": "Jueves",
+      "pilar": "inspirar",
+      "formatos": [
+        "1:1"
+      ],
+      "titular": "De cero a dominar movilidad",
+      "cta": "Etiqueta a alguien",
+      "vars": {
+        "tema": "movilidad",
+        "titular": "De cero a dominar movilidad",
+        "idea": "movilidad",
+        "tip": "movilidad",
+        "cta": "Etiqueta a alguien"
+      }
+    },
+    {
+      "id": "o015",
+      "template": "tutorial",
+      "marca": "default",
+      "canal": "youtube",
+      "dia": "Viernes",
+      "pilar": "educar",
+      "formatos": [
+        "16:9"
+      ],
+      "titular": "Lo que nadie te cuenta de sentadilla correcta",
+      "cta": "Guarda este post",
+      "vars": {
+        "tema": "sentadilla correcta",
+        "titular": "Lo que nadie te cuenta de sentadilla correcta",
+        "idea": "sentadilla correcta",
+        "tip": "sentadilla correcta",
+        "cta": "Guarda este post"
+      }
+    },
+    {
+      "id": "o016",
+      "template": "lista",
+      "marca": "default",
+      "canal": "tiktok",
+      "dia": "Viernes",
+      "pilar": "entretener",
+      "formatos": [
+        "9:16"
+      ],
+      "titular": "5 cosas de sentadilla correcta que no sabías",
+      "cta": "Comparte con quien lo necesite",
+      "vars": {
+        "tema": "sentadilla correcta",
+        "titular": "5 cosas de sentadilla correcta que no sabías",
+        "idea": "sentadilla correcta",
+        "tip": "sentadilla correcta",
+        "cta": "Comparte con quien lo necesite"
+      }
+    },
+    {
+      "id": "o017",
+      "template": "historia",
+      "marca": "default",
+      "canal": "ig-feed",
+      "dia": "Viernes",
+      "pilar": "inspirar",
+      "formatos": [
+        "1:1"
+      ],
+      "titular": "La historia detrás de sentadilla correcta",
+      "cta": "Etiqueta a alguien",
+      "vars": {
+        "tema": "sentadilla correcta",
+        "titular": "La historia detrás de sentadilla correcta",
+        "idea": "sentadilla correcta",
+        "tip": "sentadilla correcta",
+        "cta": "Etiqueta a alguien"
+      }
+    },
+    {
+      "id": "o018",
+      "template": "mito",
+      "marca": "default",
+      "canal": "youtube",
+      "dia": "Viernes",
+      "pilar": "educar",
+      "formatos": [
+        "16:9"
+      ],
+      "titular": "3 errores comunes con proteína",
+      "cta": "Guarda este post",
+      "vars": {
+        "tema": "proteína",
+        "titular": "3 errores comunes con proteína",
+        "idea": "proteína",
+        "tip": "proteína",
+        "cta": "Guarda este post"
+      }
+    },
+    {
+      "id": "o019",
+      "template": "pov",
+      "marca": "default",
+      "canal": "tiktok",
+      "dia": "Sábado",
+      "pilar": "entretener",
+      "formatos": [
+        "9:16"
+      ],
+      "titular": "Cuando descubres proteína",
+      "cta": "Comparte con quien lo necesite",
+      "vars": {
+        "tema": "proteína",
+        "titular": "Cuando descubres proteína",
+        "idea": "proteína",
+        "tip": "proteína",
+        "cta": "Comparte con quien lo necesite"
+      }
+    },
+    {
+      "id": "o020",
+      "template": "dato",
+      "marca": "default",
+      "canal": "ig-feed",
+      "dia": "Sábado",
+      "pilar": "educar",
+      "formatos": [
+        "1:1"
+      ],
+      "titular": "La guía rápida de descanso",
+      "cta": "Guarda este post",
+      "vars": {
+        "tema": "descanso",
+        "titular": "La guía rápida de descanso",
+        "idea": "descanso",
+        "tip": "descanso",
+        "cta": "Guarda este post"
+      }
+    },
+    {
+      "id": "o021",
+      "template": "lista",
+      "marca": "default",
+      "canal": "youtube",
+      "dia": "Sábado",
+      "pilar": "entretener",
+      "formatos": [
+        "16:9"
+      ],
+      "titular": "POV: por fin entiendes descanso",
+      "cta": "Comparte con quien lo necesite",
+      "vars": {
+        "tema": "descanso",
+        "titular": "POV: por fin entiendes descanso",
+        "idea": "descanso",
+        "tip": "descanso",
+        "cta": "Comparte con quien lo necesite"
+      }
+    },
+    {
+      "id": "o022",
+      "template": "tutorial",
+      "marca": "default",
+      "canal": "tiktok",
+      "dia": "Domingo",
+      "pilar": "educar",
+      "formatos": [
+        "9:16"
+      ],
+      "titular": "¿Lo estás haciendo bien con movilidad?",
+      "cta": "Guarda este post",
+      "vars": {
+        "tema": "movilidad",
+        "titular": "¿Lo estás haciendo bien con movilidad?",
+        "idea": "movilidad",
+        "tip": "movilidad",
+        "cta": "Guarda este post"
+      }
+    },
+    {
+      "id": "o023",
+      "template": "mito",
+      "marca": "default",
+      "canal": "ig-feed",
+      "dia": "Domingo",
+      "pilar": "educar",
+      "formatos": [
+        "1:1"
+      ],
+      "titular": "Lo que nadie te cuenta de sentadilla correcta",
+      "cta": "Guarda este post",
+      "vars": {
+        "tema": "sentadilla correcta",
+        "titular": "Lo que nadie te cuenta de sentadilla correcta",
+        "idea": "sentadilla correcta",
+        "tip": "sentadilla correcta",
+        "cta": "Guarda este post"
+      }
+    },
+    {
+      "id": "o024",
+      "template": "dato",
+      "marca": "default",
+      "canal": "youtube",
+      "dia": "Domingo",
+      "pilar": "educar",
+      "formatos": [
+        "16:9"
+      ],
+      "titular": "3 errores comunes con proteína",
+      "cta": "Guarda este post",
+      "vars": {
+        "tema": "proteína",
+        "titular": "3 errores comunes con proteína",
+        "idea": "proteína",
+        "tip": "proteína",
+        "cta": "Guarda este post"
+      }
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "config": {
+    "formatos": [
+      "9:16",
+      "1:1"
+    ],
+    "duracion_toma": 3.5,
+    "fps": 30,
+    "transicion": 0.5,
+    "reintentos": 2,
+    "hosts": [
+      "127.0.0.1:8188"
+    ],
+    "editores": 4
+  },
+  "items": [
+    {
+      "template": "producto",
+      "marca": "default",
+      "vars": {
+        "producto": "Zapatilla Aera",
+        "titular": "Nueva Aera",
+        "cta": "Compra ya"
+      }
+    },
+    {
+      "template": "tip",
+      "marca": "default",
+      "vars": {
+        "tema": "running",
+        "idea": "calienta 5 min",
+        "titular": "Tip runner",
+        "cta": "Síguenos"
+      }
+    }
+  ]
+}

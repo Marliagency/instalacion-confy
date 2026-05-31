@@ -1,0 +1,17 @@
+{
+  "nombre": "mito",
+  "descripcion": "Mito vs realidad (educar)",
+  "tomas": [
+    {
+      "prompt": "representación del mito sobre {tema}, tono de duda, {estilo}"
+    },
+    {
+      "prompt": "la realidad sobre {tema}, tono claro y seguro, {estilo}"
+    },
+    {
+      "prompt": "conclusión que desmonta el mito de {tema}, {estilo}"
+    }
+  ],
+  "titular": "{titular}",
+  "cta": "{cta}"
+}
