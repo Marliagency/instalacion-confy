@@ -591,8 +591,16 @@ def process_beat(beat, idx, cfg, comfy, simular, beats_dir, tmproot):
     video_backend = beat.get("backend", cfg.get("video_backend", "wan"))
     gw, gh = (cfg.get("gen_resolution") or [W, H])[:2]
 
+    def _asset(p):
+        return p if os.path.isabs(p) else os.path.join(HERE, p)
+
     if btype in ("cinematic", "ugc"):
-        if video_backend == "image":
+        if beat.get("video_file"):                      # clip de vídeo pregenerado (Wan I2V)
+            clip = normalize_clip(_asset(beat["video_file"]), os.path.join(tmpdir, "norm.mp4"), dur, fps)
+        elif beat.get("image_file"):                    # imagen pregenerada (Qwen) + Ken Burns
+            clip = make_kenburns(_asset(beat["image_file"]), os.path.join(tmpdir, "kb.mp4"), dur, fps)
+            clip = normalize_clip(clip, os.path.join(tmpdir, "norm.mp4"), dur, fps)
+        elif video_backend == "image":
             prompt = build_prompt(beat.get("prompt", ""), style, camera, is_video=False)
             still = os.path.join(tmpdir, "still.png")
             gen_image(comfy, simular, img_wf, prompt, neg, seed, still, bid, idx, gw, gh)
@@ -626,22 +634,28 @@ def process_beat(beat, idx, cfg, comfy, simular, beats_dir, tmproot):
         os.replace(clip, out)
 
     elif btype == "textcard":
-        prompt = build_prompt(beat.get("prompt", "premium abstract background, soft gradients"),
-                              style, camera, is_video=False)
-        bg = os.path.join(tmpdir, "bg.png")
-        gen_image(comfy, simular, img_wf, prompt, neg, seed, bg, bid, idx, gw, gh)
+        if beat.get("image_file"):
+            bg = _asset(beat["image_file"])
+        else:
+            prompt = build_prompt(beat.get("prompt", "premium abstract background, soft gradients"),
+                                  style, camera, is_video=False)
+            bg = os.path.join(tmpdir, "bg.png")
+            gen_image(comfy, simular, img_wf, prompt, neg, seed, bg, bid, idx, gw, gh)
         card = make_textcard(bg, beat, cfg, dur, fps, os.path.join(tmpdir, "card.mp4"), tmpdir)
         normalize_clip(card, out, dur, fps)
 
     elif btype == "slideshow5":
-        slides = beat.get("slides") or [beat.get("prompt", "premium product shot")]
-        pngs = []
-        for i, sp in enumerate(slides):
-            prompt = build_prompt(sp, style, camera, is_video=False)
-            dst = os.path.join(tmpdir, f"slide_{i:02d}.png")
-            gen_image(comfy, simular, img_wf, prompt, neg,
-                      seed + i, dst, bid, idx + i, gw, gh)
-            pngs.append(dst)
+        if beat.get("slide_files"):
+            pngs = [_asset(p) for p in beat["slide_files"]]
+        else:
+            slides = beat.get("slides") or [beat.get("prompt", "premium product shot")]
+            pngs = []
+            for i, sp in enumerate(slides):
+                prompt = build_prompt(sp, style, camera, is_video=False)
+                dst = os.path.join(tmpdir, f"slide_{i:02d}.png")
+                gen_image(comfy, simular, img_wf, prompt, neg,
+                          seed + i, dst, bid, idx + i, gw, gh)
+                pngs.append(dst)
         show = make_slideshow(pngs, beat, cfg, dur, fps,
                               os.path.join(tmpdir, "show.mp4"), tmpdir)
         normalize_clip(show, out, dur, fps)
@@ -667,10 +681,11 @@ def process_beat(beat, idx, cfg, comfy, simular, beats_dir, tmproot):
         animated_captions(out, tmp, caps, dur, fps, cfg, y_frac=yf)
         os.replace(tmp, out)
 
-    # --- Voz en off del beat (mp3 pregenerado en vo_dir/vo_<id>.mp3) ---
+    # --- Voz en off del beat (vo_<id>.wav/.mp3 pregenerada en vo_dir) ---
     vo_dir = cfg.get("vo_dir", "assets/vo")
-    vpath = os.path.join(HERE, vo_dir, f"vo_{bid}.mp3")
-    if os.path.exists(vpath):
+    vpath = next((p for p in (os.path.join(HERE, vo_dir, f"vo_{bid}.wav"),
+                              os.path.join(HERE, vo_dir, f"vo_{bid}.mp3")) if os.path.exists(p)), None)
+    if vpath:
         tmp = os.path.join(tmpdir, "vo.mp4")
         add_vo(out, tmp, vpath, dur)
         os.replace(tmp, out)

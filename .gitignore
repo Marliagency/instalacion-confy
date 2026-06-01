@@ -34,3 +34,5 @@ content-engine/semanas/*/inputs/audio/*
 # Marli: salidas de anuncios (vídeos/imágenes generados) — no versionar.
 marli/outputs/
 marli/.secrets
+marli/assets/scenes/
+marli/assets/clips/
