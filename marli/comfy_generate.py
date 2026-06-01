@@ -187,7 +187,7 @@ def animated_captions(clip_in, clip_out, phrases, dur, fps, cfg, y_frac=0.60):
     for i, ph in enumerate(phrases):
         t0 = i * seg
         t1 = (i + 1) * seg + 0.05
-        wrapped = _wrap(str(ph), fs, factor=0.50)
+        wrapped = _wrap(str(ph).upper(), fs, factor=0.50)
         tf = os.path.join(tmpd, f"cap_{i}.txt")
         open(tf, "w", encoding="utf-8").write(wrapped)
         # pop-in de 0.12s al entrar la frase
@@ -711,11 +711,16 @@ def assemble(beat_clips, cfg, dest, fps, tmproot):
     music_path = os.path.join(HERE, music) if music and not os.path.isabs(music) else music
     if music_path and os.path.exists(music_path):
         mix = cfg.get("audio_mix", {})
-        music_vol = float(mix.get("music_vol", 0.18))  # música de fondo baja
-        # Mezcla: audio del concat (voces UGC) + música a bajo volumen, recortado al vídeo.
+        music_vol = float(mix.get("music_vol", 0.55))   # nivel base de la música
+        # Ducking real: la música (sidechaincompress con la VOZ como llave) baja sola
+        # cuando hay voz, y vuelve a subir en silencios. Luego loudnorm a -14 LUFS.
+        fc = (f"[0:a]aformat=channel_layouts=stereo,asplit=2[voz1][voz2];"
+              f"[1:a]volume={music_vol},aformat=channel_layouts=stereo[mus];"
+              f"[mus][voz1]sidechaincompress=threshold=0.03:ratio=8:attack=5:release=300[duck];"
+              f"[voz2][duck]amix=inputs=2:duration=first:dropout_transition=0,"
+              f"loudnorm=I=-14:TP=-1.5:LRA=11[a]")
         run(["ffmpeg", "-y", "-i", concat, "-stream_loop", "-1", "-i", music_path,
-             "-filter_complex",
-             f"[1:a]volume={music_vol}[m];[0:a][m]amix=inputs=2:duration=first:dropout_transition=0[a]",
+             "-filter_complex", fc,
              "-map", "0:v:0", "-map", "[a]", "-shortest",
              "-c:v", "copy", "-c:a", "aac", "-b:a", "192k", dest])
     else:

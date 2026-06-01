@@ -4,9 +4,9 @@ name: marli_li3
 fps: 30
 resolution: [1080, 1920]
 style: cinematic
-music: music_cine.wav
+music: assets/music/inspired_kevinmacleod.mp3
 audio_mix:
-  music_vol: 0.20
+  music_vol: 0.55
 vo_dir: assets/vo
 brand:
   signature: marli

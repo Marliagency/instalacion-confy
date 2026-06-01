@@ -1,0 +1,16 @@
+{
+  "proyecto": "marli", "anuncio": "marli_li3", "fecha": "2026-06-01",
+  "fases": {"1_preproduccion":"local","2_generacion":"pod (ya hecho)","3_edicion":"local"},
+  "imagenes": "Qwen-Image + Qwen-Image-Edit (Li integrado) -> assets/scenes/",
+  "video": "Wan 2.1 I2V 14B -> assets/clips/",
+  "voz": "Gemini TTS (reutilizada, sin nuevo gasto) -> assets/vo/",
+  "musica": {
+    "titulo": "Inspired", "autor": "Kevin MacLeod", "fuente": "incompetech.com",
+    "url": "https://incompetech.com/music/royalty-free/mp3-royaltyfree/Inspired.mp3",
+    "licencia": "Creative Commons BY 4.0",
+    "atribucion_obligatoria": "Music: Inspired by Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/",
+    "archivo": "assets/music/inspired_kevinmacleod.mp3"
+  },
+  "audio_mix": "ducking sidechain (voz->música) + loudnorm -14 LUFS",
+  "captions": "MAYÚSCULAS, Inter, borde+sombra (Fase 3, ffmpeg)"
+}
