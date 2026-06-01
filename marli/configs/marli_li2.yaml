@@ -1,0 +1,143 @@
+# ───────────────────────────────────────────────────────────────────────────
+# Marli Agency — anuncio DINÁMICO "Conoce a Li" v2 (UGC, estilo reel)
+# ~28s · 9:16 · psicólogos. Cortes rápidos, subtítulos animados, voz + acción.
+# UGC (personas a cámara) = vídeo Wan real. Resto = FLUX + movimiento.
+# ───────────────────────────────────────────────────────────────────────────
+
+name: marli_li2
+fps: 30
+resolution: [1080, 1920]
+style: cinematic
+seed: 11
+
+music: music_action.wav
+audio_mix:
+  music_vol: 0.22
+
+image_workflow: image_flux_schnell.json
+gen_resolution: [896, 1152]
+video_backend: image            # por defecto FLUX + Ken Burns (rápido)
+video_workflow: cinematic_wan14.json
+video_resolution: [480, 832]
+wan_fps: 16
+mascota_cutout: assets/li_cutout.png
+vo_dir: assets/vo
+
+brand:
+  signature: marli
+  accent_color: "#E24B4A"
+  bg_color: "#FAF6F1"
+  text_color: "#2C2C2C"
+  fonts:
+    headline: fonts/Inter-Bold.ttf
+    body: fonts/Inter-Bold.ttf
+
+estilo_prompt: >
+  ultra clean 3D render mixed with photoreal, Octane and Unreal Engine, soft
+  cinematic lighting, modern minimalist psychology clinic, warm cream tones,
+  premium editorial advertising, shallow depth of field, no neon, high detail
+
+beats:
+  # 1 — HOOK UGC (persona a cámara, vídeo real)
+  - n: 1
+    type: ugc
+    id: hook
+    dur: 3.0
+    backend: wan
+    captions: ["Si eres psicólogo…", "para 3 segundos."]
+    vo: Si eres psicólogo, para.
+    prompt: >
+      authentic UGC selfie video, a friendly young female psychologist talking
+      directly to the phone camera in her bright modern office, casual, natural
+      handheld, looking at camera, warm cream tones
+
+  # 2 — PROBLEMA (broll, FLUX + zoom)
+  - n: 2
+    type: cinematic
+    id: problema
+    dur: 3.0
+    captions: ["Tu consulta", "depende 100% de ti."]
+    vo: Tu consulta depende cien por cien de ti.
+    prompt: >
+      a tired female psychologist at night at her desk, drowning in stacks of
+      paper reports and sticky notes, single warm desk lamp, cinematic, moody
+
+  # 3 — DOLOR (broll, FLUX + zoom)
+  - n: 3
+    type: cinematic
+    id: dolor
+    dur: 3.0
+    captions: ["+8 horas", "cada semana", "en gestión"]
+    vo: Pierdes ocho horas cada semana.
+    prompt: >
+      extreme close-up of a clock and a huge pile of clinical paperwork on a desk,
+      hands sorting documents fast, cinematic, warm tones, shallow depth of field
+
+  # 4 — CONOCE A LI (reveal, Wan real, Li hero)
+  - n: 4
+    type: cinematic
+    id: conoce_li
+    dur: 4.0
+    backend: wan
+    li: hero
+    captions: ["Conoce a Li", "la IA que lo hace por ti"]
+    vo: Conoce a Li, tu copiloto invisible.
+    prompt: >
+      a bright modern minimalist psychology office, soft volumetric morning light,
+      slow gentle camera push-in, large empty space on the right, warm cream tones
+
+  # 5 — EL SISTEMA (slideshow rápido)
+  - n: 5
+    type: slideshow5
+    id: sistema
+    dur: 4.0
+    slide_dur: 1.0
+    li: corner
+    captions: ["Confirma tus citas", "Informes en segundos", "Responde 24/7", "Tu consulta, ordenada"]
+    vo: Confirma, redacta y responde. Sola.
+    slides:
+      - close-up of a sleek calendar app with confirmed appointments glowing, cream background, 3D render
+      - a professional clinical report being generated on a floating glass UI, cream background, 3D render
+      - a phone showing a friendly chat replying to a patient at night, soft glow, 3D render
+      - a perfectly organized minimalist therapist desk, tidy folders, cream tones, 3D render
+
+  # 6 — TESTIMONIO UGC (persona a cámara, vídeo real)
+  - n: 6
+    type: ugc
+    id: testimonio
+    dur: 3.5
+    backend: wan
+    captions: ["Recupero 8 horas", "y la tranquilidad"]
+    vo: Recupero ocho horas a la semana.
+    prompt: >
+      authentic UGC selfie video, a happy female psychologist talking to the phone
+      camera at home, smiling, relaxed, natural light, casual testimonial style
+
+  # 7 — BENEFICIO (Li side, FLUX + zoom)
+  - n: 7
+    type: cinematic
+    id: beneficio
+    dur: 3.5
+    li: side
+    captions: ["Tú acompañas a personas", "Li te acompaña a ti"]
+    vo: Tú a tus pacientes. Li a ti.
+    prompt: >
+      a calm happy female psychologist leaving her bright modern office at golden
+      hour, relaxed, large empty space on the right, warm cream tones, cinematic
+
+  # 8 — CTA (textcard, Li corner)
+  - n: 8
+    type: textcard
+    id: cta
+    dur: 4.0
+    li: corner
+    kicker: Marli
+    headline: Pago único. Para siempre.
+    subhead: marliagency.com
+    cta_pill: true
+    cta: Empieza hoy
+    captions: ["Pago único", "Para siempre", "marliagency.com"]
+    vo: Pago único. Marli agency punto com.
+    prompt: >
+      premium abstract cream background with a soft deep-red glow, lots of negative
+      space, minimal, 3D render

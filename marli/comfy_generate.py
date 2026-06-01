@@ -170,6 +170,41 @@ def overlay_headline(clip_in, clip_out, text, cfg, dur, fps):
     return clip_out
 
 
+def animated_captions(clip_in, clip_out, phrases, dur, fps, cfg, y_frac=0.60):
+    """Subtítulos tipo reel: frases secuenciales sincronizadas con el beat, con
+    pop-in (alpha) y caja. Da el dinamismo de un anuncio UGC moderno."""
+    if not phrases:
+        return clip_in
+    brand = cfg.get("brand", {})
+    font = _font(brand, "headline", "Inter-Bold.ttf")
+    accent = brand.get("accent_color", "#E24B4A").lstrip("#")
+    fs = H / 15
+    n = len(phrases)
+    seg = dur / n
+    draws = []
+    import tempfile as _t
+    tmpd = _t.mkdtemp()
+    for i, ph in enumerate(phrases):
+        t0 = i * seg
+        t1 = (i + 1) * seg + 0.05
+        wrapped = _wrap(str(ph), fs, factor=0.50)
+        tf = os.path.join(tmpd, f"cap_{i}.txt")
+        open(tf, "w", encoding="utf-8").write(wrapped)
+        # pop-in de 0.12s al entrar la frase
+        alpha = f"if(lt(t-{t0:.3f}\\,0.12)\\,max(0\\,(t-{t0:.3f})/0.12)\\,1)"
+        draws.append(
+            f"drawtext=fontfile='{font}':textfile='{tf}':enable='between(t,{t0:.3f},{t1:.3f})':"
+            f"text_align=center:fontcolor=white:fontsize={int(fs)}:line_spacing=8:"
+            f"alpha='{alpha}':borderw=3:bordercolor=black:"
+            f"shadowcolor=black@0.7:shadowx=4:shadowy=4:"
+            f"box=1:boxcolor=0x{accent}@0.0:x=(w-text_w)/2:y=h*{y_frac}")
+    vf = ",".join(draws)
+    run(["ffmpeg", "-y", "-i", clip_in, "-vf", vf, "-t", f"{dur}", "-r", str(fps),
+         "-c:v", "libx264", "-preset", "veryfast", "-crf", "20", "-pix_fmt", "yuv420p",
+         "-c:a", "copy", clip_out])
+    return clip_out
+
+
 def add_vo(clip_in, clip_out, vo_path, dur):
     """Sustituye el audio del beat por la locución (recortada/rellenada a dur)."""
     run(["ffmpeg", "-y", "-i", clip_in, "-i", vo_path,
@@ -552,8 +587,8 @@ def process_beat(beat, idx, cfg, comfy, simular, beats_dir, tmproot):
     out = os.path.join(beats_dir, f"beat{n}_{btype}_{bid}.mp4")
     # Workflow de imagen (FLUX por defecto; SDXL-Turbo u otro si se indica en el YAML).
     img_wf = cfg.get("image_workflow", "image_flux_dev.json")
-    # Backend de vídeo: 'wan' (real) o 'image' (imagen IA + Ken Burns, si no hay Wan).
-    video_backend = cfg.get("video_backend", "wan")
+    # Backend de vídeo: 'wan' (real) o 'image' (imagen IA + Ken Burns). Por beat o global.
+    video_backend = beat.get("backend", cfg.get("video_backend", "wan"))
     gw, gh = (cfg.get("gen_resolution") or [W, H])[:2]
 
     if btype in ("cinematic", "ugc"):
@@ -583,8 +618,8 @@ def process_beat(beat, idx, cfg, comfy, simular, beats_dir, tmproot):
                                                   audio.get("voice_id", ""), voice):
                     clip = add_voice(clip, voice, None,
                                      os.path.join(tmpdir, "voiced.mp4"), fps)
-        # Titular en pantalla (beats cinematográficos)
-        if btype == "cinematic" and beat.get("headline"):
+        # Titular estático solo si NO hay subtítulos animados
+        if btype == "cinematic" and beat.get("headline") and not beat.get("captions"):
             hl = os.path.join(tmpdir, "hl.mp4")
             overlay_headline(clip, hl, beat["headline"], cfg, dur, fps)
             clip = hl
@@ -623,6 +658,14 @@ def process_beat(beat, idx, cfg, comfy, simular, beats_dir, tmproot):
             tmp = os.path.join(tmpdir, "li.mp4")
             overlay_li(out, tmp, cpath, li_place, dur, fps)
             os.replace(tmp, out)
+
+    # --- Subtítulos animados estilo reel (sobre Li); no en text cards ---
+    caps = beat.get("captions")
+    if caps and btype != "textcard":
+        yf = 0.46 if beat.get("li") in ("hero", "side", "center") else 0.56
+        tmp = os.path.join(tmpdir, "cap.mp4")
+        animated_captions(out, tmp, caps, dur, fps, cfg, y_frac=yf)
+        os.replace(tmp, out)
 
     # --- Voz en off del beat (mp3 pregenerado en vo_dir/vo_<id>.mp3) ---
     vo_dir = cfg.get("vo_dir", "assets/vo")
