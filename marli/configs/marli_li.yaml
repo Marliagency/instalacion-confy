@@ -12,13 +12,16 @@ resolution: [1080, 1920]
 style: editorial
 seed: 7
 
-music: music_calm.wav
+music: music_action.wav
 audio_mix:
-  music_vol: 0.10
+  music_vol: 0.18
 
-image_workflow: image_sdxl_quality.json
+image_workflow: image_flux_schnell.json
 gen_resolution: [896, 1152]
-video_backend: image          # imagen IA de calidad + Ken Burns
+video_backend: wan
+video_workflow: cinematic_wan14.json
+video_resolution: [480, 832]
+wan_fps: 16
 mascota_cutout: assets/li_cutout.png
 vo_dir: assets/vo
 
