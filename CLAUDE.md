@@ -25,7 +25,19 @@ Infra ya provisionada en la cuenta RunPod del usuario:
   `api.runpod.io`, `rest.runpod.io` (+ defaults).
 - `RUNPOD_API_KEY` está como variable de entorno del entorno.
 
-> ⚠️ **VERIFICADO 2026-05-29 — BLOQUEO DE RED REAL.** En la práctica el allowlist
+> ✅ **ACTUALIZACIÓN 2026-06-02 — EL PROXY DE RUNPOD YA FUNCIONA.** El allowlist del
+> entorno ahora **sí** incluye `*.proxy.runpod.net`: `GET /system_stats` devuelve
+> HTTP 404 con el pod apagado (no `host_not_allowed`), lo que confirma que el host
+> está permitido. → **El pipeline de generación en RunPod es viable.** La nota de
+> bloqueo de abajo queda como histórico.
+>
+> ⚠️ **OpenAI SIGUE BLOQUEADO (2026-06-02).** `api.openai.com` devuelve
+> `host_not_allowed`. Para el flujo "imágenes con OpenAI" hace falta que el usuario
+> **añada `api.openai.com` al allowlist y abra sesión nueva** (la API key sola NO
+> basta: el bloqueo es de red). Alternativa sin tocar el allowlist: ejecutar las
+> llamadas a OpenAI **desde dentro del pod** (su egress no está restringido).
+>
+> ⚠️ **VERIFICADO 2026-05-29 — BLOQUEO DE RED REAL (HISTÓRICO).** En la práctica el allowlist
 > del entorno **NO** incluía `*.proxy.runpod.net`: todo el egress pasa por un proxy
 > que devuelve `Host not in allowlist` (`x-deny-reason: host_not_allowed`) para
 > cualquier host de RunPod proxy, **incluso por IP cruda, TCP directo o con el

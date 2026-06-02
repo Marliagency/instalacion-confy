@@ -1,0 +1,166 @@
+#!/usr/bin/env python3
+"""
+openai_images.py — Genera las imágenes base del lote con la API de OpenAI.
+
+Encaja en el pipeline así:
+
+    BRIEF  ->  batch_prompts.json  ->  [openai_images.py]  ->  outputs/images/*.png
+                                                                      │
+                                                       (imagen base por clip)
+                                                                      ▼
+                                            WAN image-to-video (comfy_batch.py)
+                                                                      ▼
+                                                  edit_video.py (montaje final)
+
+Lee el MISMO `batch_prompts.json` que usa el resto del pipeline y genera UNA
+imagen por item con gpt-image-1. Para items de tipo "video" la imagen sirve de
+fotograma inicial para WAN image-to-video; para items "imagen" es la entrega
+final. Guarda cada PNG como outputs/images/<id>.png.
+
+Requisitos:
+    - Variable de entorno OPENAI_API_KEY.
+    - Acceso de red a api.openai.com (allowlist del entorno: añadir api.openai.com).
+
+Uso:
+    python3 openai_images.py --prompts ./batch_prompts.json --out ./outputs/images
+    python3 openai_images.py --prompts ./batch_prompts.json --only video   # solo bases de video
+    python3 openai_images.py --prompts ./batch_prompts.json --dry-run       # no llama a la API
+
+Solo usa la librería estándar (urllib): no necesita instalar nada.
+"""
+
+import argparse
+import base64
+import json
+import os
+import sys
+import time
+import urllib.request
+import urllib.error
+
+API_URL = "https://api.openai.com/v1/images/generations"
+
+# gpt-image-1 solo admite estos tamaños. Elegimos el más cercano al formato
+# pedido en cada item (el aspecto se afina luego en el montaje/animación).
+SIZES = {
+    "vertical": "1024x1536",    # ~9:16, redes (por defecto para 9:16 / 2:3 / 3:4)
+    "horizontal": "1536x1024",  # ~16:9
+    "cuadrado": "1024x1024",    # 1:1
+}
+
+
+def load_json(path):
+    with open(path, "r", encoding="utf-8") as f:
+        return json.load(f)
+
+
+def pick_size(item):
+    """Mapea el 'formato'/width/height del item al tamaño soportado más cercano."""
+    fmt = str(item.get("formato", "")).strip()
+    w = item.get("width")
+    h = item.get("height")
+    if fmt in ("1:1",) or (w and h and abs(w - h) <= 1):
+        return SIZES["cuadrado"]
+    if fmt in ("16:9", "16x9") or (w and h and w > h):
+        return SIZES["horizontal"]
+    # 9:16, 2:3, 3:4, vertical, o desconocido -> vertical (caso más común en redes)
+    return SIZES["vertical"]
+
+
+def generate_image(prompt, size, api_key, quality="high", timeout=300, retries=3):
+    """Llama a la API de imágenes de OpenAI y devuelve los bytes PNG."""
+    payload = json.dumps({
+        "model": "gpt-image-1",
+        "prompt": prompt,
+        "size": size,
+        "quality": quality,
+        "n": 1,
+    }).encode("utf-8")
+    headers = {
+        "Authorization": f"Bearer {api_key}",
+        "Content-Type": "application/json",
+    }
+    last_err = None
+    for attempt in range(retries):
+        try:
+            req = urllib.request.Request(API_URL, data=payload, headers=headers, method="POST")
+            with urllib.request.urlopen(req, timeout=timeout) as resp:
+                data = json.loads(resp.read().decode("utf-8"))
+            b64 = data["data"][0]["b64_json"]
+            return base64.b64decode(b64)
+        except urllib.error.HTTPError as e:
+            body = e.read().decode("utf-8", "replace")[:500]
+            last_err = f"HTTP {e.code}: {body}"
+            # 4xx (salvo 429) no se arregla reintentando
+            if 400 <= e.code < 500 and e.code != 429:
+                break
+        except Exception as e:  # noqa: BLE001
+            last_err = str(e)
+        time.sleep(2 * (attempt + 1))
+    raise RuntimeError(f"Falló la generación de imagen: {last_err}")
+
+
+def main():
+    ap = argparse.ArgumentParser(description="Genera imágenes base del lote con la API de OpenAI (gpt-image-1).")
+    ap.add_argument("--prompts", required=True, help="JSON del lote (mismo formato que batch_prompts.json)")
+    ap.add_argument("--out", default="./outputs/images", help="Carpeta de salida de los PNG")
+    ap.add_argument("--only", choices=["video", "imagen"], help="Generar solo bases de un tipo")
+    ap.add_argument("--quality", default="high", choices=["low", "medium", "high"], help="Calidad gpt-image-1")
+    ap.add_argument("--dry-run", action="store_true", help="No llama a la API; solo muestra qué generaría")
+    args = ap.parse_args()
+
+    items = load_json(args.prompts)
+    if not isinstance(items, list) or not items:
+        sys.exit("El JSON de prompts debe ser una lista no vacía.")
+    if args.only:
+        items = [it for it in items if (it.get("tipo") or "video").lower() == args.only]
+        if not items:
+            sys.exit(f"No hay items de tipo '{args.only}' en el lote.")
+
+    api_key = os.environ.get("OPENAI_API_KEY")
+    if not args.dry_run and not api_key:
+        sys.exit("ERROR: falta OPENAI_API_KEY en el entorno. Añádela y reabre la sesión.")
+
+    os.makedirs(args.out, exist_ok=True)
+    ok, fail = [], []
+    t0 = time.time()
+
+    for i, item in enumerate(items, 1):
+        iid = item.get("id", f"img{i:02d}")
+        prompt = item.get("prompt")
+        if not prompt:
+            print(f"[{i}/{len(items)}] {iid}  SALTADO (sin prompt)")
+            fail.append({"id": iid, "error": "sin prompt"})
+            continue
+        size = pick_size(item)
+        # Para image-to-video conviene un fotograma inicial nítido y sin movimiento;
+        # añadimos una pista de estilo si el item no la trae.
+        full_prompt = prompt
+        print(f"[{i}/{len(items)}] {iid}  ({item.get('tipo','video')}, {size})")
+        if args.dry_run:
+            print(f"        prompt: {full_prompt[:90]}{'...' if len(full_prompt) > 90 else ''}")
+            ok.append(iid)
+            continue
+        try:
+            png = generate_image(full_prompt, size, api_key, quality=args.quality)
+            path = os.path.join(args.out, f"{iid}.png")
+            with open(path, "wb") as f:
+                f.write(png)
+            print(f"        OK -> {path} ({len(png)//1024} KB)")
+            ok.append(iid)
+        except Exception as e:  # noqa: BLE001
+            print(f"        ERROR: {e}")
+            fail.append({"id": iid, "error": str(e)})
+
+    dt = time.time() - t0
+    print(f"\n===== IMÁGENES (OpenAI) =====")
+    print(f"OK: {len(ok)}  Fallos: {len(fail)}  Tiempo: {dt:.0f}s")
+    if fail:
+        for f in fail:
+            print(f"  - {f['id']}: {f['error']}")
+    if args.dry_run:
+        print("\n(dry-run: no se llamó a la API ni se gastaron créditos de OpenAI)")
+
+
+if __name__ == "__main__":
+    main()
