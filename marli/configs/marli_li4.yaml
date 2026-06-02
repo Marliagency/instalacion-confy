@@ -1,0 +1,39 @@
+# Marli "Conoce a Li" v4 — vídeo COMPLETO con todas las mejoras (sin Gemini)
+# Lip-sync real en beats de persona (LatentSync) + segmento de 5 imágenes (1/seg) +
+# música real (CC-BY) + ducking + loudnorm + subtítulos MAYÚSCULAS.
+name: marli_li4
+fps: 30
+resolution: [1080, 1920]
+style: cinematic
+music: assets/music/inspired_kevinmacleod.mp3
+audio_mix:
+  music_vol: 0.55
+vo_dir: assets/vo
+brand:
+  signature: marli
+  accent_color: "#E24B4A"
+  bg_color: "#FAF6F1"
+  text_color: "#2C2C2C"
+  fonts:
+    headline: fonts/Inter-Bold.ttf
+    body: fonts/Inter-Bold.ttf
+beats:
+  - {n: 1, type: ugc, id: hook, dur: 3.0, video_file: assets/clips/beat1_hook.mp4,
+     captions: ["Si eres psicólogo…", "para."]}
+  - {n: 2, type: cinematic, id: problema, dur: 3.0, image_file: assets/scenes/beat2_problema.png,
+     captions: ["Tu consulta", "depende 100% de ti"]}
+  - {n: 3, type: cinematic, id: dolor, dur: 3.0, image_file: assets/scenes/beat3_dolor.png,
+     captions: ["+8 horas", "cada semana", "en gestión"]}
+  - {n: 4, type: cinematic, id: conoce_li, dur: 4.0, video_file: assets/clips/beat4_conoce_li.mp4,
+     captions: ["Conoce a Li", "tu copiloto invisible"]}
+  # SEGMENTO 5s — 1 imagen por segundo con info relevante
+  - {n: 5, type: slideshow5, id: sistema, dur: 5.0, slide_dur: 1.0,
+     slide_files: [assets/scenes/beat5a.png, assets/scenes/beat5b.png, assets/scenes/beat5c.png, assets/scenes/beat5d.png, assets/scenes/beat8_cta.png],
+     texts: ["1 · CRM QUE TE ORDENA", "2 · INFORMES EN SEGUNDOS", "3 · RESPONDE 24/7", "4 · +8 H LIBRES/SEMANA", "5 · PAGO ÚNICO"]}
+  - {n: 6, type: ugc, id: testimonio, dur: 3.5, video_file: assets/clips/beat6_testimonio.mp4,
+     captions: ["Recupero 8 horas", "a la semana"]}
+  - {n: 7, type: cinematic, id: beneficio, dur: 3.5, image_file: assets/scenes/beat7_beneficio.png,
+     captions: ["Tú a tus pacientes", "Li a ti"]}
+  - {n: 8, type: textcard, id: cta, dur: 4.0, image_file: assets/scenes/beat8_cta.png,
+     kicker: Marli, headline: "Pago único. Para siempre.", subhead: "marliagency.com",
+     cta_pill: true, cta: "Empieza hoy"}
