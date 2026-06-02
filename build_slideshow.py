@@ -28,34 +28,38 @@ def build_one(images, out, W, H, FPS, total_s, captions=None, tmpdir="/tmp/marli
     per = max(1.5, total_s / n)
     frames = int(per * FPS)
     ty = int(H * 0.72)
-    seg_filters, inputs = [], []
+    # 1) cada still -> subclip Ken Burns por separado (evita la multiplicación de frames
+    #    de zoompan al recibir un input multi-frame).
+    subs = []
     for i, img in enumerate(images):
-        inputs += ["-loop", "1", "-t", f"{per:.2f}", "-i", img]
-        # Ken Burns: zoom lento + encuadre del aspecto de salida
-        zdir = 1 if i % 2 == 0 else -1
-        z = ("zoom+0.0010" if zdir == 1 else "if(lte(zoom,1.0),1.18,zoom-0.0010)")
-        f = (f"[{i}:v]scale={W*2}:{H*2}:force_original_aspect_ratio=increase,crop={W*2}:{H*2},"
-             f"zoompan=z='{z}':d={frames}:s={W}x{H}:x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)':fps={FPS},"
-             f"setsar=1,format=yuv420p")
+        z = f"min(zoom+{0.14/frames:.6f},1.14)"   # zoom-in lento y uniforme
+        vf = (f"scale={W*2}:{H*2}:force_original_aspect_ratio=increase,crop={W*2}:{H*2},"
+              f"zoompan=z='{z}':d={frames}:s={W}x{H}:fps={FPS}:"
+              f"x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)',setsar=1,format=yuv420p")
         if captions[i]:
             tf = os.path.join(tmpdir, f"cap{i}.txt"); open(tf, "w").write(captions[i])
             tfp = tf.replace(":", "\\:")
-            f += (f",drawbox=x=(iw-130)/2:y={ty-42}:w=130:h=7:color={RED}@0.95:t=fill"
-                  f",drawtext=fontfile={FONT_B}:textfile={tfp}:fontcolor=white:fontsize=64:"
-                  f"x=(w-text_w)/2:y={ty}:box=1:boxcolor={SCRIM}@0.55:boxborderw=30:expansion=none")
-        seg_filters.append(f + f"[v{i}]")
-    # crossfade encadenado entre slides
+            vf += (f",drawbox=x=(iw-130)/2:y={ty-42}:w=130:h=7:color={RED}@0.95:t=fill"
+                   f",drawtext=fontfile={FONT_B}:textfile={tfp}:fontcolor=white:fontsize=64:"
+                   f"x=(w-text_w)/2:y={ty}:box=1:boxcolor={SCRIM}@0.55:boxborderw=30:expansion=none")
+        sub = os.path.join(tmpdir, f"sub{i}.mp4")
+        run(["ffmpeg", "-y", "-loop", "1", "-i", img, "-vf", vf, "-t", f"{per:.2f}",
+             "-r", str(FPS), "-c:v", "libx264", "-preset", "medium", "-crf", "19",
+             "-pix_fmt", "yuv420p", sub])
+        subs.append(sub)
+    # 2) crossfade encadenado entre subclips
     T = 0.4
-    chain = seg_filters[:]
-    prev = "[v0]"; total = per
+    inputs = []
+    for s in subs: inputs += ["-i", s]
+    chain = []; prev = "[0:v]"; total = per
     for i in range(1, n):
-        off = max(0.0, total - T)
-        lbl = f"[x{i}]"
-        chain.append(f"{prev}[v{i}]xfade=transition=fade:duration={T}:offset={off:.3f}{lbl}")
+        off = max(0.0, total - T); lbl = f"[x{i}]"
+        chain.append(f"{prev}[{i}:v]xfade=transition=fade:duration={T}:offset={off:.3f}{lbl}")
         prev = lbl; total = total + per - T
-    fg = ";".join(chain)
-    run(["ffmpeg","-y",*inputs,"-filter_complex",fg,"-map",prev,
-         "-c:v","libx264","-preset","medium","-crf","19","-pix_fmt","yuv420p","-r",str(FPS),out])
+    if n == 1:
+        run(["ffmpeg", "-y", "-i", subs[0], "-c", "copy", out]); return
+    run(["ffmpeg", "-y", *inputs, "-filter_complex", ";".join(chain), "-map", prev,
+         "-c:v", "libx264", "-preset", "medium", "-crf", "19", "-pix_fmt", "yuv420p", "-r", str(FPS), out])
 
 def main():
     ap = argparse.ArgumentParser()
