@@ -80,7 +80,7 @@ def build_audio(jobs, music_path, total_s, out):
     idx = 0
     if music_path and os.path.isfile(music_path):
         inputs += ["-i", music_path]
-        fc.append(f"[{idx}:a]volume=0.14,afade=t=in:st=0:d=1.5,"
+        fc.append(f"[{idx}:a]volume=0.5,afade=t=in:st=0:d=1.5,"
                   f"afade=t=out:st={max(0,total_s-2):.2f}:d=2,atrim=0:{total_s:.2f}[m]")
         labels.append("[m]"); idx += 1
     for p, off in jobs:
