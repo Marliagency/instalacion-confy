@@ -67,10 +67,10 @@ def pick_size(item):
     return SIZES["vertical"]
 
 
-def generate_image(prompt, size, api_key, quality="high", timeout=300, retries=3):
+def generate_image(prompt, size, api_key, quality="medium", model="gpt-image-1", timeout=300, retries=3):
     """Llama a la API de imágenes de OpenAI y devuelve los bytes PNG."""
     payload = json.dumps({
-        "model": "gpt-image-1",
+        "model": model,
         "prompt": prompt,
         "size": size,
         "quality": quality,
@@ -101,17 +101,31 @@ def generate_image(prompt, size, api_key, quality="high", timeout=300, retries=3
 
 
 def main():
-    ap = argparse.ArgumentParser(description="Genera imágenes base del lote con la API de OpenAI (gpt-image-1).")
-    ap.add_argument("--prompts", required=True, help="JSON del lote (mismo formato que batch_prompts.json)")
+    ap = argparse.ArgumentParser(description="Genera imágenes base con la API de OpenAI (gpt-image-1).")
+    ap.add_argument("--prompts", help="JSON de lote plano (id/prompt/...) — modo legacy")
+    ap.add_argument("--package", help="Paquete de producción (schema/production_package). Aplana imágenes por segmento.")
     ap.add_argument("--out", default="./outputs/images", help="Carpeta de salida de los PNG")
-    ap.add_argument("--only", choices=["video", "imagen"], help="Generar solo bases de un tipo")
-    ap.add_argument("--quality", default="high", choices=["low", "medium", "high"], help="Calidad gpt-image-1")
+    ap.add_argument("--only", choices=["video", "imagen"], help="(modo --prompts) generar solo bases de un tipo")
+    ap.add_argument("--model", default="gpt-image-1", help="Modelo OpenAI (gpt-image-1, gpt-image-1-mini si está disponible)")
+    ap.add_argument("--quality", default="medium", choices=["low", "medium", "high"], help="Calidad (medium = económico)")
     ap.add_argument("--dry-run", action="store_true", help="No llama a la API; solo muestra qué generaría")
     args = ap.parse_args()
 
-    items = load_json(args.prompts)
+    if args.package:
+        import pipeline
+        pkg = pipeline.load_package(args.package)
+        gen = pkg.get("generacion", {}).get("imagenes", {})
+        if gen.get("modelo"): args.model = gen["modelo"]
+        if gen.get("calidad"): args.quality = gen["calidad"]
+        items = [{"id": it["id"], "prompt": it["prompt"], "negativo": it["negativo"],
+                  "formato": pkg["salida"]["aspecto"]} for it in pipeline.iter_image_items(pkg)]
+        # el tamaño ya viene resuelto por aspecto; pick_size lo recalcula igual
+    elif args.prompts:
+        items = load_json(args.prompts)
+    else:
+        sys.exit("Pasa --package (recomendado) o --prompts.")
     if not isinstance(items, list) or not items:
-        sys.exit("El JSON de prompts debe ser una lista no vacía.")
+        sys.exit("No hay items que generar.")
     if args.only:
         items = [it for it in items if (it.get("tipo") or "video").lower() == args.only]
         if not items:
@@ -142,7 +156,7 @@ def main():
             ok.append(iid)
             continue
         try:
-            png = generate_image(full_prompt, size, api_key, quality=args.quality)
+            png = generate_image(full_prompt, size, api_key, quality=args.quality, model=args.model)
             path = os.path.join(args.out, f"{iid}.png")
             with open(path, "wb") as f:
                 f.write(png)

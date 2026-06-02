@@ -1,0 +1,87 @@
+{
+  "marca": {
+    "nombre": "marli",
+    "tagline": "IA para psicólogos",
+    "paleta": {"primario": "#E24B4A", "acento": "#FF3B30", "fondo": "#FAF6F1", "tinta": "#2C2C2C", "muted": "#6B6B6B"},
+    "fuente": "Inter",
+    "estilo_visual": "ultra-clean 3D render in the style of Octane and Unreal Engine, soft cinematic lighting, modern minimalist psychology office, deep red (#E24B4A) accents, cream (#FAF6F1) tones, premium editorial advertising aesthetic, no neon, no cyberpunk, no oversaturation",
+    "robot_li": true
+  },
+  "salida": {
+    "aspecto": "9:16",
+    "resolucion": [1080, 1920],
+    "fps": 30,
+    "duracion_objetivo_s": 26,
+    "musica": {"tipo": "ambiental", "ruta": "assets/bed.wav"},
+    "voz_off": {"motor": "elevenlabs", "voz_id": "REEMPLAZAR_VOZ_ID", "idioma": "es"}
+  },
+  "generacion": {
+    "imagenes": {"motor": "openai", "modelo": "gpt-image-1", "calidad": "medium", "tamano": "1024x1536"}
+  },
+  "piezas": [
+    {
+      "id": "ad01",
+      "concepto": "Un día con Li — anuncio multi-formato",
+      "cierre_marca": true,
+      "segmentos": [
+        {
+          "id": "s1_dolor",
+          "formato": "cinematic",
+          "duracion_s": 5,
+          "frames": 81,
+          "imagen": {
+            "prompt": "{ESTILO}. A wooden desk at dawn cluttered with tall stacks of paper reports, sticky notes and a phone glowing with unread notifications, empty office chair, a single deep red notebook as accent, quiet overwhelm before the workday",
+            "negativo": "text, watermark, people faces, neon, cyberpunk, oversaturated, low quality, blurry"
+          },
+          "animacion": {"prompt_movimiento": "dust motes drifting in a light beam, phone screen softly blinking", "camara": "slow push-in"},
+          "texto_pantalla": "Tu consulta depende 100% de ti.",
+          "voz_off": "Tu consulta funciona. Pero depende cien por cien de ti.",
+          "seed": 101
+        },
+        {
+          "id": "s2_ugc",
+          "formato": "ugc",
+          "duracion_s": 6,
+          "frames": 96,
+          "imagen": {
+            "prompt": "{ESTILO}. Friendly close-up portrait of a calm stylized 3D psychologist (not a real recognizable person) looking straight at the camera in a bright minimalist office, selfie framing, soft natural light",
+            "negativo": "text, watermark, recognizable celebrity, deformed face, extra fingers, neon"
+          },
+          "avatar": {"dialogo": "Llevo seis meses sin redactar un informe a mano. Lo hace Li por mí.", "voz_id": "REEMPLAZAR_VOZ_ID"},
+          "texto_pantalla": null,
+          "seed": 202
+        },
+        {
+          "id": "s3_pov",
+          "formato": "pov_phone",
+          "duracion_s": 5,
+          "frames": 81,
+          "imagen": {
+            "prompt": "{ESTILO}. POV first-person shot of a hand holding a smartphone showing a clean CRM dashboard with patient cards and confirmed appointments, cozy desk in the background, handheld phone-camera look",
+            "negativo": "text gibberish, watermark, neon, oversaturated, blurry"
+          },
+          "animacion": {"prompt_movimiento": "subtle handheld camera shake, finger scrolling the screen", "camara": "handheld"},
+          "texto_pantalla": "Todo tu día, ordenado solo.",
+          "voz_off": "Citas, recordatorios e informes. Ordenados solos, mientras tú descansas.",
+          "seed": 303
+        },
+        {
+          "id": "s4_slide",
+          "formato": "slideshow",
+          "duracion_s": 6,
+          "kenburns": true,
+          "imagenes": [
+            {"prompt": "{ESTILO}. The small geometric red robot Li glowing softly on a tidy desk"},
+            {"prompt": "{ESTILO}. Close-up of a professional psychological report being auto-generated, clean typography"},
+            {"prompt": "{ESTILO}. A calm phone screen showing an automatic appointment confirmation chat"},
+            {"prompt": "{ESTILO}. A serene psychologist relaxing with a cup of coffee, free time regained"},
+            {"prompt": "{ESTILO}. The red robot Li beside a single price tag feeling, sense of one-time payment, minimalist"}
+          ],
+          "texto_pantalla": "Pago único. Se queda contigo para siempre.",
+          "voz_off": "Un sistema completo. Pago único, sin cuotas, para siempre.",
+          "seed": 404
+        }
+      ]
+    }
+  ]
+}

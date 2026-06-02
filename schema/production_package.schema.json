@@ -1,0 +1,138 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Marli — Paquete de Producción (contrato Sesión A → Sesión B)",
+  "description": "Artefacto único que escribe la Sesión A (Guionista/Arquitecto) y ejecuta la Sesión B (Productor). Define marca, salida, generación y las piezas con sus segmentos por formato.",
+  "type": "object",
+  "required": ["marca", "salida", "generacion", "piezas"],
+  "additionalProperties": false,
+  "properties": {
+    "marca": {
+      "type": "object",
+      "required": ["nombre"],
+      "properties": {
+        "nombre": {"type": "string"},
+        "tagline": {"type": "string"},
+        "paleta": {
+          "type": "object",
+          "properties": {
+            "primario": {"type": "string"}, "acento": {"type": "string"},
+            "fondo": {"type": "string"}, "tinta": {"type": "string"}, "muted": {"type": "string"}
+          }
+        },
+        "fuente": {"type": "string", "default": "Inter"},
+        "estilo_visual": {"type": "string", "description": "Pista de estilo común que se inyecta en TODOS los prompts de imagen."},
+        "robot_li": {"type": "boolean", "default": true}
+      }
+    },
+    "salida": {
+      "type": "object",
+      "required": ["aspecto", "resolucion", "fps"],
+      "properties": {
+        "aspecto": {"type": "string", "enum": ["9:16", "1:1", "16:9", "4:5"]},
+        "resolucion": {"type": "array", "items": {"type": "integer"}, "minItems": 2, "maxItems": 2},
+        "fps": {"type": "integer", "default": 30},
+        "duracion_objetivo_s": {"type": "number", "description": "Informativo; la duración real = suma de segmentos + cierre."},
+        "musica": {
+          "type": "object",
+          "properties": {
+            "tipo": {"type": "string", "enum": ["ambiental", "libreria", "ninguna"]},
+            "ruta": {"type": "string", "description": "Ruta local del audio (si tipo=libreria o ambiental ya generado)."}
+          }
+        },
+        "voz_off": {
+          "type": "object",
+          "properties": {
+            "motor": {"type": "string", "enum": ["elevenlabs", "openai", "ninguno"]},
+            "voz_id": {"type": "string"},
+            "idioma": {"type": "string", "default": "es"}
+          }
+        }
+      }
+    },
+    "generacion": {
+      "type": "object",
+      "properties": {
+        "imagenes": {
+          "type": "object",
+          "properties": {
+            "motor": {"type": "string", "enum": ["openai"], "default": "openai"},
+            "modelo": {"type": "string", "default": "gpt-image-1"},
+            "calidad": {"type": "string", "enum": ["low", "medium", "high"], "default": "medium"},
+            "tamano": {"type": "string", "enum": ["1024x1024", "1024x1536", "1536x1024"], "default": "1024x1536"}
+          }
+        }
+      }
+    },
+    "piezas": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "segmentos"],
+        "properties": {
+          "id": {"type": "string"},
+          "concepto": {"type": "string"},
+          "cierre_marca": {"type": "boolean", "default": true},
+          "segmentos": {
+            "type": "array",
+            "minItems": 1,
+            "items": {"$ref": "#/definitions/segmento"}
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "segmento": {
+      "type": "object",
+      "required": ["id", "formato"],
+      "properties": {
+        "id": {"type": "string", "description": "Identificador del clip de salida (outputs/clips/<id>.mp4)."},
+        "formato": {
+          "type": "string",
+          "enum": ["cinematic", "pov_phone", "product", "slideshow", "ugc"],
+          "description": "cinematic/pov_phone/product => motor wan_i2v · slideshow => ffmpeg (sin GPU) · ugc => wan_lipsync (audio ElevenLabs)"
+        },
+        "duracion_s": {"type": "number", "default": 5},
+        "frames": {"type": "integer", "description": "Solo motores WAN; ~81 = 5s @16fps (sweet spot)."},
+        "imagen": {
+          "type": "object",
+          "description": "Imagen base (formatos de un solo fotograma: cinematic/pov_phone/product/ugc).",
+          "properties": {
+            "prompt": {"type": "string"},
+            "negativo": {"type": "string"},
+            "ref_producto": {"type": ["string", "null"], "description": "Ruta a foto de producto a usar como referencia/edición (Fase 2)."}
+          }
+        },
+        "imagenes": {
+          "type": "array",
+          "description": "Solo formato slideshow: lista de stills (3-6).",
+          "items": {
+            "type": "object",
+            "properties": {"prompt": {"type": "string"}, "negativo": {"type": "string"}}
+          }
+        },
+        "animacion": {
+          "type": "object",
+          "description": "Solo motores WAN: guía de movimiento/cámara.",
+          "properties": {
+            "prompt_movimiento": {"type": "string"},
+            "camara": {"type": "string", "description": "p.ej. 'slow push-in', 'handheld', 'orbit'"}
+          }
+        },
+        "avatar": {
+          "type": "object",
+          "description": "Solo formato ugc: diálogo que dice el avatar (lip-sync a audio ElevenLabs).",
+          "properties": {
+            "dialogo": {"type": "string"},
+            "voz_id": {"type": "string"}
+          }
+        },
+        "kenburns": {"type": "boolean", "description": "Solo slideshow: aplica zoom/paneo Ken Burns.", "default": true},
+        "texto_pantalla": {"type": ["string", "null"], "description": "Lower-third de marca; null = sin texto."},
+        "voz_off": {"type": ["string", "null"], "description": "Línea de locución para este segmento (motor = salida.voz_off.motor)."},
+        "seed": {"type": "integer"}
+      }
+    }
+  }
+}

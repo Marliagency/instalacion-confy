@@ -125,6 +125,28 @@ modelos se descargan en ~2-3 min y ComfyUI queda listo. Coste real del lote ≈
 $1.2 GPU (22 min) + ~$0.7 OpenAI. **Borra el pod (DELETE) al terminar** si fue
 desechable (el disco de 200 GB factura almacenamiento aunque esté EXITED).
 
+## FASE 2 — Pipeline multi-formato en 2 sesiones (2026-06-02)
+
+Producción de anuncios combinando formatos (cinematográfico, POV/móvil, producto,
+slideshow, UGC con lip-sync) a partir de un único **paquete de producción**.
+
+- **Contrato**: `schema/production_package.schema.json` (+ `examples/marli_ad01.json`).
+  Núcleo compartido en `pipeline.py` (carga/valida/aplana). Formatos → motores:
+  `cinematic|pov_phone|product → wan_i2v`, `slideshow → ffmpeg (sin GPU)`,
+  `ugc → wan_lipsync`.
+- **Sesión A (sin GPU)** = guionista: escribe el paquete. Ver `SESION_A.md`.
+- **Sesión B (con GPU)** = productor: imágenes OpenAI (`gpt-image-1` calidad
+  **medium**, in-pod) + voz **ElevenLabs** (in-pod, `tts_eleven.py`) + clips ComfyUI
+  (`comfy_run.py` carga workflows **ya validados** de `workflows/api/*.json` e
+  inyecta valores, NO reconstruye) + slideshow (`build_slideshow.py`) + montaje
+  (`assemble_final.py`). Ver `SESION_B.md`.
+- **Workflows reutilizables**: `workflows/api/wan_i2v.json` (VALIDADO; cubre
+  cinematic/pov/product) y `workflows/api/wan_lipsync.json` (PENDIENTE de validar
+  una vez en el pod). `comfy_doctor.py` verifica que los modelos existen antes de
+  gastar GPU.
+- Reducir coste: workflows guardados (cero prueba-y-error sobre GPU) + batching en
+  una sola sesión de pod + imagen `medium` + 4 pasos lightx2v.
+
 ## Imágenes vs. video (elige el tipo correcto)
 
 - Si el usuario pide **imágenes**, marca cada item con `"tipo": "imagen"` (usa el

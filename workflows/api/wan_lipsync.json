@@ -1,0 +1,14 @@
+{
+  "_meta": {
+    "descripcion": "WAN talking-avatar / lip-sync (formato UGC): anima un retrato para que sincronice los labios con un audio (voz ElevenLabs). PLANTILLA PENDIENTE DE VALIDAR sobre el pod: el template hearmeman v19 incluye WanVideoWrapper + Wan Animate y el pod hermano 'marli-lipsync'; hay que introspeccionar /object_info, elegir los nodos de lip-sync (p.ej. cadena WanVideo*/Animate o un nodo de audio-driven), construir el grafo API y rellenar el mapa inject.",
+    "pendiente_validar": true,
+    "inject_esperado": {
+      "image":  "retrato del avatar (LoadImage)",
+      "audio":  "audio de ElevenLabs (LoadAudio / VHS_LoadAudio)",
+      "positive": "prompt de la escena",
+      "seed":   "semilla",
+      "prefix": "nombre de salida"
+    },
+    "como_validar": "Ver SESION_B.md > 'Validar wan_lipsync'. Una sola pasada de pod basta; luego queda reutilizable como wan_i2v."
+  }
+}
