@@ -22,12 +22,14 @@ workflows ComfyUI **ya guardados**, monta en local y **apaga/borra el pod**.
    también a `outputs/images` (vía `/view?type=input`, con header User-Agent).
 4. **Voz (ElevenLabs, in-pod)**: `tts_eleven.py --package …` → audios; sube los de
    avatar (`<segid>.mp3/.wav`) al `input` del pod para el lip-sync; guarda los `_vo`
-   en `outputs/voice` para el montaje.
+   en `outputs/voice` para el montaje. **Música (ElevenLabs, in-pod)**:
+   `music_eleven.py --package … --out outputs/music.mp3`.
 5. **Clips ComfyUI**: `python3 comfy_run.py --comfy-url <URL> --package …` →
    genera i2v (cinematic/pov/product) y ugc (lipsync) en `outputs/clips`.
 6. **Slideshows (local)**: `python3 build_slideshow.py --package … --images outputs/images`.
-7. **Montaje final**: `python3 assemble_final.py` (lee orden, textos, VO y música
-   del paquete) → `outputs/marli_final.mp4`. Entrega con SendUserFile.
+7. **Montaje final**: `python3 assemble_pkg.py --package …` (ordena clips, quema
+   textos, coloca voz por segmento + música, cierre de marca) → `outputs/marli_final.mp4`.
+   Entrega con SendUserFile.
 8. **APAGA/BORRA el pod** (stop si lo reusarás; **DELETE** si fue desechable — el
    disco factura aunque esté EXITED).
 
