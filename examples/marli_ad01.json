@@ -11,7 +11,7 @@
     "aspecto": "9:16",
     "resolucion": [1080, 1920],
     "fps": 30,
-    "duracion_objetivo_s": 26,
+    "duracion_objetivo_s": 29,
     "musica": {"tipo": "ambiental", "ruta": "assets/bed.wav"},
     "voz_off": {"motor": "elevenlabs", "voz_id": "REEMPLAZAR_VOZ_ID", "idioma": "es"}
   },
@@ -21,35 +21,35 @@
   "piezas": [
     {
       "id": "ad01",
-      "concepto": "Un día con Li — anuncio multi-formato",
+      "concepto": "Un día con Li — anuncio multi-formato (hook UGC → dolor → demo → revelación → oferta)",
       "cierre_marca": true,
       "segmentos": [
         {
-          "id": "s1_dolor",
-          "formato": "cinematic",
-          "duracion_s": 5,
-          "frames": 81,
-          "imagen": {
-            "prompt": "{ESTILO}. A wooden desk at dawn cluttered with tall stacks of paper reports, sticky notes and a phone glowing with unread notifications, empty office chair, a single deep red notebook as accent, quiet overwhelm before the workday",
-            "negativo": "text, watermark, people faces, neon, cyberpunk, oversaturated, low quality, blurry"
-          },
-          "animacion": {"prompt_movimiento": "dust motes drifting in a light beam, phone screen softly blinking", "camara": "slow push-in"},
-          "texto_pantalla": "Tu consulta depende 100% de ti.",
-          "voz_off": "Tu consulta funciona. Pero depende cien por cien de ti.",
-          "seed": 101
-        },
-        {
-          "id": "s2_ugc",
+          "id": "s1_ugc",
           "formato": "ugc",
           "duracion_s": 6,
           "frames": 96,
           "imagen": {
-            "prompt": "{ESTILO}. Friendly close-up portrait of a calm stylized 3D psychologist (not a real recognizable person) looking straight at the camera in a bright minimalist office, selfie framing, soft natural light",
-            "negativo": "text, watermark, recognizable celebrity, deformed face, extra fingers, neon"
+            "prompt": "{ESTILO}. Friendly close-up portrait of a calm female psychologist (stylized 3D character, not a real recognizable person), looking straight into the camera in a bright minimalist office, casual selfie framing, soft natural window light, warm and trustworthy",
+            "negativo": "text, watermark, recognizable celebrity, deformed face, extra fingers, neon, oversaturated"
           },
-          "avatar": {"dialogo": "Llevo seis meses sin redactar un informe a mano. Lo hace Li por mí.", "voz_id": "REEMPLAZAR_VOZ_ID"},
-          "texto_pantalla": null,
-          "seed": 202
+          "avatar": {"dialogo": "¿Sabes qué cambió mi consulta? Dejé de intentar hacerlo todo yo.", "voz_id": "REEMPLAZAR_VOZ_ID"},
+          "texto_pantalla": "«Dejé de hacerlo todo yo.»",
+          "seed": 1101
+        },
+        {
+          "id": "s2_dolor",
+          "formato": "cinematic",
+          "duracion_s": 5,
+          "frames": 81,
+          "imagen": {
+            "prompt": "{ESTILO}. A wooden desk at dawn cluttered with tall stacks of paper reports and sticky notes, a phone glowing with many unread notifications, an empty office chair, a single deep red notebook as the only color accent, the quiet weight of admin work before the day begins",
+            "negativo": "text, watermark, people faces, neon, cyberpunk, oversaturated, low quality, blurry"
+          },
+          "animacion": {"prompt_movimiento": "dust motes drifting in a light beam, the phone screen softly blinking with notifications", "camara": "slow push-in"},
+          "texto_pantalla": "Tu consulta depende 100% de ti.",
+          "voz_off": "Mensajes sin responder. Informes a mano. Tu consulta entera, sobre tus hombros.",
+          "seed": 1102
         },
         {
           "id": "s3_pov",
@@ -57,29 +57,43 @@
           "duracion_s": 5,
           "frames": 81,
           "imagen": {
-            "prompt": "{ESTILO}. POV first-person shot of a hand holding a smartphone showing a clean CRM dashboard with patient cards and confirmed appointments, cozy desk in the background, handheld phone-camera look",
-            "negativo": "text gibberish, watermark, neon, oversaturated, blurry"
+            "prompt": "{ESTILO}. POV first-person shot of a hand holding a smartphone that shows a clean, calm CRM dashboard with neat patient cards and confirmed appointments, a cozy minimalist desk softly blurred in the background, authentic handheld phone-camera look",
+            "negativo": "gibberish text, watermark, neon, oversaturated, blurry, deformed hand"
           },
-          "animacion": {"prompt_movimiento": "subtle handheld camera shake, finger scrolling the screen", "camara": "handheld"},
-          "texto_pantalla": "Todo tu día, ordenado solo.",
-          "voz_off": "Citas, recordatorios e informes. Ordenados solos, mientras tú descansas.",
-          "seed": 303
+          "animacion": {"prompt_movimiento": "subtle handheld camera shake, a thumb gently scrolling the screen", "camara": "handheld"},
+          "texto_pantalla": "Li lo ordena todo por ti.",
+          "voz_off": "Con Li, no. Confirma tus citas, ordena tu agenda y redacta tus informes.",
+          "seed": 1103
         },
         {
-          "id": "s4_slide",
+          "id": "s4_li",
+          "formato": "product",
+          "duracion_s": 5,
+          "frames": 81,
+          "imagen": {
+            "prompt": "{ESTILO}. Hero product shot of the small friendly geometric red robot Li (#E24B4A) glowing softly, centered on a clean minimalist wooden desk with generous negative space, cream background, premium beauty lighting, sense of calm and trust",
+            "negativo": "text, watermark, scary robot, aggressive robot, neon, clutter, oversaturated"
+          },
+          "animacion": {"prompt_movimiento": "the robot's chest light gently pulsing, soft volumetric light, slow parallax", "camara": "slow orbit"},
+          "texto_pantalla": "No es una herramienta. Es un sistema.",
+          "voz_off": "Tú acompañas a tus pacientes. Li te acompaña a ti.",
+          "seed": 1104
+        },
+        {
+          "id": "s5_valor",
           "formato": "slideshow",
-          "duracion_s": 6,
+          "duracion_s": 8,
           "kenburns": true,
           "imagenes": [
-            {"prompt": "{ESTILO}. The small geometric red robot Li glowing softly on a tidy desk"},
-            {"prompt": "{ESTILO}. Close-up of a professional psychological report being auto-generated, clean typography"},
-            {"prompt": "{ESTILO}. A calm phone screen showing an automatic appointment confirmation chat"},
-            {"prompt": "{ESTILO}. A serene psychologist relaxing with a cup of coffee, free time regained"},
-            {"prompt": "{ESTILO}. The red robot Li beside a single price tag feeling, sense of one-time payment, minimalist"}
+            {"prompt": "{ESTILO}. The red robot Li glowing on a tidy desk, a calm clock on the wall, sense of time regained", "texto": "+30% de tu tiempo"},
+            {"prompt": "{ESTILO}. Close-up of a clean professional psychological report being auto-generated on a laptop, elegant typography", "texto": "Informes en segundos"},
+            {"prompt": "{ESTILO}. A phone screen showing an automatic, friendly appointment-confirmation chat at night", "texto": "Agenda 24/7"},
+            {"prompt": "{ESTILO}. A serene psychologist relaxing on a sofa with a cup of coffee at sunset, free time regained", "texto": "Tus tardes, de vuelta"},
+            {"prompt": "{ESTILO}. Minimalist still of the red robot Li beside a single clean price card, sense of a one-time purchase, lots of negative space", "texto": "Pago único"}
           ],
-          "texto_pantalla": "Pago único. Se queda contigo para siempre.",
-          "voz_off": "Un sistema completo. Pago único, sin cuotas, para siempre.",
-          "seed": 404
+          "texto_pantalla": null,
+          "voz_off": "Más de un treinta por ciento de tu tiempo, de vuelta. Instálalo en menos de una hora. Pago único, sin cuotas, para siempre.",
+          "seed": 1105
         }
       ]
     }

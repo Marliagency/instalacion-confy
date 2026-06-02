@@ -106,10 +106,10 @@
         },
         "imagenes": {
           "type": "array",
-          "description": "Solo formato slideshow: lista de stills (3-6).",
+          "description": "Solo formato slideshow: lista de stills (3-6). 'texto' = tarjeta de valor sobreimpresa en ese still.",
           "items": {
             "type": "object",
-            "properties": {"prompt": {"type": "string"}, "negativo": {"type": "string"}}
+            "properties": {"prompt": {"type": "string"}, "negativo": {"type": "string"}, "texto": {"type": "string"}}
           }
         },
         "animacion": {

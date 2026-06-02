@@ -18,21 +18,32 @@ def run(cmd):
     if p.returncode != 0:
         sys.exit("ERROR ffmpeg:\n" + p.stdout[-2000:])
 
-def build_one(images, out, W, H, FPS, total_s):
+FONT_B = "assets/fonts/Inter-Bold.ttf"
+RED, SCRIM = "0xE24B4A", "0x141210"
+
+def build_one(images, out, W, H, FPS, total_s, captions=None, tmpdir="/tmp/marli_slide"):
+    os.makedirs(tmpdir, exist_ok=True)
+    captions = captions or [None] * len(images)
     n = len(images)
     per = max(1.5, total_s / n)
     frames = int(per * FPS)
+    ty = int(H * 0.72)
     seg_filters, inputs = [], []
     for i, img in enumerate(images):
         inputs += ["-loop", "1", "-t", f"{per:.2f}", "-i", img]
-        # Ken Burns: zoom lento + encuadre 9:16
+        # Ken Burns: zoom lento + encuadre del aspecto de salida
         zdir = 1 if i % 2 == 0 else -1
         z = ("zoom+0.0010" if zdir == 1 else "if(lte(zoom,1.0),1.18,zoom-0.0010)")
-        seg_filters.append(
-            f"[{i}:v]scale={W*2}:{H*2}:force_original_aspect_ratio=increase,crop={W*2}:{H*2},"
-            f"zoompan=z='{z}':d={frames}:s={W}x{H}:x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)':fps={FPS},"
-            f"setsar=1,format=yuv420p[v{i}]"
-        )
+        f = (f"[{i}:v]scale={W*2}:{H*2}:force_original_aspect_ratio=increase,crop={W*2}:{H*2},"
+             f"zoompan=z='{z}':d={frames}:s={W}x{H}:x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)':fps={FPS},"
+             f"setsar=1,format=yuv420p")
+        if captions[i]:
+            tf = os.path.join(tmpdir, f"cap{i}.txt"); open(tf, "w").write(captions[i])
+            tfp = tf.replace(":", "\\:")
+            f += (f",drawbox=x=(iw-130)/2:y={ty-42}:w=130:h=7:color={RED}@0.95:t=fill"
+                  f",drawtext=fontfile={FONT_B}:textfile={tfp}:fontcolor=white:fontsize=64:"
+                  f"x=(w-text_w)/2:y={ty}:box=1:boxcolor={SCRIM}@0.55:boxborderw=30:expansion=none")
+        seg_filters.append(f + f"[v{i}]")
     # crossfade encadenado entre slides
     T = 0.4
     chain = seg_filters[:]
@@ -64,8 +75,9 @@ def main():
         missing = [p for p in imgs if not os.path.isfile(p)]
         if missing:
             print(f"  {seg['id']}: faltan imágenes {missing}"); continue
+        caps = [im.get("texto") for im in seg.get("imagenes", [])]
         out = os.path.join(args.out, f"{seg['id']}.mp4")
-        build_one(imgs, out, W, H, FPS, seg.get("duracion_s", 6))
+        build_one(imgs, out, W, H, FPS, seg.get("duracion_s", 6), captions=caps)
         print(f"  slideshow {seg['id']} -> {out}"); made += 1
     print(f"Slideshows construidos: {made}")
 
