@@ -18,7 +18,7 @@ brand:
     headline: fonts/Inter-Bold.ttf
     body: fonts/Inter-Bold.ttf
 beats:
-  - {n: 1, type: ugc, id: hook, dur: 3.0, video_file: assets/clips/beat1_hook.mp4,
+  - {n: 1, type: ugc, id: hook, dur: 3.0, video_file: assets/clips/beat1_lipsync.mp4,
      captions: ["Si eres psicólogo…", "para."]}
   - {n: 2, type: cinematic, id: problema, dur: 3.0, image_file: assets/scenes/beat2_problema.png,
      captions: ["Tu consulta", "depende 100% de ti"]}
@@ -30,7 +30,7 @@ beats:
   - {n: 5, type: slideshow5, id: sistema, dur: 5.0, slide_dur: 1.0,
      slide_files: [assets/scenes/beat5a.png, assets/scenes/beat5b.png, assets/scenes/beat5c.png, assets/scenes/beat5d.png, assets/scenes/beat8_cta.png],
      texts: ["1 · CRM QUE TE ORDENA", "2 · INFORMES EN SEGUNDOS", "3 · RESPONDE 24/7", "4 · +8 H LIBRES/SEMANA", "5 · PAGO ÚNICO"]}
-  - {n: 6, type: ugc, id: testimonio, dur: 3.5, video_file: assets/clips/beat6_testimonio.mp4,
+  - {n: 6, type: ugc, id: testimonio, dur: 3.5, video_file: assets/clips/beat6_lipsync.mp4,
      captions: ["Recupero 8 horas", "a la semana"]}
   - {n: 7, type: cinematic, id: beneficio, dur: 3.5, image_file: assets/scenes/beat7_beneficio.png,
      captions: ["Tú a tus pacientes", "Li a ti"]}
