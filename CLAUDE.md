@@ -89,6 +89,42 @@ Restricciones del entorno (importantes):
    a `models/checkpoints` del volumen (terminal/Jupyter del pod) y usa
    `workflows/sdxl_t2i.json`.
 
+## RECETA REAL QUE FUNCIONÓ (2026-06-02) — OpenAI → WAN 2.2 i2v → ffmpeg
+
+Pipeline ejecutado de principio a fin para el vídeo de marca de Marli ("Un día
+con Li"). Scripts nuevos en el repo:
+
+- `openai_images.py` — genera imágenes con OpenAI (gpt-image-1). **OJO:** desde el
+  entorno web `api.openai.com` está bloqueado por allowlist. Solución que funcionó:
+  ejecutar las llamadas a OpenAI **dentro del pod** (su egress es abierto) usando
+  `pod_exec.py`.
+- `pod_exec.py` — ejecuta Python dentro del pod vía JupyterLab (puerto 8888). El
+  Jupyter del template HearmemanAI está **abierto** (sin login; basta la cookie
+  `_xsrf` de `GET /`). Útil para correr OpenAI y descargar assets desde la red
+  abierta del pod. **No uses globs recursivos desde `/`** (cuelga); ComfyUI está
+  en `/ComfyUI`, input en `/ComfyUI/input`.
+- `run_i2v.py` — construye el workflow **WAN 2.2 i2v nativo** en formato API y
+  encola por escena. Topología: 2×`UNETLoader` (i2v high/low 14B) + LoRAs
+  `i2v_lightx2v_high/low` (muestreo **4 pasos**, 2+2) + `ModelSamplingSD3` +
+  2×`KSamplerAdvanced` (cfg=1) + `WanImageToVideo` + `VAEDecode` + `VHS_VideoCombine`.
+  **Gotchas resueltos:** el 14B i2v usa el VAE de 16 canales `wan_2.1_vae.safetensors`
+  (NO `wan2.2_vae`, que es de 48ch para el 5B → error "expected 36 channels got 64");
+  descargar los `.mp4` por `/view` requiere header `User-Agent` (si no, **403**).
+- `assemble_final.py` — montaje con identidad Marli (Inter, rojo `#E24B4A`, crema
+  `#FAF6F1`, lower-third, barra de acento, tarjeta de cierre, crossfades, colchón
+  ambiental). **Gotchas ffmpeg:** en `drawbox` la `w` es el ancho de la CAJA, usa
+  `iw` para centrar; en `drawtext` añade `expansion=none` o el `%` (p.ej. "100%")
+  rompe el texto.
+
+**Infra:** el pod H100 original `gy9p9fryeh1yex` no arrancaba (host sin GPU libre)
+y los 4090/3090 community no admitían la imagen WAN (gigante) en ninguna región.
+Lo que funcionó: **crear un pod H100 SXM nuevo** (`NVIDIA H100 80GB HBM3`, SECURE,
+stock alto, ~$3.29/h) con `imageName: hearmeman/comfyui-wan-template:v19`,
+`containerDiskInGb: 200`, env `download_wan22=true download_wan_animate=true`. Los
+modelos se descargan en ~2-3 min y ComfyUI queda listo. Coste real del lote ≈
+$1.2 GPU (22 min) + ~$0.7 OpenAI. **Borra el pod (DELETE) al terminar** si fue
+desechable (el disco de 200 GB factura almacenamiento aunque esté EXITED).
+
 ## Imágenes vs. video (elige el tipo correcto)
 
 - Si el usuario pide **imágenes**, marca cada item con `"tipo": "imagen"` (usa el

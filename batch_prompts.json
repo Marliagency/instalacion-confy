@@ -1,12 +1,50 @@
 [
   {
-    "id": "comfytest01",
-    "tipo": "imagen",
-    "prompt": "a sleek glass perfume bottle on a marble pedestal, soft studio lighting, elegant product photography, highly detailed",
-    "negativo": "blurry, low quality, watermark, text, deformed, ugly",
-    "formato": "1:1",
-    "width": 512,
-    "height": 512,
-    "seed": 12345
+    "id": "s1_dolor",
+    "tipo": "video",
+    "escena": "El dolor — la consulta depende 100% de ti",
+    "texto": "Tu consulta depende 100% de ti.",
+    "prompt": "Ultra-clean 3D render in the style of Octane and Unreal Engine, soft cinematic morning light. A modern minimalist psychology office at dawn. A wooden desk cluttered with tall stacks of paper reports, scattered sticky notes, and a silent smartphone glowing with many unread message notifications. An empty office chair. Warm cream colored walls (hex FAF6F1), a single deep red (hex E24B4A) notebook as the only color accent. Mood of quiet overwhelm and administrative chaos before the workday begins. Subtle motion: dust motes drifting in a beam of light, the phone screen softly blinking with notifications. Premium editorial advertising aesthetic, no text, no people, shallow depth of field, vertical 9:16 composition. No neon, no cyberpunk, no high saturation.",
+    "negativo": "text, watermark, logo, cluttered neon, cyberpunk, oversaturated, low quality, blurry, distorted, extra limbs, people faces",
+    "formato": "9:16",
+    "width": 480,
+    "height": 832,
+    "frames": 81
+  },
+  {
+    "id": "s2_li",
+    "tipo": "video",
+    "escena": "Llega Li — mientras descansas, Li ya trabaja",
+    "texto": "Mientras descansas, Li trabaja.",
+    "prompt": "Ultra-clean 3D render in the style of Octane and Unreal Engine, cinematic soft lighting. The same modern minimalist psychology office, now in the quiet blue hour before dawn. A small, friendly geometric red robot (hex E24B4A), minimalist and rounded with no aggressive features, sits softly glowing on the tidy desk as a silent assistant. Around it, soft holographic cards representing calendar appointments and confirmed messages float gently and sort themselves into neat order. Calm warm-and-cool light. Subtle motion: the robot's chest light gently pulsing, holographic appointment cards floating upward and organizing into a clean grid. Premium editorial advertising aesthetic, no text, vertical 9:16 composition. No neon excess, no cyberpunk, soft and human feeling.",
+    "negativo": "text, watermark, scary robot, aggressive robot, neon overload, cyberpunk, oversaturated, low quality, blurry, distorted, extra limbs",
+    "formato": "9:16",
+    "width": 480,
+    "height": 832,
+    "frames": 81
+  },
+  {
+    "id": "s3_calma",
+    "tipo": "video",
+    "escena": "La calma — tú cuidas a tus pacientes",
+    "texto": "Tú cuidas a tus pacientes.",
+    "prompt": "Ultra-clean 3D render in the style of Octane and Unreal Engine, warm cinematic daylight. A serene, tidy modern minimalist psychology consultation room. A calm stylized psychologist (clean 3D character, not photorealistic, no recognizable real person) sitting relaxed and fully present, in a gentle conversation with a patient on a soft couch. Cream and white tones (hex FAF6F1), a deep red (hex E24B4A) accent cushion. In the background on a shelf, the small geometric red robot Li glows softly, silently working. Atmosphere of peace, focus and human connection. Subtle motion: gentle breathing, warm light slowly shifting through a window, soft curtains moving. Premium editorial advertising aesthetic, no text, vertical 9:16 composition. No neon, no cyberpunk, no oversaturation.",
+    "negativo": "text, watermark, recognizable celebrity, deformed faces, extra fingers, neon, cyberpunk, oversaturated, low quality, blurry, distorted, extra limbs",
+    "formato": "9:16",
+    "width": 480,
+    "height": 832,
+    "frames": 81
+  },
+  {
+    "id": "s4_marca",
+    "tipo": "video",
+    "escena": "Cierre de marca — Li se encarga del resto",
+    "texto": "Li se encarga del resto.",
+    "prompt": "Ultra-clean 3D render in the style of Octane and Unreal Engine, soft cinematic end-of-day light. A serene, perfectly tidy modern minimalist psychology office, empty and calm. The small friendly geometric red robot Li (hex E24B4A) stands as a gentle companion in the center of a clean wooden desk, softly glowing. Warm cream background (hex FAF6F1) with generous negative space in the upper area for a title. Mood of calm, order and trust at the end of a workday. Subtle motion: the robot's light gently pulsing, soft volumetric light rays, a slow gentle camera push-in. Premium editorial advertising aesthetic, no text, vertical 9:16 composition. No neon, no cyberpunk, no oversaturation.",
+    "negativo": "text, watermark, neon, cyberpunk, oversaturated, low quality, blurry, distorted, extra limbs, clutter",
+    "formato": "9:16",
+    "width": 480,
+    "height": 832,
+    "frames": 81
   }
 ]
