@@ -205,3 +205,40 @@ Restricciones del entorno (importantes):
 - No dejes pods encendidos.
 - No recrees el pod desde cero en cada lote (perderías los modelos del volumen).
 - No generes a 4K por defecto.
+
+---
+
+## EXTENSIÓN INSTALADA: claude-code-video-toolkit (2026-06-02)
+
+Instalado el toolkit `digitalsamba/claude-code-video-toolkit` para producir
+**vídeos programáticos tipo "explainer"** (demos, walkthroughs, presentaciones)
+*sobre* el contenido de este repo. Es un paradigma DISTINTO al pipeline
+ComfyUI/WAN de arriba (que genera vídeo por IA en RunPod):
+
+- **WAN/ComfyUI** (lo de arriba): clips de vídeo generados por IA en masa.
+- **video-toolkit** (lo nuevo): vídeo compuesto por código —
+  Remotion (React→MP4), moviepy (Python) y FFmpeg para post.
+
+### Qué se instaló en el repo
+- `.claude/skills/` (11 skills) y `.claude/commands/` (13 comandos: `/video`,
+  `/setup`, `/brand`, `/design`, `/generate-voiceover`, `/record-demo`, etc.).
+- `lib/` (componentes/transiciones/tema Remotion en TS), `tools/` (CLIs Python),
+  `brands/`, `templates/` (product-demo, sprint-review, sprint-review-v2),
+  `docker/` (deploys GPU Modal/RunPod), `scripts/`, `docs/`.
+- Docs del toolkit: `VIDEO-TOOLKIT-README.md` y `docs/video-toolkit-CLAUDE.md`.
+- NO se copiaron demos pesadas (`projects/`, `examples/`, banner, template AI de 6.4M).
+
+### Estado del entorno (verificado al instalar)
+- Node v22 + npm 10 OK; **npm registry SÍ alcanzable** → Remotion puede instalar
+  y renderizar. ⚠️ Cada proyecto Remotion necesita su `npm install` (no commiteado).
+- Python deps de `tools/requirements.txt` instaladas (moviepy, Pillow, etc.).
+- `ffmpeg` 7.0.2 expuesto vía symlink al binario de `imageio-ffmpeg`. ⚠️ El
+  symlink vive en el contenedor efímero; en una sesión nueva, recrearlo:
+  `ln -sf $(python3 -c "import imageio_ffmpeg;print(imageio_ffmpeg.get_ffmpeg_exe())") /usr/local/bin/ffmpeg`
+- Cloud GPU del toolkit (Modal/FLUX.2/TTS) **sin configurar**; el toolkit
+  funciona sin ello para vídeo basado en código. Para voz/imágenes IA correr
+  `/setup`. Si se usa RunPod, reaprovechar `RUNPOD_API_KEY` ya presente.
+
+### Cómo usarlo
+Pedir a Claude el comando `/video` para arrancar un proyecto de vídeo, o `/setup`
+para configurar features cloud opcionales. Ver `docs/video-toolkit-CLAUDE.md`.

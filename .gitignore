@@ -21,3 +21,20 @@ venv/
 # Artefactos temporales de orquestación (reintento de pod)
 .retry_pod.py
 .pod_result.json
+
+# --- claude-code-video-toolkit (Remotion / renders / node) ---
+node_modules/
+.remotion/
+dist/
+build/
+out/
+# Renders y media generada por el toolkit (no versionar binarios pesados)
+projects/
+templates/*/out/
+templates/*/public/demos/*.mp4
+templates/*/node_modules/
+assets/voices/*.mp3
+assets/voices/*.wav
+*.mov
+*.webm
+.DS_Store
