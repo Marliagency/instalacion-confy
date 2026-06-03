@@ -67,31 +67,50 @@ def pick_size(item):
     return SIZES["vertical"]
 
 
-def generate_image(prompt, size, api_key, quality="medium", model="gpt-image-1", timeout=300, retries=3):
-    """Llama a la API de imágenes de OpenAI y devuelve los bytes PNG."""
-    payload = json.dumps({
-        "model": model,
-        "prompt": prompt,
-        "size": size,
-        "quality": quality,
-        "n": 1,
-    }).encode("utf-8")
-    headers = {
-        "Authorization": f"Bearer {api_key}",
-        "Content-Type": "application/json",
-    }
+EDITS_URL = "https://api.openai.com/v1/images/edits"
+
+
+def _multipart(fields, files):
+    """Codifica multipart/form-data. files = [(fieldname, path), …]."""
+    import mimetypes, uuid
+    boundary = uuid.uuid4().hex
+    body = b""
+    for k, v in fields.items():
+        body += (f"--{boundary}\r\nContent-Disposition: form-data; name=\"{k}\"\r\n\r\n{v}\r\n").encode()
+    for field, path in files:
+        fn = os.path.basename(path)
+        ctype = mimetypes.guess_type(path)[0] or "image/png"
+        body += (f"--{boundary}\r\nContent-Disposition: form-data; name=\"{field}\"; "
+                 f"filename=\"{fn}\"\r\nContent-Type: {ctype}\r\n\r\n").encode()
+        body += open(path, "rb").read() + b"\r\n"
+    body += f"--{boundary}--\r\n".encode()
+    return body, f"multipart/form-data; boundary={boundary}"
+
+
+def generate_image(prompt, size, api_key, quality="medium", model="gpt-image-1",
+                   ref_paths=None, timeout=300, retries=3):
+    """Genera (o EDITA, si hay referencias) una imagen y devuelve los bytes PNG.
+
+    Con `ref_paths` usa la API de edición (image-to-image) para PRESERVAR la
+    mascota/producto de referencia (R7); si no, generación normal."""
+    refs = [p for p in (ref_paths or []) if os.path.isfile(p)]
+    if refs:
+        fields = {"model": model, "prompt": prompt, "size": size, "quality": quality, "n": "1"}
+        body, ctype = _multipart(fields, [("image[]", p) for p in refs])
+        url, headers = EDITS_URL, {"Authorization": f"Bearer {api_key}", "Content-Type": ctype}
+    else:
+        body = json.dumps({"model": model, "prompt": prompt, "size": size,
+                           "quality": quality, "n": 1}).encode("utf-8")
+        url, headers = API_URL, {"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"}
     last_err = None
     for attempt in range(retries):
         try:
-            req = urllib.request.Request(API_URL, data=payload, headers=headers, method="POST")
+            req = urllib.request.Request(url, data=body, headers=headers, method="POST")
             with urllib.request.urlopen(req, timeout=timeout) as resp:
                 data = json.loads(resp.read().decode("utf-8"))
-            b64 = data["data"][0]["b64_json"]
-            return base64.b64decode(b64)
+            return base64.b64decode(data["data"][0]["b64_json"])
         except urllib.error.HTTPError as e:
-            body = e.read().decode("utf-8", "replace")[:500]
-            last_err = f"HTTP {e.code}: {body}"
-            # 4xx (salvo 429) no se arregla reintentando
+            last_err = f"HTTP {e.code}: {e.read().decode('utf-8', 'replace')[:500]}"
             if 400 <= e.code < 500 and e.code != 429:
                 break
         except Exception as e:  # noqa: BLE001
@@ -119,6 +138,7 @@ def main():
         if gen.get("modelo"): args.model = gen["modelo"]
         if gen.get("calidad"): args.quality = gen["calidad"]
         items = [{"id": it["id"], "prompt": it["prompt"], "negativo": it["negativo"],
+                  "referencias": it.get("referencias") or [],
                   "formato": pkg["salida"]["aspecto"]} for it in pipeline.iter_image_items(pkg)]
         # el tamaño ya viene resuelto por aspecto; pick_size lo recalcula igual
     elif args.prompts:
@@ -155,7 +175,8 @@ def main():
         if not prompt:
             return iid, None, "sin prompt"
         try:
-            png = generate_image(prompt, pick_size(item), api_key, quality=args.quality, model=args.model)
+            png = generate_image(prompt, pick_size(item), api_key, quality=args.quality,
+                                 model=args.model, ref_paths=item.get("referencias"))
             with open(os.path.join(args.out, f"{iid}.png"), "wb") as f:
                 f.write(png)
             return iid, len(png), None

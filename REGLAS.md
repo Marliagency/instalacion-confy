@@ -12,14 +12,40 @@ Las leen las 3 sesiones. Son innegociables salvo que el usuario diga lo contrari
 - **R1.4 — Voz en off por escena**, no continua: cada línea cabe en su clip (corta).
   Total de voz < duración del vídeo (deja silencios con música = más premium).
 
-## 2. Storytelling (S1)
-- **R2.1** Arco claro por pieza (p.ej. hook → dolor → solución → revelación → oferta → marca).
-- **R2.2** Cada segmento declara su **rol** (en `concepto`/comentario), su `formato`,
-  lo que **dice** (`voz_off` o `avatar.dialogo`) y su `texto_pantalla`.
-- **R2.3** Hooks que se leen en <2 s. Copys del arsenal de marca.
-- **R2.4** Persona objetivo por defecto: la psicóloga saturada (la que mejor convierte).
-- **R2.5** Prompts limpios: sin marcas reales, sin famosos, sin texto incrustado largo
-  (gpt-image escribe texto ilegible → el texto va en post, no en la imagen).
+## 2. Storytelling viral y retención (S1) — "lo mejor"
+Objetivo: **máxima retención** en redes (TikTok/Reels/Shorts). Cada pieza sigue la
+**espina de retención**:
+- **R2.1 — Hook 0-2 s (frenar el scroll):** abre con lo más fuerte (afirmación
+  audaz, pregunta, o imagen impactante). El primer fotograma + la primera frase
+  deciden todo. Nada de intros lentas.
+- **R2.2 — Factor inesperado / pattern interrupt (OBLIGATORIO):** en los primeros
+  ~3 s, algo que rompe la expectativa (un giro visual, una frase contraintuitiva,
+  un cambio brusco de formato). Es lo que retiene. Cada pieza DEBE tener uno,
+  declarado en el segmento (campo `gancho`/comentario).
+- **R2.3 — Open loop (curiosidad):** plantea una tensión/pregunta al principio que
+  solo se resuelve al final ("lo que pasó después me sorprendió…"). Mantiene viendo.
+- **R2.4 — Ritmo sin aire muerto:** corte/cambio cada ~1.5-3 s, movimiento constante,
+  variedad de formato (UGC↔cinematográfico↔POV) como recurso de retención.
+- **R2.5 — Re-hook a mitad:** un segundo pico (dato sorprendente, giro) hacia la
+  mitad para recuperar a quien se cae.
+- **R2.6 — Subtítulos SIEMPRE:** se ve en silencio (autoplay muteado). Texto en
+  pantalla en cada beat (R3.2).
+- **R2.7 — Escalada de valor → payoff → CTA:** cada beat sube la apuesta; cierra
+  resolviendo el loop + llamada a la acción clara.
+- **R2.8 — Arco y rol por segmento:** cada segmento declara su `formato`, su rol en
+  la espina (hook / interrupt / loop / valor / payoff / CTA), lo que **dice**
+  (`voz_off` o `avatar.dialogo`) y su `texto_pantalla`.
+- **R2.9 — Persona objetivo** por defecto: la psicóloga saturada. Copys del arsenal
+  de marca. Sin marcas reales ni famosos.
+
+## 2-bis. Prompts ultradetallados (calidad máxima)
+- **R2b.1** Cada prompt de imagen es **exhaustivo**: sujeto + acción + entorno +
+  composición/encuadre + **óptica** (focal, profundidad de campo) + **iluminación**
+  (dirección, calidad, hora) + materiales/texturas + paleta + estilo + estado de
+  ánimo. Nunca prompts vagos.
+- **R2b.2** Siempre incluir `{ESTILO}` (marca) + `negativo` específico (qué evitar).
+- **R2b.3** El texto legible NO se incrusta en la imagen (gpt-image lo escribe mal);
+  va en post (lower-third / tarjetas).
 
 ## 3. Identidad visual
 - **R3.1** Estilo de marca en TODOS los prompts vía `{ESTILO}` (render 3D limpio,
@@ -49,3 +75,21 @@ Las leen las 3 sesiones. Son innegociables salvo que el usuario diga lo contrari
 - **R6.3** Imagen `medium` + 4 pasos lightx2v = mínimo coste con buena calidad.
 - **R6.4** Verificar saldo RunPod (`myself.clientBalance`) y modelos (`comfy_doctor.py`)
   ANTES de gastar.
+
+## 7. Fidelidad de referencias (mascota / producto) — INALTERABLES
+Si el usuario aporta imágenes de referencia (la mascota Li, un producto), **se
+respetan SIEMPRE: no se cambian ni en diseño ni en forma**. Mecanismo (no es
+"pedirlo" al prompt, es forzarlo técnicamente):
+- **R7.1** Las referencias se declaran en el segmento: `imagen.referencias: ["assets/product/li.png", …]`
+  (o `imagen.ref_producto`). La S1 las asigna a cada segmento que muestre ese elemento.
+- **R7.2 — Imagen:** `openai_images.py` genera con la **API de edición** de gpt-image-1
+  pasando esas referencias como entrada (image-to-image), de modo que el elemento se
+  **preserva** en lugar de re-inventarse. El prompt solo cambia entorno/escena, no el sujeto.
+- **R7.3 — Vídeo:** la imagen base (ya fiel a la referencia) es el `start_image` del
+  WAN i2v → el movimiento NO altera el diseño. Para lip-sync, el retrato de referencia
+  es el `start_image`.
+- **R7.4** El `negativo` incluye "altered logo/product, redesigned, different shape/color"
+  para reforzar. La S3 (QC) **rechaza** cualquier toma donde la mascota/producto cambie
+  de diseño o forma.
+- **R7.5** Resolución de la referencia: usar la de mayor calidad disponible; mantener
+  proporciones del elemento.

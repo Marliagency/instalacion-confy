@@ -74,6 +74,15 @@ def inject_style(prompt, pkg):
     return f"{est}. {prompt}" if est else prompt
 
 
+def _refs(im):
+    """Rutas de referencia de un nodo imagen (referencias[] o ref_producto)."""
+    refs = list(im.get("referencias") or [])
+    rp = im.get("ref_producto")
+    if rp and rp not in refs:
+        refs.append(rp)
+    return refs
+
+
 def image_size(pkg):
     gen = pkg.get("generacion", {}).get("imagenes", {})
     if gen.get("tamano"):
@@ -100,6 +109,7 @@ def iter_image_items(pkg):
                         "id": f"{uid}_{i}",
                         "prompt": inject_style(im.get("prompt", ""), pkg),
                         "negativo": im.get("negativo", ""),
+                        "referencias": _refs(im),
                         "size": size, "uid": uid, "pieza_id": pid,
                         "seg_id": seg["id"], "formato": fmt, "idx": i,
                     }
@@ -109,6 +119,7 @@ def iter_image_items(pkg):
                     "id": uid,
                     "prompt": inject_style(im.get("prompt", ""), pkg),
                     "negativo": im.get("negativo", ""),
+                    "referencias": _refs(im),
                     "size": size, "uid": uid, "pieza_id": pid,
                     "seg_id": seg["id"], "formato": fmt, "idx": 0,
                 }

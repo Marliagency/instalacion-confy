@@ -72,6 +72,7 @@
         "properties": {
           "id": {"type": "string"},
           "concepto": {"type": "string"},
+          "gancho": {"type": "string", "description": "El factor inesperado / pattern interrupt de la pieza (R2.2) y el open loop (R2.3)."},
           "cierre_marca": {"type": "boolean", "default": true},
           "segmentos": {
             "type": "array",
@@ -101,7 +102,9 @@
           "properties": {
             "prompt": {"type": "string"},
             "negativo": {"type": "string"},
-            "ref_producto": {"type": ["string", "null"], "description": "Ruta a foto de producto a usar como referencia/edición (Fase 2)."}
+            "ref_producto": {"type": ["string", "null"], "description": "(alias de referencias) ruta única de referencia."},
+            "referencias": {"type": "array", "items": {"type": "string"},
+              "description": "Rutas a imágenes de referencia (mascota/producto) que se PRESERVAN sin cambiar diseño/forma (R7). Se generan vía edición image-to-image."}
           }
         },
         "imagenes": {

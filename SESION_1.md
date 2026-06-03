@@ -11,13 +11,17 @@ FORMATOS.md y schema/production_package.schema.json.
 Brief: «<aquí tu idea / objetivo / nº de piezas / producto a destacar>».
 Recursos: <fotos de producto en assets/product/, datos, doc de marca en Notion>.
 
-Escribe production_package.json con todas las piezas y, por cada segmento:
-formato (de FORMATOS.md), prompt de imagen (con {ESTILO}), prompt de movimiento/
-cámara, texto en pantalla, voz (voz_off o avatar.dialogo según el formato), duración
-y seed. Respeta TODAS las reglas (sobre todo R1: audio por formato; nada de voz en
-off ni música sobre UGC). Antes de cerrar, muéstrame los copys y el arco de cada
-pieza en una tabla para que los apruebe o los ajuste. Valida con
-`python3 pipeline.py production_package.json`. Commit cuando dé el OK.
+Escribe production_package.json con todas las piezas siguiendo la ESPINA DE
+RETENCIÓN VIRAL (R2): hook 0-2 s + factor inesperado/pattern-interrupt obligatorio
+(campo `gancho`) + open loop + ritmo sin aire muerto + re-hook a mitad + payoff + CTA.
+Por cada segmento: formato (FORMATOS.md), prompt de imagen ULTRADETALLADO (R2b:
+sujeto+acción+entorno+óptica+iluminación+materiales+paleta+estilo, con {ESTILO}),
+prompt de movimiento/cámara, texto en pantalla, voz (voz_off o avatar.dialogo según
+formato), duración y seed. Si aporto imágenes de referencia (mascota/producto),
+ponlas en `imagen.referencias` — se PRESERVAN sin cambiar diseño ni forma (R7).
+Respeta TODAS las reglas (R1: nada de voz/música sobre UGC). Antes de cerrar,
+muéstrame los copys, el `gancho` y el arco de cada pieza en una tabla para aprobar/
+ajustar. Valida con `python3 pipeline.py production_package.json`. Commit con mi OK.
 ```
 
 ## Entradas
