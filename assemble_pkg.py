@@ -71,16 +71,24 @@ def voice_jobs(segs, offsets):
     return jobs
 
 
-def build_audio(jobs, music_path, total_s, out):
-    """Mezcla música (baja) + voces colocadas por offset. Devuelve out o None."""
+def build_audio(jobs, music_path, total_s, out, ugc_windows=None):
+    """Mezcla música (baja) + voces colocadas por offset. Devuelve out o None.
+
+    REGLA: la música se SILENCIA durante las ventanas UGC (ugc_windows = [(a,b)…]),
+    para no pisar la voz del avatar (los UGC llevan su propio audio).
+    """
     if not jobs and not (music_path and os.path.isfile(music_path)):
         return None
     inputs, fc, labels = [], [], []
     idx = 0
     if music_path and os.path.isfile(music_path):
         inputs += ["-i", music_path]
-        fc.append(f"[{idx}:a]volume=0.5,afade=t=in:st=0:d=1.5,"
-                  f"afade=t=out:st={max(0,total_s-2):.2f}:d=2,atrim=0:{total_s:.2f}[m]")
+        gain = "0.5"
+        for a, b in (ugc_windows or []):
+            gain = f"({gain})*(1-between(t,{a:.3f},{b:.3f}))"   # 0 durante UGC
+        fc.append(f"[{idx}:a]volume=eval=frame:volume='{gain}',"
+                  f"afade=t=in:st=0:d=1.5,afade=t=out:st={max(0,total_s-2):.2f}:d=2,"
+                  f"atrim=0:{total_s:.2f}[m]")
         labels.append("[m]"); idx += 1
     for p, off in jobs:
         inputs += ["-i", p]
@@ -113,8 +121,12 @@ def assemble_piece(pieza_id, segs, pkg, out_dir, tmp, no_audio):
     audio = None
     if not no_audio:
         offsets = segment_offsets(durs)
+        # REGLA: ventanas UGC donde la música se silencia (el avatar lleva su voz)
+        ugc_windows = [(offsets[i], offsets[i] + durs[i])
+                       for i, s in enumerate(segs) if s["formato"] == "ugc"]
         music = (pkg["salida"].get("musica") or {}).get("ruta") or "outputs/music.mp3"
-        audio = build_audio(voice_jobs(segs, offsets), music, total_s, os.path.join(ptmp, "audio.m4a"))
+        audio = build_audio(voice_jobs(segs, offsets), music, total_s,
+                            os.path.join(ptmp, "audio.m4a"), ugc_windows=ugc_windows)
     if audio:
         af.run(["ffmpeg", "-y", "-i", video_only, "-i", audio, "-map", "0:v", "-map", "1:a",
                 "-c:v", "copy", "-c:a", "aac", "-b:a", "192k", "-movflags", "+faststart", "-shortest", out])

@@ -129,6 +129,7 @@
           }
         },
         "kenburns": {"type": "boolean", "description": "Solo slideshow: aplica zoom/paneo Ken Burns.", "default": true},
+        "variaciones": {"type": "integer", "minimum": 1, "description": "Nº de tomas (seeds distintas) a generar para que la S3 elija la mejor. Por defecto 1.", "default": 1},
         "texto_pantalla": {"type": ["string", "null"], "description": "Lower-third de marca; null = sin texto."},
         "voz_off": {"type": ["string", "null"], "description": "Línea de locución para este segmento (motor = salida.voz_off.motor)."},
         "seed": {"type": "integer"}
