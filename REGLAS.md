@@ -54,10 +54,14 @@ Objetivo: **máxima retención** en redes (TikTok/Reels/Shorts). Cada pieza sigu
 - **R3.3** Robot **Li** presente cuando aplique. Cada pieza termina con `cierre_marca`.
 - **R3.4** Slideshow: tarjeta de valor (`texto`) por still.
 
-## 4. Formatos
+## 4. Formatos y duración
 - **R4.1** Respetar `FORMATOS.md` (motor, audio, campos obligatorios por formato).
 - **R4.2** Duración por clip WAN ≈ 5 s (81 frames @16fps). Más → encadenar segmentos.
 - **R4.3** Aspecto y resolución de salida fijos por paquete (`salida`).
+- **R4.4 — Duración objetivo del vídeo final: ~30 s** (`salida.duracion_objetivo_s: 30`),
+  es decir **~6 segmentos** de ~5 s + tarjeta de cierre. El editor (S3) monta ~6 clips
+  por vídeo combinando formatos para retención. Excepción: los UGC-largo orgánicos
+  pueden ser un único clip de ~20-30 s + B-roll de relleno hasta 30 s.
 
 ## 5. Sobre-generación y selección (calidad)
 - **R5.1** La S2 puede generar **N variaciones** por segmento (`variaciones`, seeds distintas)
