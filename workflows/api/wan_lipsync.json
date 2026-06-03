@@ -3,6 +3,22 @@
     "descripcion": "WAN talking-avatar / lip-sync por AUDIO (formato UGC). PENDIENTE: PROYECTO APARTE.",
     "pendiente_validar": true,
     "HALLAZGO_2026-06-03": "El template hearmeman v19 NO hace lip-sync por audio de fábrica. Su 'Wan Animate' es guiado por VÍDEO (necesita un vídeo conductor de la cara), no por audio. Para avatar que mueve los labios a una pista de voz hace falta un modelo dedicado AUDIO-DRIVEN: MultiTalk / InfiniteTalk (soportados por WanVideoWrapper de kijai), Sonic, o LatentSync. Esos modelos NO están en la descarga automática (download_wan22/animate) → hay que bajarlos (varios GB) y construir su workflow. Además, los pods SECURE H100 se autodestruyeron 2 veces el 2026-06-03 (inestabilidad de RunPod). Conclusión: lip-sync = mini-proyecto con infra estable, no validación rápida. Mientras tanto el formato ugc cae a wan_i2v (retrato animado con prompt de habla sutil).",
+    "PLAN_ALTERNATIVA_COMFY (2026-06-03)": {
+      "motor": "WAN + InfiniteTalk (recomendado) o MultiTalk, vía ComfyUI-WanVideoWrapper (kijai) — equivalente open-source al Wan 2.7 de Higgsfield, corre en el propio RunPod (coste = minutos de GPU).",
+      "modelos_a_bajar_una_vez": [
+        "InfiniteTalk o MultiTalk weights (HuggingFace; kijai publica versiones listas para ComfyUI) -> models/diffusion_models",
+        "wav2vec2 audio feature extractor (p.ej. chinese-wav2vec2-base / facebook wav2vec2) -> models/audio_encoders o transformers",
+        "Base WAN i2v 14B + wan_2.1_vae + umt5_xxl (YA se descargan con download_wan22)"
+      ],
+      "pasos_validacion": [
+        "1. Pod estable arriba. Bajar los pesos (wget/hf en /ComfyUI/models/...).",
+        "2. curl /object_info -> localizar nodos de audio de WanVideoWrapper (p.ej. WanVideo MultiTalk/InfiniteTalk embeds, Load Audio, Wav2Vec encode).",
+        "3. Construir grafo API: LoadImage(retrato) + LoadAudio(voz) + wav2vec encode -> audio embeds -> WanVideoSampler(i2v + audio) -> decode -> VHS_VideoCombine.",
+        "4. Validar con /prompt, iterar leyendo errores.",
+        "5. Guardar aquí (formato API) con _meta.inject = {image, audio, positive, seed, prefix} y quitar pendiente_validar."
+      ],
+      "integracion": "Sin cambios de arquitectura: formats.py ya mapea ugc->wan_lipsync; comfy_run.py ya inyecta image+audio; tts genera la voz (audio-first); assemble_pkg compone el clip. comfy_doctor verifica los pesos antes de gastar GPU."
+    },
     "inject_esperado": {
       "image":  "retrato del avatar (LoadImage)",
       "audio":  "audio de ElevenLabs (LoadAudio / VHS_LoadAudio)",

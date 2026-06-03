@@ -33,17 +33,24 @@ workflows ComfyUI **ya guardados**, monta en local y **apaga/borra el pod**.
 8. **APAGA/BORRA el pod** (stop si lo reusarás; **DELETE** si fue desechable — el
    disco factura aunque esté EXITED).
 
-## Validar `wan_lipsync` (una sola vez)
-La plantilla `workflows/api/wan_lipsync.json` está `pendiente_validar`. Con el pod vivo:
-1. `curl /object_info` y localiza la cadena de lip-sync (WanVideoWrapper / Wan
-   Animate, o un nodo audio-driven; el pod hermano `marli-lipsync` es referencia).
-2. Carga el workflow de ejemplo del template
-   (`/ComfyUI/user/default/workflows/Wan Animate/…`), pásalo a formato API.
-3. Construye el grafo API, añade `LoadImage` (retrato) + nodo de audio
-   (`VHS_LoadAudio`/`LoadAudio`) + salida, valida con `/prompt`.
-4. Guarda en `workflows/api/wan_lipsync.json` con su mapa `_meta.inject`
-   (`image`, `audio`, `positive`, `seed`, `prefix`) y quita `pendiente_validar`.
-Tras esto, `comfy_run.py` lo usa igual que `wan_i2v` (reutilizable).
+## Validar `wan_lipsync` — lip-sync por AUDIO (setup de una vez)
+Alternativa open-source al Wan 2.7 de Higgsfield: **WAN + InfiniteTalk** (o MultiTalk)
+vía ComfyUI-WanVideoWrapper (kijai, ya instalado). OJO: el *Wan Animate* del template
+es guiado por VÍDEO, NO por audio — no sirve para esto.
+
+1. **Pod estable** arriba (los H100 SECURE estuvieron tirando pods el 2026-06-03; reintentar).
+2. **Bajar pesos una vez** (no vienen con download_wan22): InfiniteTalk/MultiTalk →
+   `/ComfyUI/models/diffusion_models`; **wav2vec2** (encoder de audio) → `models/audio_encoders`.
+   (La base WAN i2v + vae + umt5 ya están con download_wan22.)
+3. `curl /object_info` → localizar nodos de audio de WanVideoWrapper (embeds MultiTalk/
+   InfiniteTalk, LoadAudio, wav2vec encode).
+4. Construir grafo API: `LoadImage`(retrato) + `LoadAudio`(voz) + wav2vec encode →
+   audio embeds → `WanVideoSampler`(i2v+audio) → decode → `VHS_VideoCombine`. Validar con `/prompt`.
+5. Guardar en `workflows/api/wan_lipsync.json` con `_meta.inject` =
+   `{image, audio, positive, seed, prefix}` y quitar `pendiente_validar`.
+
+Tras esto, `comfy_run.py` lo usa igual que `wan_i2v` (reutilizable). Flujo audio-first:
+`openai_tts.py`/`tts_eleven.py` → voz → comfy_run inyecta retrato+voz → clip lip-sync.
 
 ## Gotchas (no repetir errores)
 - ComfyUI en `/ComfyUI`, input `/ComfyUI/input`; nunca globs desde `/`.
