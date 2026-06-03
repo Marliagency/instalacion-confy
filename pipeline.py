@@ -17,11 +17,19 @@ import json
 import os
 
 ENGINE_BY_FORMAT = {
+    # vídeo generativo (WAN i2v) — mismo motor, cambia el prompt/cámara
     "cinematic": "wan_i2v",
     "pov_phone": "wan_i2v",
     "product":   "wan_i2v",
+    "screen_demo": "wan_i2v",   # pantalla/UI del producto en acción
+    "hands_asmr":  "wan_i2v",   # manos interactuando, estética ASMR
+    # avatar hablando (lip-sync a audio)
     "ugc":       "wan_lipsync",
-    "slideshow": "slideshow_ffmpeg",
+    # composiciones locales (ffmpeg, sin GPU)
+    "slideshow":    "slideshow_ffmpeg",
+    "kinetic_text": "ffmpeg_card",   # tipografía animada (hook/CTA)
+    "stat_reveal":  "ffmpeg_card",   # número grande animado
+    "before_after": "ffmpeg_ba",     # antes (caos) → después (calma)
 }
 
 # Tamaño de imagen OpenAI más cercano al aspecto de salida

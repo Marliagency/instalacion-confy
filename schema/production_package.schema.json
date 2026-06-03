@@ -91,8 +91,8 @@
         "id": {"type": "string", "description": "Identificador del clip de salida (outputs/clips/<id>.mp4)."},
         "formato": {
           "type": "string",
-          "enum": ["cinematic", "pov_phone", "product", "slideshow", "ugc"],
-          "description": "cinematic/pov_phone/product => motor wan_i2v · slideshow => ffmpeg (sin GPU) · ugc => wan_lipsync (audio ElevenLabs)"
+          "enum": ["cinematic", "pov_phone", "product", "screen_demo", "hands_asmr", "slideshow", "kinetic_text", "stat_reveal", "before_after", "ugc"],
+          "description": "cinematic/pov_phone/product/screen_demo/hands_asmr => wan_i2v · slideshow/kinetic_text/stat_reveal/before_after => ffmpeg (sin GPU) · ugc => wan_lipsync (audio)"
         },
         "duracion_s": {"type": "number", "default": 5},
         "frames": {"type": "integer", "description": "Solo motores WAN; ~81 = 5s @16fps (sweet spot)."},
