@@ -42,7 +42,7 @@ def caption_clip(src, text, out, tmpdir, idx):
     """Normaliza el clip a 9:16 y le quema el lower-third de marca con fade."""
     D = dur(src)
     tf = os.path.join(tmpdir, f"cap{idx}.txt")
-    open(tf, "w").write(text)
+    open(tf, "w").write((text or "").upper())   # R3.2: texto SIEMPRE en mayúsculas
     a_in, a_out = 0.45, 0.55  # fade in/out del texto
     # alpha del texto en función del tiempo del clip
     alpha = (f"if(lt(t,{a_in}),t/{a_in},"
@@ -65,9 +65,9 @@ def caption_clip(src, text, out, tmpdir, idx):
 
 def outro_card(out, tmpdir, seconds=3.2):
     """Tarjeta de cierre: fondo crema, wordmark 'marli' rojo, tagline y CTA."""
-    tag = os.path.join(tmpdir,"tag.txt");  open(tag,"w").write("IA para psicólogos")
-    cta = os.path.join(tmpdir,"cta.txt");  open(cta,"w").write("Pago único · se queda contigo para siempre")
-    fin = os.path.join(tmpdir,"fin.txt");  open(fin,"w").write("marli")
+    tag = os.path.join(tmpdir,"tag.txt");  open(tag,"w").write("IA PARA PSICÓLOGOS")
+    cta = os.path.join(tmpdir,"cta.txt");  open(cta,"w").write("PAGO ÚNICO · SE QUEDA CONTIGO PARA SIEMPRE")
+    fin = os.path.join(tmpdir,"fin.txt");  open(fin,"w").write("marli")   # wordmark = logo (se mantiene)
     fade = (f"if(lt(t,0.5),t/0.5,if(gt(t,{seconds-0.6}),max(0\\,({seconds}-t)/0.6),1))")
     vf = (
         f"format=yuv420p,fps={FPS},"

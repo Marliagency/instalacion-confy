@@ -51,6 +51,10 @@ Objetivo: **máxima retención** en redes (TikTok/Reels/Shorts). Cada pieza sigu
 - **R3.1** Estilo de marca en TODOS los prompts vía `{ESTILO}` (render 3D limpio,
   luz suave, rojo `#E24B4A`, crema `#FAF6F1`, sin neón/cyberpunk).
 - **R3.2** Tipografía **Inter**; palabra clave en **rojo Marli**; lower-third con barra de acento.
+- **R3.2b — TODO el texto en pantalla va SIEMPRE en MAYÚSCULAS** (más impacto, mejor
+  lectura en silencio). Forzado en código: `assemble_final.caption_clip`, las tarjetas
+  de slideshow y los builders ffmpeg ponen `.upper()` aunque el guion venga en minúsculas.
+  Excepción: el **wordmark `marli`** (es el logo, se mantiene en minúsculas).
 - **R3.3** Robot **Li** presente cuando aplique. Cada pieza termina con `cierre_marca`.
 - **R3.4** Slideshow: tarjeta de valor (`texto`) por still.
 

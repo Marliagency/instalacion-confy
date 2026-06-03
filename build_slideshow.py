@@ -37,7 +37,7 @@ def build_one(images, out, W, H, FPS, total_s, captions=None, tmpdir="/tmp/marli
               f"zoompan=z='{z}':d={frames}:s={W}x{H}:fps={FPS}:"
               f"x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)',setsar=1,format=yuv420p")
         if captions[i]:
-            tf = os.path.join(tmpdir, f"cap{i}.txt"); open(tf, "w").write(captions[i])
+            tf = os.path.join(tmpdir, f"cap{i}.txt"); open(tf, "w").write(captions[i].upper())  # R3.2 mayúsculas
             tfp = tf.replace(":", "\\:")
             vf += (f",drawbox=x=(iw-130)/2:y={ty-42}:w=130:h=7:color={RED}@0.95:t=fill"
                    f",drawtext=fontfile={FONT_B}:textfile={tfp}:fontcolor=white:fontsize=64:"
