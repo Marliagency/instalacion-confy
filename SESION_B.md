@@ -20,16 +20,19 @@ workflows ComfyUI **ya guardados**, monta en local y **apaga/borra el pod**.
 3. **Imágenes (OpenAI, in-pod)**: con `pod_exec.py` ejecuta `openai_images.py
    --package … --quality medium` guardando los PNG en `/ComfyUI/input`; descárgalos
    también a `outputs/images` (vía `/view?type=input`, con header User-Agent).
-4. **Voz (ElevenLabs, in-pod)**: `tts_eleven.py --package …` → audios; sube los de
-   avatar (`<segid>.mp3/.wav`) al `input` del pod para el lip-sync; guarda los `_vo`
-   en `outputs/voice` para el montaje. **Música (ElevenLabs, in-pod)**:
-   `music_eleven.py --package … --out outputs/music.mp3`.
-5. **Clips ComfyUI**: `python3 comfy_run.py --comfy-url <URL> --package …` →
-   genera i2v (cinematic/pov/product) y ugc (lipsync) en `outputs/clips`.
+4. **Voz (in-pod, audio-first)**: `python3 tts.py --package …` → usa ElevenLabs si hay
+   key válida, si no cae a OpenAI TTS. Genera `<uid>.mp3` (avatar→lip-sync) y
+   `<uid>_vo.mp3` (voz en off). Para los UGC, sube `<uid>.mp3` al input del pod.
+   **Música (opcional, ElevenLabs)**: `music_eleven.py --package … --out outputs/music.mp3`
+   (si no, usa `assets/bed.wav`).
+5. **Clips ComfyUI (todos)**: `python3 comfy_run.py --comfy-url <URL> --package …` →
+   i2v (cinematic/pov/product) y ugc (lipsync) en `outputs/clips` (por `uid`).
 6. **Slideshows (local)**: `python3 build_slideshow.py --package … --images outputs/images`.
-7. **Montaje final**: `python3 assemble_pkg.py --package …` (ordena clips, quema
-   textos, coloca voz por segmento + música, cierre de marca) → `outputs/marli_final.mp4`.
-   Entrega con SendUserFile.
+7. **Montaje final**: `python3 assemble_pkg.py --package … --out-dir outputs` →
+   **un MP4 por pieza** (`outputs/<pieza_id>.mp4`). Entrega con SendUserFile.
+
+> Para LOTE grande (muchas piezas) ver `SCALING.md`. Descarga imágenes/clips/voces a
+> local EN CUANTO se generan (un pod sin saldo RunPod se borra a mitad).
 8. **APAGA/BORRA el pod** (stop si lo reusarás; **DELETE** si fue desechable — el
    disco factura aunque esté EXITED).
 

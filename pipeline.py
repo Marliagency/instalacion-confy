@@ -84,40 +84,48 @@ def image_size(pkg):
 def iter_image_items(pkg):
     """Aplana el paquete en items de imagen a generar con OpenAI.
 
-    Devuelve dicts: {id, prompt, negativo, size, seg_id, formato, idx}
-    (id = nombre de archivo PNG; para slideshow hay varios por segmento).
+    Devuelve dicts: {id, prompt, negativo, size, uid, pieza_id, seg_id, formato, idx}
+    `uid` = <pieza_id>__<seg_id> (único entre piezas); `id` = nombre de archivo PNG
+    (uid, o uid_<n> para slideshow). Así un paquete con N piezas no colisiona.
     """
     size = image_size(pkg)
     for pieza in pkg["piezas"]:
+        pid = pieza["id"]
         for seg in pieza["segmentos"]:
+            uid = f"{pid}__{seg['id']}"
             fmt = seg["formato"]
             if fmt == "slideshow":
                 for i, im in enumerate(seg.get("imagenes", []), 1):
                     yield {
-                        "id": f"{seg['id']}_{i}",
+                        "id": f"{uid}_{i}",
                         "prompt": inject_style(im.get("prompt", ""), pkg),
                         "negativo": im.get("negativo", ""),
-                        "size": size, "seg_id": seg["id"], "formato": fmt, "idx": i,
+                        "size": size, "uid": uid, "pieza_id": pid,
+                        "seg_id": seg["id"], "formato": fmt, "idx": i,
                     }
             else:
                 im = seg.get("imagen", {})
                 yield {
-                    "id": seg["id"],
+                    "id": uid,
                     "prompt": inject_style(im.get("prompt", ""), pkg),
                     "negativo": im.get("negativo", ""),
-                    "size": size, "seg_id": seg["id"], "formato": fmt, "idx": 0,
+                    "size": size, "uid": uid, "pieza_id": pid,
+                    "seg_id": seg["id"], "formato": fmt, "idx": 0,
                 }
 
 
 def iter_segments(pkg):
-    """Devuelve cada segmento resuelto con su motor y el orden de la pieza."""
+    """Devuelve cada segmento resuelto con su motor, uid y la pieza a la que pertenece."""
     order = 0
     for pieza in pkg["piezas"]:
+        seg_order = 0
         for seg in pieza["segmentos"]:
-            order += 1
+            order += 1; seg_order += 1
             yield {
                 "order": order,
+                "seg_order": seg_order,
                 "id": seg["id"],
+                "uid": f"{pieza['id']}__{seg['id']}",
                 "formato": seg["formato"],
                 "engine": ENGINE_BY_FORMAT[seg["formato"]],
                 "seg": seg,

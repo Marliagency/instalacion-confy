@@ -32,24 +32,24 @@ def positive_for(seg, pkg):
 
 
 def run_segment(base_url, seg_resolved, pkg, out_dir, audio_dir):
-    seg = seg_resolved["seg"]; engine = seg_resolved["engine"]; sid = seg["id"]
+    seg = seg_resolved["seg"]; engine = seg_resolved["engine"]; uid = seg_resolved["uid"]
     graph, inj = formats.load_template(engine)          # lanza claro si pendiente_validar
     w, h = formats.ASPECT_WAN_WH.get(pkg["salida"]["aspecto"], (480, 832))
     frames = seg.get("frames") or int(round(seg.get("duracion_s", 5) * 16))
     seed = seg.get("seed") or random.randint(0, 2**31 - 1)
     params = {
-        "image": f"{sid}.png",
+        "image": f"{uid}.png",
         "positive": positive_for(seg, pkg),
         "negative": (seg.get("imagen") or {}).get("negativo", "blurry, low quality, watermark, text"),
-        "width": w, "height": h, "length": frames, "seed": seed, "prefix": sid,
+        "width": w, "height": h, "length": frames, "seed": seed, "prefix": uid,
     }
     if engine == "wan_lipsync":
-        params["audio"] = f"{sid}.wav"   # generado por tts_eleven.py y subido al input del pod
+        params["audio"] = f"{uid}.wav"   # voz del avatar (tts) subida al input del pod
     wf = formats.inject(graph, inj, params)
-    print(f"  [{seg_resolved['order']}] {sid} ({engine}, {w}x{h}, {frames}f, seed {seed})", flush=True)
+    print(f"  [{seg_resolved['order']}] {uid} ({engine}, {w}x{h}, {frames}f, seed {seed})", flush=True)
     pid = queue(base_url, wf)
     outs = wait(base_url, pid)
-    saved = download(base_url, outs, out_dir, sid)
+    saved = download(base_url, outs, out_dir, uid)
     print(f"      OK -> {[os.path.basename(s) for s in saved]}", flush=True)
     return saved
 

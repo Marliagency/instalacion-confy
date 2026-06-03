@@ -74,15 +74,15 @@ def main():
     for s in pipeline.iter_segments(pkg):
         if s["formato"] != "slideshow":
             continue
-        seg = s["seg"]; n = len(seg.get("imagenes", []))
-        imgs = [os.path.join(args.images, f"{seg['id']}_{i}.png") for i in range(1, n+1)]
+        seg = s["seg"]; uid = s["uid"]; n = len(seg.get("imagenes", []))
+        imgs = [os.path.join(args.images, f"{uid}_{i}.png") for i in range(1, n+1)]
         missing = [p for p in imgs if not os.path.isfile(p)]
         if missing:
-            print(f"  {seg['id']}: faltan imágenes {missing}"); continue
+            print(f"  {uid}: faltan imágenes {missing}"); continue
         caps = [im.get("texto") for im in seg.get("imagenes", [])]
-        out = os.path.join(args.out, f"{seg['id']}.mp4")
+        out = os.path.join(args.out, f"{uid}.mp4")
         build_one(imgs, out, W, H, FPS, seg.get("duracion_s", 6), captions=caps)
-        print(f"  slideshow {seg['id']} -> {out}"); made += 1
+        print(f"  slideshow {uid} -> {out}"); made += 1
     print(f"Slideshows construidos: {made}")
 
 if __name__ == "__main__":

@@ -109,6 +109,7 @@ def main():
     ap.add_argument("--model", default="gpt-image-1", help="Modelo OpenAI (gpt-image-1, gpt-image-1-mini si está disponible)")
     ap.add_argument("--quality", default="medium", choices=["low", "medium", "high"], help="Calidad (medium = económico)")
     ap.add_argument("--dry-run", action="store_true", help="No llama a la API; solo muestra qué generaría")
+    ap.add_argument("--concurrency", type=int, default=6, help="Imágenes en paralelo (clave para volumen)")
     args = ap.parse_args()
 
     if args.package:
@@ -139,32 +140,40 @@ def main():
     ok, fail = [], []
     t0 = time.time()
 
-    for i, item in enumerate(items, 1):
+    if args.dry_run:
+        for i, item in enumerate(items, 1):
+            iid = item.get("id", f"img{i:02d}")
+            print(f"[{i}/{len(items)}] {iid} ({pick_size(item)}): {(item.get('prompt') or '')[:80]}")
+            (ok if item.get("prompt") else fail).append(iid if item.get("prompt") else {"id": iid, "error": "sin prompt"})
+        dt = time.time() - t0
+        print(f"\n(dry-run) {len(ok)} imágenes se generarían. Sin gasto.")
+        return
+
+    def work(item, i):
         iid = item.get("id", f"img{i:02d}")
         prompt = item.get("prompt")
         if not prompt:
-            print(f"[{i}/{len(items)}] {iid}  SALTADO (sin prompt)")
-            fail.append({"id": iid, "error": "sin prompt"})
-            continue
-        size = pick_size(item)
-        # Para image-to-video conviene un fotograma inicial nítido y sin movimiento;
-        # añadimos una pista de estilo si el item no la trae.
-        full_prompt = prompt
-        print(f"[{i}/{len(items)}] {iid}  ({item.get('tipo','video')}, {size})")
-        if args.dry_run:
-            print(f"        prompt: {full_prompt[:90]}{'...' if len(full_prompt) > 90 else ''}")
-            ok.append(iid)
-            continue
+            return iid, None, "sin prompt"
         try:
-            png = generate_image(full_prompt, size, api_key, quality=args.quality, model=args.model)
-            path = os.path.join(args.out, f"{iid}.png")
-            with open(path, "wb") as f:
+            png = generate_image(prompt, pick_size(item), api_key, quality=args.quality, model=args.model)
+            with open(os.path.join(args.out, f"{iid}.png"), "wb") as f:
                 f.write(png)
-            print(f"        OK -> {path} ({len(png)//1024} KB)")
-            ok.append(iid)
+            return iid, len(png), None
         except Exception as e:  # noqa: BLE001
-            print(f"        ERROR: {e}")
-            fail.append({"id": iid, "error": str(e)})
+            return iid, None, str(e)
+
+    import concurrent.futures
+    done = 0
+    with concurrent.futures.ThreadPoolExecutor(max_workers=max(1, args.concurrency)) as ex:
+        futs = {ex.submit(work, it, i): i for i, it in enumerate(items, 1)}
+        for fut in concurrent.futures.as_completed(futs):
+            iid, n, err = fut.result(); done += 1
+            if err:
+                print(f"[{done}/{len(items)}] {iid}  ERROR: {err}", flush=True)
+                fail.append({"id": iid, "error": err})
+            else:
+                print(f"[{done}/{len(items)}] {iid}  OK ({n//1024} KB)", flush=True)
+                ok.append(iid)
 
     dt = time.time() - t0
     print(f"\n===== IMÁGENES (OpenAI) =====")
