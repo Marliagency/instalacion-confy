@@ -1,7 +1,8 @@
 {
   "_meta": {
-    "descripcion": "WAN talking-avatar / lip-sync (formato UGC): anima un retrato para que sincronice los labios con un audio (voz ElevenLabs). PLANTILLA PENDIENTE DE VALIDAR sobre el pod: el template hearmeman v19 incluye WanVideoWrapper + Wan Animate y el pod hermano 'marli-lipsync'; hay que introspeccionar /object_info, elegir los nodos de lip-sync (p.ej. cadena WanVideo*/Animate o un nodo de audio-driven), construir el grafo API y rellenar el mapa inject.",
+    "descripcion": "WAN talking-avatar / lip-sync por AUDIO (formato UGC). PENDIENTE: PROYECTO APARTE.",
     "pendiente_validar": true,
+    "HALLAZGO_2026-06-03": "El template hearmeman v19 NO hace lip-sync por audio de fábrica. Su 'Wan Animate' es guiado por VÍDEO (necesita un vídeo conductor de la cara), no por audio. Para avatar que mueve los labios a una pista de voz hace falta un modelo dedicado AUDIO-DRIVEN: MultiTalk / InfiniteTalk (soportados por WanVideoWrapper de kijai), Sonic, o LatentSync. Esos modelos NO están en la descarga automática (download_wan22/animate) → hay que bajarlos (varios GB) y construir su workflow. Además, los pods SECURE H100 se autodestruyeron 2 veces el 2026-06-03 (inestabilidad de RunPod). Conclusión: lip-sync = mini-proyecto con infra estable, no validación rápida. Mientras tanto el formato ugc cae a wan_i2v (retrato animado con prompt de habla sutil).",
     "inject_esperado": {
       "image":  "retrato del avatar (LoadImage)",
       "audio":  "audio de ElevenLabs (LoadAudio / VHS_LoadAudio)",
