@@ -1,0 +1,24 @@
+{
+  "marca": {"nombre":"marli","tagline":"IA para psicólogos",
+    "paleta":{"primario":"#E24B4A","fondo":"#FAF6F1","tinta":"#2C2C2C","muted":"#6B6B6B"},
+    "fuente":"Inter","estilo_visual":"", "robot_li":true},
+  "salida": {"aspecto":"9:16","resolucion":[1080,1920],"fps":30,"duracion_objetivo_s":20,
+    "musica":{"tipo":"ambiental","ruta":"assets/bed.wav"},
+    "voz_off":{"motor":"openai","idioma":"es"}},
+  "generacion": {"imagenes":{"motor":"openai","modelo":"gpt-image-1","calidad":"medium"}},
+  "piezas": [{
+    "id":"demo","concepto":"Demo de formatos sin GPU","cierre_marca":true,
+    "segmentos":[
+      {"id":"hook","formato":"kinetic_text","duracion_s":3.5,
+       "lineas":["¿Y si tu consulta","se ordenara sola?"]},
+      {"id":"stat","formato":"stat_reveal","duracion_s":3.5,
+       "texto_pantalla":"+30%","subtexto":"de tu tiempo, de vuelta"},
+      {"id":"ba","formato":"before_after","duracion_s":5,
+       "imagenes":[{"texto":"Antes"},{"texto":"Después"}]},
+      {"id":"valor","formato":"slideshow","duracion_s":7,"kenburns":true,
+       "imagenes":[
+         {"texto":"+30% de tu tiempo"},{"texto":"Informes en segundos"},
+         {"texto":"Agenda 24/7"},{"texto":"Tus tardes, de vuelta"},{"texto":"Pago único"}]}
+    ]
+  }]
+}

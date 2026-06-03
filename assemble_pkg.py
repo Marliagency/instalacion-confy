@@ -29,6 +29,10 @@ def normalize_clip(src, out):
     return out
 
 
+# formatos que YA llevan su texto dentro del clip (no añadir lower-third encima)
+SELF_CAPTIONED = {"slideshow", "kinetic_text", "stat_reveal", "before_after"}
+
+
 def build_video(segs, pkg, tmp, cierre):
     """Genera los clips normalizados/captionados + tarjeta de cierre (de UNA pieza)."""
     clips, durs = [], []
@@ -39,7 +43,7 @@ def build_video(segs, pkg, tmp, cierre):
             sys.exit(f"Falta el clip {src} (¿generaste comfy_run / build_slideshow?).")
         out = os.path.join(tmp, f"v_{uid}.mp4")
         texto = seg.get("texto_pantalla")
-        if texto and seg["formato"] != "slideshow":
+        if texto and seg["formato"] not in SELF_CAPTIONED:
             af.caption_clip(src, texto, out, tmp, i)
         else:
             normalize_clip(src, out)
