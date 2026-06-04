@@ -6,6 +6,21 @@
   "required": ["marca", "salida", "generacion", "piezas"],
   "additionalProperties": false,
   "properties": {
+    "personajes": {
+      "type": "array",
+      "description": "Personajes persistentes (avatares). Se generan UNA vez con el mejor modelo (gpt-image-1 high) y su retrato se REUTILIZA en todos los segmentos que lo referencien (consistencia + ahorro). Los UGC usan el retrato como start_image del lip-sync.",
+      "items": {
+        "type": "object",
+        "required": ["id", "prompt"],
+        "properties": {
+          "id": {"type": "string"},
+          "prompt": {"type": "string", "description": "Retrato ULTRADETALLADO del personaje (con {ESTILO})."},
+          "negativo": {"type": "string"},
+          "calidad": {"type": "string", "enum": ["low", "medium", "high"], "default": "high"},
+          "retrato": {"type": "string", "description": "Ruta del retrato (def. assets/characters/<id>.png). Si existe, se reutiliza (no se regenera)."}
+        }
+      }
+    },
     "marca": {
       "type": "object",
       "required": ["nombre"],
@@ -123,6 +138,7 @@
             "camara": {"type": "string", "description": "p.ej. 'slow push-in', 'handheld', 'orbit'"}
           }
         },
+        "personaje": {"type": "string", "description": "ID de un personaje persistente (personajes[]). Su retrato se reutiliza como start_image (UGC) o como referencia — no se regenera la imagen del segmento."},
         "avatar": {
           "type": "object",
           "description": "Solo formato ugc: diálogo que dice el avatar (lip-sync a audio ElevenLabs).",

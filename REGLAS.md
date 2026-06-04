@@ -101,3 +101,17 @@ respetan SIEMPRE: no se cambian ni en diseño ni en forma**. Mecanismo (no es
   de diseño o forma.
 - **R7.5** Resolución de la referencia: usar la de mayor calidad disponible; mantener
   proporciones del elemento.
+
+## 8. Personajes persistentes y UGC de máxima calidad
+- **R8.1 — Personaje único, generado una vez:** el avatar se define en `personajes[]`
+  y se genera **una sola vez** con el **mejor modelo** (`gpt-image-1` calidad **`high`**)
+  → `assets/characters/<id>.png`. Si el retrato existe, se **reutiliza** (no se regenera):
+  el personaje es **idéntico en todos los vídeos** y se ahorra en imágenes.
+- **R8.2 — Reutilización:** los segmentos `ugc` referencian `personaje: "<id>"`; ese
+  retrato es el `start_image` del lip-sync. No se generan imágenes por segmento UGC.
+- **R8.3 — Vídeo (lip-sync) lo mejor:** motor `wan_lipsync` = **InfiniteTalk** (o MultiTalk)
+  a la **máxima resolución viable** (720p+), 4-pasos solo si no degrada la boca.
+- **R8.4 — Voz lo mejor:** **ElevenLabs** (`eleven_multilingual_v2`), voz premium en
+  español (`voz_id`); el audio conduce el lip-sync (audio-first).
+- **R8.5 — Coherencia:** misma cara, misma iluminación y encuadre selfie en todos los
+  UGC. La S3 rechaza tomas donde el personaje cambie de rasgos.

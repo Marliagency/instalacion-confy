@@ -38,7 +38,7 @@ def run_segment(base_url, seg_resolved, pkg, out_dir, audio_dir):
     frames = seg.get("frames") or int(round(seg.get("duracion_s", 5) * 16))
     seed = seg.get("seed") or random.randint(0, 2**31 - 1)
     params = {
-        "image": f"{uid}.png",
+        "image": seg_resolved.get("start_image") or f"{uid}.png",  # retrato del personaje si aplica
         "positive": positive_for(seg, pkg),
         "negative": (seg.get("imagen") or {}).get("negativo", "blurry, low quality, watermark, text"),
         "width": w, "height": h, "length": frames, "seed": seed, "prefix": uid,

@@ -91,6 +91,26 @@ def _refs(im):
     return refs
 
 
+def character_retrato(pkg, cid):
+    """Ruta del retrato de un personaje (definida o por defecto assets/characters/<id>.png)."""
+    for c in pkg.get("personajes", []):
+        if c["id"] == cid:
+            return c.get("retrato") or f"assets/characters/{cid}.png"
+    return f"assets/characters/{cid}.png"
+
+
+def iter_characters(pkg):
+    """Personajes persistentes a generar UNA vez (gpt-image-1, calidad alta por defecto)."""
+    for c in pkg.get("personajes", []):
+        yield {
+            "id": c["id"],
+            "prompt": inject_style(c.get("prompt", ""), pkg),
+            "negativo": c.get("negativo", ""),
+            "calidad": c.get("calidad", "high"),
+            "retrato": c.get("retrato") or f"assets/characters/{c['id']}.png",
+        }
+
+
 def image_size(pkg):
     gen = pkg.get("generacion", {}).get("imagenes", {})
     if gen.get("tamano"):
@@ -121,6 +141,9 @@ def iter_image_items(pkg):
                         "size": size, "uid": uid, "pieza_id": pid,
                         "seg_id": seg["id"], "formato": fmt, "idx": i,
                     }
+            elif seg.get("personaje"):
+                # usa el retrato del personaje (generado una vez) -> NO regenerar imagen
+                continue
             else:
                 im = seg.get("imagen", {})
                 yield {
@@ -140,15 +163,20 @@ def iter_segments(pkg):
         seg_order = 0
         for seg in pieza["segmentos"]:
             order += 1; seg_order += 1
+            uid = f"{pieza['id']}__{seg['id']}"
+            personaje = seg.get("personaje")
             yield {
                 "order": order,
                 "seg_order": seg_order,
                 "id": seg["id"],
-                "uid": f"{pieza['id']}__{seg['id']}",
+                "uid": uid,
                 "formato": seg["formato"],
                 "engine": ENGINE_BY_FORMAT[seg["formato"]],
                 "seg": seg,
                 "pieza_id": pieza["id"],
+                "personaje": personaje,
+                # imagen base: retrato del personaje (reutilizado) o la del propio segmento
+                "start_image": f"{personaje}.png" if personaje else f"{uid}.png",
             }
 
 
