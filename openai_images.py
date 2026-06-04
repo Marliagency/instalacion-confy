@@ -88,7 +88,7 @@ def _multipart(fields, files):
 
 
 def generate_image(prompt, size, api_key, quality="medium", model="gpt-image-1",
-                   ref_paths=None, timeout=300, retries=3):
+                   ref_paths=None, timeout=300, retries=8):
     """Genera (o EDITA, si hay referencias) una imagen y devuelve los bytes PNG.
 
     Con `ref_paths` usa la API de edición (image-to-image) para PRESERVAR la
@@ -174,6 +174,9 @@ def main():
         prompt = item.get("prompt")
         if not prompt:
             return iid, None, "sin prompt"
+        outp = os.path.join(args.out, f"{iid}.png")
+        if os.path.isfile(outp) and os.path.getsize(outp) > 1_000_000:
+            return iid, os.path.getsize(outp), "SKIP"   # ya existe, no regenerar
         try:
             png = generate_image(prompt, pick_size(item), api_key, quality=args.quality,
                                  model=args.model, ref_paths=item.get("referencias"))
@@ -189,7 +192,9 @@ def main():
         futs = {ex.submit(work, it, i): i for i, it in enumerate(items, 1)}
         for fut in concurrent.futures.as_completed(futs):
             iid, n, err = fut.result(); done += 1
-            if err:
+            if err == "SKIP":
+                print(f"[{done}/{len(items)}] {iid}  ya existe (skip)", flush=True); ok.append(iid)
+            elif err:
                 print(f"[{done}/{len(items)}] {iid}  ERROR: {err}", flush=True)
                 fail.append({"id": iid, "error": err})
             else:
