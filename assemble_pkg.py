@@ -22,9 +22,11 @@ VOICE_DIR = "outputs/voice"
 
 
 def normalize_clip(src, out):
-    af.run(["ffmpeg", "-y", "-i", src, "-an",
-            "-vf", f"scale={af.W}:{af.H}:force_original_aspect_ratio=increase,"
-                   f"crop={af.W}:{af.H},setsar=1,fps={af.FPS},format=yuv420p",
+    _m = af.frame_vf()
+    vf = (f"scale={af.W}:{af.H}:force_original_aspect_ratio=increase,"
+          f"crop={af.W}:{af.H},setsar=1,fps={af.FPS},format=yuv420p"
+          + ("," + _m if _m else ""))
+    af.run(["ffmpeg", "-y", "-i", src, "-an", "-vf", vf,
             "-c:v", "libx264", "-preset", "medium", "-crf", "18", "-pix_fmt", "yuv420p", out])
     return out
 

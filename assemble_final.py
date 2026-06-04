@@ -23,6 +23,17 @@ FONT_M   = "assets/fonts/Inter-Medium.ttf"
 W, H, FPS = 1080, 1920, 30
 T = 0.5  # crossfade
 
+# --- Marco editorial (frame alrededor de la imagen) ---
+# Doble filete inset de los bordes: línea roja Marli + filete crema interior.
+# Da un acabado "foto enmarcada" premium y unifica todos los formatos.
+MARCO = True
+def frame_vf():
+    """Filtro ffmpeg del marco (se aplica DESPUÉS de escalar a WxH)."""
+    if not MARCO:
+        return ""
+    return (f"drawbox=x=26:y=26:w=iw-52:h=ih-52:color={RED}@0.95:t=9,"
+            f"drawbox=x=41:y=41:w=iw-82:h=ih-82:color={CREAM}@0.85:t=2")
+
 def run(cmd):
     p = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
     if p.returncode != 0:
@@ -49,9 +60,11 @@ def caption_clip(src, text, out, tmpdir, idx):
              f"if(gt(t,{D-a_out}),max(0\\,({D}-t)/{a_out}),1))")
     show = f"between(t,0.25,{D-0.25})"   # barra de acento visible durante la frase
     ty = int(H*0.70)
+    _m = frame_vf()
     vf = (
         f"scale={W}:{H}:force_original_aspect_ratio=increase,"
         f"crop={W}:{H},setsar=1,fps={FPS},format=yuv420p,"
+        + (_m + "," if _m else "") +
         # barra de acento roja sobre el texto (iw = ancho del vídeo en drawbox)
         f"drawbox=x=(iw-150)/2:y={ty-46}:w=150:h=7:color={RED}@0.95:t=fill:enable='{show}',"
         # texto del lower-third con pastilla oscura para legibilidad

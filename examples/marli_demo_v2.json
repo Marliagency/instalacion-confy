@@ -1,0 +1,115 @@
+{
+  "marca": {
+    "nombre": "marli",
+    "tagline": "IA para psicólogos",
+    "paleta": {
+      "primario": "#E24B4A",
+      "acento": "#FF3B30",
+      "fondo": "#FAF6F1",
+      "tinta": "#2C2C2C",
+      "muted": "#6B6B6B"
+    },
+    "fuente": "Inter",
+    "estilo_visual": "ultra-clean 3D render in the style of Octane and Unreal Engine, soft cinematic lighting, modern minimalist psychology office, deep red (#E24B4A) accents, cream (#FAF6F1) tones, premium editorial advertising aesthetic, no neon, no cyberpunk, no oversaturation. The Marli mascot 'Li' is a friendly HUMANOID robot with a glossy deep red and white body, a rounded-square head that is a black screen displaying a simple white pixel smiley face (two dot eyes and a curved smile), and a silver chest plate reading 'MARLI'",
+    "robot_li": true
+  },
+  "salida": {
+    "aspecto": "9:16",
+    "resolucion": [1080, 1920],
+    "fps": 30,
+    "duracion_objetivo_s": 35,
+    "musica": {
+      "tipo": "accion",
+      "ruta": "outputs/music_action.mp3"
+    },
+    "voz_off": {
+      "motor": "elevenlabs",
+      "voz_id": "KHCvMklQZZo0O30ERnVn",
+      "idioma": "es"
+    }
+  },
+  "generacion": {
+    "imagenes": {
+      "motor": "openai",
+      "modelo": "gpt-image-1",
+      "calidad": "medium",
+      "tamano": "1024x1536"
+    }
+  },
+  "personajes": [
+    {
+      "id": "li_creadora",
+      "calidad": "high",
+      "prompt": "{ESTILO}. Ultra-detailed close-up beauty portrait of a strikingly beautiful warm female content creator in her late 20s (stylized 3D character, not a real recognizable person): flawless luminous natural skin with soft freckles, radiant captivating smile, large expressive almond eyes looking straight to camera, long glossy wavy chestnut hair framing the face, delicate elegant minimal makeup, soft cream blazer over a fitted white top, small gold earrings, bright airy minimalist psychology office with a soft cream wall behind, beauty-dish softbox window light camera-left, gentle rim light, 50mm, shallow depth of field, premium vertical UGC selfie framing, photoreal premium advertising quality",
+      "negativo": "text, watermark, logo, celebrity likeness, real person, deformed face, asymmetric eyes, extra fingers, plastic waxy skin, heavy makeup, neon, oversaturated, low quality, blurry"
+    }
+  ],
+  "piezas": [
+    {
+      "id": "demo_v2",
+      "concepto": "Demo v2 — creadora premium con doble aparición, marcos y música de acción",
+      "gancho": "La creadora confiesa que despidió a su mejor empleada (open loop). Payoff: era ella misma.",
+      "cierre_marca": true,
+      "segmentos": [
+        {
+          "id": "s1",
+          "formato": "ugc",
+          "personaje": "li_creadora",
+          "duracion_s": 7,
+          "avatar": {
+            "dialogo": "Vale, voy a confesar algo incómodo. Despedí a la persona que más trabajaba en mi consulta. Y fue la mejor decisión de mi carrera."
+          },
+          "texto_pantalla": "«Despedí a mi mejor empleada»",
+          "seed": 7101
+        },
+        {
+          "id": "s2",
+          "formato": "cinematic",
+          "duracion_s": 5,
+          "texto_pantalla": "Tu consulta depende 100% de ti.",
+          "voz_off": "Mensajes sin responder. Informes a mano. Todo cae sobre ti."
+        },
+        {
+          "id": "s3",
+          "formato": "pov_phone",
+          "duracion_s": 5,
+          "texto_pantalla": "Li lo ordena todo por ti.",
+          "voz_off": "Con Li, no. Confirma tus citas y redacta tus informes solo."
+        },
+        {
+          "id": "s4",
+          "formato": "product",
+          "duracion_s": 5,
+          "texto_pantalla": "No es una herramienta. Es un sistema.",
+          "voz_off": "Tú acompañas a tus pacientes. Li te acompaña a ti."
+        },
+        {
+          "id": "s5",
+          "formato": "ugc",
+          "personaje": "li_creadora",
+          "duracion_s": 9,
+          "avatar": {
+            "dialogo": "Esa empleada era yo, contestando mensajes a medianoche. Hoy Li agenda, confirma y hace el seguimiento por mí. Pago único, y se queda conmigo para siempre."
+          },
+          "texto_pantalla": "«Era yo. Ahora es Li.»",
+          "seed": 7105
+        },
+        {
+          "id": "s6",
+          "formato": "slideshow",
+          "duracion_s": 7,
+          "kenburns": true,
+          "texto_pantalla": null,
+          "voz_off": "Pago único. Sin cuotas. Para siempre.",
+          "imagenes": [
+            {"prompt": "{ESTILO}. The Marli robot Li glowing on a tidy desk, a calm wall clock, sense of time regained", "texto": "+30% de tu tiempo"},
+            {"prompt": "{ESTILO}. Close-up of a clean professional psychological report auto-generated on a laptop", "texto": "Informes en segundos"},
+            {"prompt": "{ESTILO}. A phone showing an automatic friendly appointment-confirmation chat at night", "texto": "Agenda 24/7"},
+            {"prompt": "{ESTILO}. A serene psychologist relaxing with coffee at sunset, free time regained", "texto": "Tus tardes, de vuelta"},
+            {"prompt": "{ESTILO}. Minimalist still of the Marli robot Li beside a single clean price card", "texto": "Pago único"}
+          ]
+        }
+      ]
+    }
+  ]
+}
