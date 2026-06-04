@@ -25,6 +25,32 @@
      "241",
      "positive_prompt"
     ]
+   ],
+   "num_frames": [
+    [
+     "194",
+     "num_frames"
+    ]
+   ],
+   "width": [
+    [
+     "192",
+     "width"
+    ],
+    [
+     "281",
+     "width"
+    ]
+   ],
+   "height": [
+    [
+     "192",
+     "height"
+    ],
+    [
+     "281",
+     "height"
+    ]
    ]
   },
   "modelos_requeridos": {

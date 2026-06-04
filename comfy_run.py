@@ -44,7 +44,19 @@ def run_segment(base_url, seg_resolved, pkg, out_dir, audio_dir):
         "width": w, "height": h, "length": frames, "seed": seed, "prefix": uid,
     }
     if engine == "wan_lipsync":
-        params["audio"] = f"{uid}.wav"   # voz del avatar (tts) subida al input del pod
+        import subprocess
+        vp = os.path.join("outputs/voice", f"{uid}.mp3")
+        nf = 110
+        if os.path.isfile(vp):
+            try:
+                d = float(subprocess.run(["ffprobe", "-v", "error", "-show_entries", "format=duration",
+                          "-of", "default=nokey=1:noprint_wrappers=1", vp], capture_output=True, text=True).stdout.strip())
+                nf = max(25, min(int(round(d * 25)), 501))   # frames @25fps según la voz
+            except Exception:
+                pass
+        params["audio"] = f"{uid}.mp3"      # voz del avatar (ElevenLabs) subida al input del pod
+        params["num_frames"] = nf
+        params["width"] = w; params["height"] = h
     wf = formats.inject(graph, inj, params)
     print(f"  [{seg_resolved['order']}] {uid} ({engine}, {w}x{h}, {frames}f, seed {seed})", flush=True)
     pid = queue(base_url, wf)
