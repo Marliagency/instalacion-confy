@@ -1,0 +1,153 @@
+{
+  "marca": {
+    "nombre": "marli",
+    "tagline": "IA para psicólogos",
+    "paleta": {"primario": "#E24B4A", "acento": "#FF3B30", "fondo": "#FAF6F1", "tinta": "#2C2C2C", "muted": "#6B6B6B"},
+    "fuente": "Inter",
+    "estilo_visual": "ultra-clean 3D render in the style of Octane and Unreal Engine, soft cinematic lighting, modern minimalist psychology office, deep red (#E24B4A) accents, cream (#FAF6F1) tones, premium editorial advertising aesthetic, no neon, no cyberpunk, no oversaturation. The Marli mascot 'Li' is a friendly HUMANOID robot with a glossy deep red and white body, a rounded-square head that is a black screen displaying a simple white pixel smiley face (two dot eyes and a curved smile), and a silver chest plate reading 'MARLI'",
+    "robot_li": true
+  },
+  "salida": {
+    "aspecto": "9:16", "resolucion": [1080, 1920], "fps": 30, "duracion_objetivo_s": 30,
+    "musica": {"tipo": "ambiental", "ruta": "assets/bed.wav"},
+    "voz_off": {"motor": "elevenlabs", "voz_id": "KHCvMklQZZo0O30ERnVn", "idioma": "es"}
+  },
+  "generacion": {"imagenes": {"motor": "openai", "modelo": "gpt-image-1", "calidad": "medium", "tamano": "1024x1536"}},
+  "personajes": [
+    {"id": "li_psicologa", "calidad": "high",
+     "prompt": "{ESTILO}. Ultra-detailed close-up portrait of a calm warm female psychologist in her 30s (stylized 3D character, not a real recognizable person): natural soft skin, gentle confident smile, expressive eyes to camera, shoulder-length dark hair, cream knit sweater, bright minimalist office, softbox window light camera-left, 50mm, shallow DoF, casual selfie framing",
+     "negativo": "text, watermark, celebrity, deformed face, extra fingers, plastic skin, neon, oversaturated"}
+  ],
+  "piezas": [
+    {
+      "id": "ad01_undia", "concepto": "Un día con Li — storytelling flagship",
+      "gancho": "Una psicóloga confiesa que dejó de hacerlo todo ella (open loop: ¿qué cambió?)",
+      "cierre_marca": true,
+      "segmentos": [
+        {"id": "s1", "formato": "ugc", "personaje": "li_psicologa", "duracion_s": 6, "frames": 96,
+         "avatar": {"dialogo": "¿Sabes qué cambió mi consulta? Dejé de intentar hacerlo todo yo."},
+         "texto_pantalla": "«Dejé de hacerlo todo yo.»", "seed": 3101},
+        {"id": "s2", "formato": "cinematic", "duracion_s": 5, "frames": 81,
+         "imagen": {"prompt": "{ESTILO}. A wooden desk at dawn cluttered with stacks of paper reports and sticky notes, a phone glowing with unread notifications, empty chair, quiet overwhelm", "negativo": "text, people faces, neon, blurry"},
+         "animacion": {"prompt_movimiento": "dust motes in a light beam, phone screen blinking", "camara": "slow push-in"},
+         "texto_pantalla": "Tu consulta depende 100% de ti.", "voz_off": "Mensajes sin responder. Informes a mano. Tu consulta entera sobre ti.", "seed": 3102},
+        {"id": "s3", "formato": "pov_phone", "duracion_s": 5, "frames": 81,
+         "imagen": {"prompt": "{ESTILO}. POV first-person of a hand holding a smartphone showing a clean calm CRM dashboard with neat patient cards and confirmed appointments, cozy desk blurred behind, handheld phone-camera look", "negativo": "gibberish text, neon, deformed hand"},
+         "animacion": {"prompt_movimiento": "subtle handheld shake, thumb scrolling", "camara": "handheld"},
+         "texto_pantalla": "Li lo ordena todo por ti.", "voz_off": "Con Li, no. Confirma tus citas y redacta tus informes.", "seed": 3103},
+        {"id": "s4", "formato": "product", "duracion_s": 5, "frames": 81,
+         "imagen": {"prompt": "{ESTILO}. Hero product shot of the Marli robot Li (red-and-white humanoid robot with a black screen face showing a white smiley and a 'MARLI' silver chest plate) standing on a clean minimalist desk, softly lit, glowing screen smile, generous negative space", "negativo": "text gibberish, scary robot, clutter, neon", "referencias": ["assets/characters/li_robot.png"]},
+         "animacion": {"prompt_movimiento": "the robot's screen smile gently glowing, soft volumetric light, slow parallax", "camara": "slow orbit"},
+         "texto_pantalla": "No es una herramienta. Es un sistema.", "voz_off": "Tú acompañas a tus pacientes. Li te acompaña a ti.", "seed": 3104},
+        {"id": "s5", "formato": "slideshow", "duracion_s": 7, "kenburns": true,
+         "imagenes": [
+           {"prompt": "{ESTILO}. The Marli robot Li glowing on a tidy desk, a calm wall clock, sense of time regained", "texto": "+30% de tu tiempo"},
+           {"prompt": "{ESTILO}. Close-up of a clean professional psychological report auto-generated on a laptop", "texto": "Informes en segundos"},
+           {"prompt": "{ESTILO}. A phone showing an automatic friendly appointment-confirmation chat at night", "texto": "Agenda 24/7"},
+           {"prompt": "{ESTILO}. A serene psychologist relaxing with coffee at sunset, free time regained", "texto": "Tus tardes, de vuelta"},
+           {"prompt": "{ESTILO}. Minimalist still of the Marli robot Li beside a single clean price card", "texto": "Pago único"}
+         ],
+         "texto_pantalla": null, "voz_off": "Pago único. Sin cuotas. Para siempre.", "seed": 3105}
+      ]
+    },
+    {
+      "id": "ad02_error", "concepto": "El error silencioso — hook de dolor",
+      "gancho": "Dato impactante: el 80% pierde pacientes por una razón que no ven",
+      "cierre_marca": true,
+      "segmentos": [
+        {"id": "s1", "formato": "kinetic_text", "duracion_s": 3.5,
+         "lineas": ["El 80% de los psicólogos", "pierde pacientes", "por ESTO"], "seed": 3201},
+        {"id": "s2", "formato": "stat_reveal", "duracion_s": 3.5,
+         "texto_pantalla": "8 h", "subtexto": "a la semana en papeleo", "seed": 3202},
+        {"id": "s3", "formato": "before_after", "duracion_s": 5,
+         "imagenes": [
+           {"prompt": "{ESTILO}. A psychology desk in chaos: papers everywhere, phone full of notifications, stress", "texto": "Antes"},
+           {"prompt": "{ESTILO}. The same desk calm and tidy, the Marli robot Li glowing softly, order and peace", "texto": "Después", "referencias": ["assets/characters/li_robot.png"]}
+         ],
+         "texto_pantalla": null, "voz_off": "De caos a calma, sin mover un dedo.", "seed": 3203},
+        {"id": "s4", "formato": "screen_demo", "duracion_s": 5, "frames": 81,
+         "imagen": {"prompt": "{ESTILO}. Screen/UI of the Marli system auto-writing a professional psychological report, clean elegant interface, progress check marks", "negativo": "gibberish text, neon"},
+         "animacion": {"prompt_movimiento": "text lines appearing, a check mark animating", "camara": "slow push-in"},
+         "texto_pantalla": "Informes en 90 segundos.", "voz_off": "Lo que te llevaba una hora, ahora son segundos.", "seed": 3204},
+        {"id": "s5", "formato": "pov_phone", "duracion_s": 5, "frames": 81,
+         "imagen": {"prompt": "{ESTILO}. POV hand holding phone, an automatic appointment confirmation chat replying to a patient at night", "negativo": "gibberish text, deformed hand"},
+         "animacion": {"prompt_movimiento": "message bubbles appearing, gentle handheld", "camara": "handheld"},
+         "texto_pantalla": "Responde por ti. 24/7.", "voz_off": "Y responde a tus pacientes mientras descansas.", "seed": 3205}
+      ]
+    },
+    {
+      "id": "ad03_tiempo", "concepto": "Recupera tu tiempo — stat driven",
+      "gancho": "Abre con el número grande +30% y promete devolverte las tardes",
+      "cierre_marca": true,
+      "segmentos": [
+        {"id": "s1", "formato": "stat_reveal", "duracion_s": 3.5,
+         "texto_pantalla": "+30%", "subtexto": "de tu tiempo, de vuelta", "seed": 3301},
+        {"id": "s2", "formato": "hands_asmr", "duracion_s": 5, "frames": 81,
+         "imagen": {"prompt": "{ESTILO}. ASMR close-up of relaxed hands holding a warm cup of coffee on a tidy desk, soft daylight, sense of calm", "negativo": "deformed hands, extra fingers, neon"},
+         "animacion": {"prompt_movimiento": "steam rising slowly, fingers gently shifting", "camara": "macro static"},
+         "texto_pantalla": "Recupera tus tardes.", "voz_off": "Imagina cerrar el portátil y que todo esté hecho.", "seed": 3302},
+        {"id": "s3", "formato": "cinematic", "duracion_s": 5, "frames": 81,
+         "imagen": {"prompt": "{ESTILO}. A calm psychologist fully present with a patient on a soft couch in a serene tidy office, warm light", "negativo": "deformed faces, neon, clutter"},
+         "animacion": {"prompt_movimiento": "gentle breathing, curtains moving softly", "camara": "slow push-in"},
+         "texto_pantalla": "Tú, con tus pacientes.", "voz_off": "Tú haces lo que importa: estar presente.", "seed": 3303},
+        {"id": "s4", "formato": "product", "duracion_s": 5, "frames": 81,
+         "imagen": {"prompt": "{ESTILO}. The Marli robot Li working at night in a dim office, screen smile glowing, organizing holographic appointment cards while everyone sleeps", "negativo": "scary robot, neon excess", "referencias": ["assets/characters/li_robot.png"]},
+         "animacion": {"prompt_movimiento": "holographic cards sorting, screen glow pulsing", "camara": "slow orbit"},
+         "texto_pantalla": "Li trabaja mientras duermes.", "voz_off": "Y Li hace el resto, mientras tú descansas.", "seed": 3304},
+        {"id": "s5", "formato": "slideshow", "duracion_s": 7, "kenburns": true,
+         "imagenes": [
+           {"prompt": "{ESTILO}. The Marli robot Li on a tidy desk", "texto": "Sin papeleo"},
+           {"prompt": "{ESTILO}. Auto-generated report on a laptop", "texto": "Informes solos"},
+           {"prompt": "{ESTILO}. Phone with confirmed appointments", "texto": "Agenda 24/7"},
+           {"prompt": "{ESTILO}. The Marli robot Li beside a single price card, one-time payment feel", "texto": "Pago único"}
+         ],
+         "texto_pantalla": null, "voz_off": "Un sistema completo. Pago único, para siempre.", "seed": 3305}
+      ]
+    },
+    {
+      "id": "ad04_testimonio", "concepto": "Testimonio orgánico — UGC largo",
+      "gancho": "Confesión cercana en primera persona de 20s, formato orgánico",
+      "cierre_marca": true,
+      "segmentos": [
+        {"id": "s1", "formato": "ugc", "personaje": "li_psicologa", "duracion_s": 20,
+         "avatar": {"dialogo": "Antes pasaba ocho horas a la semana en papeleo. Ahora Li confirma mis citas, responde a mis pacientes y redacta los informes mientras yo descanso. Recuperé mis tardes, y no pago ninguna cuota: lo compré una vez y es mío para siempre."},
+         "texto_pantalla": "Testimonio real", "seed": 3401},
+        {"id": "s2", "formato": "product", "duracion_s": 5, "frames": 81,
+         "imagen": {"prompt": "{ESTILO}. Hero shot of the Marli robot Li on a clean desk, screen smile glowing, premium beauty light", "negativo": "scary robot, clutter, neon", "referencias": ["assets/characters/li_robot.png"]},
+         "animacion": {"prompt_movimiento": "screen smile glowing, slow parallax", "camara": "slow orbit"},
+         "texto_pantalla": "Conoce a Li.", "voz_off": "Li: la IA que sostiene tu consulta.", "seed": 3402},
+        {"id": "s3", "formato": "kinetic_text", "duracion_s": 3.5,
+         "lineas": ["No es una herramienta.", "Es un sistema."], "seed": 3403},
+        {"id": "s4", "formato": "slideshow", "duracion_s": 6, "kenburns": true,
+         "imagenes": [
+           {"prompt": "{ESTILO}. Calm psychologist with free time", "texto": "+30% de tu tiempo"},
+           {"prompt": "{ESTILO}. Auto report on laptop", "texto": "Informes en segundos"},
+           {"prompt": "{ESTILO}. The Marli robot Li beside a price card", "texto": "Pago único"}
+         ],
+         "texto_pantalla": null, "voz_off": "Pago único, sin cuotas, para siempre.", "seed": 3404}
+      ]
+    },
+    {
+      "id": "ad05_kit", "concepto": "Kit de inicio gratis — lead magnet",
+      "gancho": "Regalo inesperado: 'te doy mi sistema de informes gratis'",
+      "cierre_marca": true,
+      "segmentos": [
+        {"id": "s1", "formato": "ugc", "personaje": "li_psicologa", "duracion_s": 6, "frames": 96,
+         "avatar": {"dialogo": "Te voy a regalar mis plantillas de informes. Sí, gratis."},
+         "texto_pantalla": "«Gratis. En serio.»", "seed": 3501},
+        {"id": "s2", "formato": "screen_demo", "duracion_s": 5, "frames": 81,
+         "imagen": {"prompt": "{ESTILO}. Screen/UI showing a clean kit of professional psychological report templates ready to fill, elegant typography", "negativo": "gibberish text, neon"},
+         "animacion": {"prompt_movimiento": "templates sliding in, a download arrow animating", "camara": "slow push-in"},
+         "texto_pantalla": "5 plantillas de informes.", "voz_off": "Cinco plantillas listas para rellenar.", "seed": 3502},
+        {"id": "s3", "formato": "hands_asmr", "duracion_s": 5, "frames": 81,
+         "imagen": {"prompt": "{ESTILO}. ASMR close-up of a hand tapping 'download' on a phone, satisfying clean UI", "negativo": "deformed hands, gibberish text, neon"},
+         "animacion": {"prompt_movimiento": "finger tapping, a checkmark popping", "camara": "macro static"},
+         "texto_pantalla": "Descárgalo en 1 toque.", "voz_off": "Te ahorran dos horas el primer día.", "seed": 3503},
+        {"id": "s4", "formato": "stat_reveal", "duracion_s": 3.5,
+         "texto_pantalla": "Gratis", "subtexto": "el Kit de inicio Marli", "seed": 3504},
+        {"id": "s5", "formato": "kinetic_text", "duracion_s": 3.5,
+         "lineas": ["Comenta", "«MARLI»", "y te lo envío"], "seed": 3505}
+      ]
+    }
+  ]
+}
