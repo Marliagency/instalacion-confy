@@ -84,8 +84,13 @@ def main():
 
         # ---- 1. retrato creadora (gpt-image-1 high) ----
         if args.skip_avatar and os.path.isfile(char["retrato"]):
-            print(f"[1] retrato {char['id']}: REUTILIZADO ({char['retrato']}) — no se regenera")
-            pj.run(f"import os; print('avatar in input:', os.path.isfile({INPUT_DIR+'/li_creadora.png'!r}))")
+            print(f"[1] retrato {char['id']}: REUTILIZADO ({char['retrato']})")
+            inp = INPUT_DIR + "/li_creadora.png"
+            present = "True" in pj.run(f"import os; print(os.path.isfile({inp!r}))")
+            if not present:   # pod nuevo: subir el retrato local exacto (persistencia)
+                b64 = base64.b64encode(open(char["retrato"], "rb").read()).decode()
+                pj.run(f"import base64; open({inp!r},'wb').write(base64.b64decode({b64!r})); print('UP_OK')")
+                print(f"    subido a {inp}")
         else:
             print(f"[1] retrato {char['id']} (gpt-image-1 high, {size})…", flush=True)
             code = (
