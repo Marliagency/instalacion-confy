@@ -51,8 +51,10 @@ class PodJupyter:
         self.s = requests.Session()
         if password is None:
             password = pod_env(pod_id).get("JUPYTER_PASSWORD")
+        # El template HearmemanAI sirve Jupyter ABIERTO (sin login): si no hay
+        # password, usamos un valor dummy y _login cae al camino de acceso abierto.
         if not password:
-            raise RuntimeError("No encontré JUPYTER_PASSWORD en el pod.")
+            password = "open"
         self.password = password
         self.kernel_id = None
         self._login(timeout)
