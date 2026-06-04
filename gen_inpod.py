@@ -62,6 +62,7 @@ def main():
     ap.add_argument("pod_id")
     ap.add_argument("--package", required=True)
     ap.add_argument("--skip-models", action="store_true")
+    ap.add_argument("--skip-avatar", action="store_true", help="reutiliza el retrato ya generado")
     args = ap.parse_args()
 
     okey = os.environ.get("OPENAI_API_KEY")
@@ -82,53 +83,74 @@ def main():
         pj.run(f"import os; os.makedirs({INPUT_DIR!r},exist_ok=True); print('input ok')")
 
         # ---- 1. retrato creadora (gpt-image-1 high) ----
-        print(f"[1] retrato {char['id']} (gpt-image-1 high, {size})…", flush=True)
-        code = (
-            "import os,base64,json,urllib.request\n"
-            f"os.environ['K']={okey!r}\n"
-            f"prompt={char['prompt']!r}\n"
-            "body=json.dumps({'model':'gpt-image-1','prompt':prompt,'size':"
-            f"{size.split('x')[0]+'x'+size.split('x')[1]!r}"
-            ",'quality':'high','n':1}).encode()\n"
-            "req=urllib.request.Request('https://api.openai.com/v1/images/generations',data=body,"
-            "headers={'Authorization':'Bearer '+os.environ['K'],'Content-Type':'application/json'})\n"
-            "for attempt in range(6):\n"
-            "    try:\n"
-            "        r=urllib.request.urlopen(req,timeout=300); j=json.load(r); break\n"
-            "    except Exception as e:\n"
-            "        print('retry',attempt,str(e)[:120]); import time; time.sleep(8)\n"
-            "else:\n"
-            "    raise SystemExit('openai failed')\n"
-            "png=base64.b64decode(j['data'][0]['b64_json'])\n"
-            f"open({INPUT_DIR+'/li_creadora.png'!r},'wb').write(png)\n"
-            "print('OK_IMG',len(png))\n"
-        )
-        out = pj.run(code, timeout=400)
-        print("   ", [l for l in out.splitlines() if l.startswith("OK_IMG") or l.startswith("retry")])
-        n = fetch_b64(pj, INPUT_DIR + "/li_creadora.png", char["retrato"])
-        print(f"    -> {char['retrato']} ({n//1024} KB)")
+        if args.skip_avatar and os.path.isfile(char["retrato"]):
+            print(f"[1] retrato {char['id']}: REUTILIZADO ({char['retrato']}) — no se regenera")
+            pj.run(f"import os; print('avatar in input:', os.path.isfile({INPUT_DIR+'/li_creadora.png'!r}))")
+        else:
+            print(f"[1] retrato {char['id']} (gpt-image-1 high, {size})…", flush=True)
+            code = (
+                "import os,base64,json,urllib.request\n"
+                f"os.environ['K']={okey!r}\n"
+                f"prompt={char['prompt']!r}\n"
+                "body=json.dumps({'model':'gpt-image-1','prompt':prompt,'size':"
+                f"{size.split('x')[0]+'x'+size.split('x')[1]!r}"
+                ",'quality':'high','n':1}).encode()\n"
+                "req=urllib.request.Request('https://api.openai.com/v1/images/generations',data=body,"
+                "headers={'Authorization':'Bearer '+os.environ['K'],'Content-Type':'application/json'})\n"
+                "for attempt in range(6):\n"
+                "    try:\n"
+                "        r=urllib.request.urlopen(req,timeout=300); j=json.load(r); break\n"
+                "    except Exception as e:\n"
+                "        print('retry',attempt,str(e)[:120]); import time; time.sleep(8)\n"
+                "else:\n"
+                "    raise SystemExit('openai failed')\n"
+                "png=base64.b64decode(j['data'][0]['b64_json'])\n"
+                f"open({INPUT_DIR+'/li_creadora.png'!r},'wb').write(png)\n"
+                "print('OK_IMG',len(png))\n"
+            )
+            out = pj.run(code, timeout=400)
+            print("   ", [l for l in out.splitlines() if l.startswith("OK_IMG") or l.startswith("retry")])
+            n = fetch_b64(pj, INPUT_DIR + "/li_creadora.png", char["retrato"])
+            print(f"    -> {char['retrato']} ({n//1024} KB)")
 
-        # ---- 2. voces de los segmentos ugc (ElevenLabs) ----
-        for s in ugc:
-            uid = s["uid"]; dialog = (s["seg"].get("avatar") or {}).get("dialogo", "")
-            print(f"[2] voz {uid} (ElevenLabs)…", flush=True)
+        # ---- 2. voces (ElevenLabs) — diálogo de avatar (ugc) + voz en off ----
+        # Ajustes algo más expresivos/enérgicos para el tono de cierre tipo Belfort.
+        def gen_voice(text, pod_path, local_path):
             code = (
                 "import os,json,urllib.request\n"
                 f"key={ekey!r}\n"
-                f"text={dialog!r}\n"
+                f"text={text!r}\n"
                 f"voice={voz_id!r}\n"
                 "body=json.dumps({'text':text,'model_id':'eleven_multilingual_v2',"
-                "'voice_settings':{'stability':0.5,'similarity_boost':0.8,'style':0.15}}).encode()\n"
+                "'voice_settings':{'stability':0.4,'similarity_boost':0.85,'style':0.45,'use_speaker_boost':True}}).encode()\n"
                 "req=urllib.request.Request('https://api.elevenlabs.io/v1/text-to-speech/'+voice,"
                 "data=body,headers={'xi-api-key':key,'Content-Type':'application/json','Accept':'audio/mpeg'})\n"
-                "a=urllib.request.urlopen(req,timeout=180).read()\n"
-                f"open({INPUT_DIR+'/'+uid+'.mp3'!r},'wb').write(a)\n"
-                "print('OK_VOICE',len(a))\n"
+                "try:\n"
+                f"    a=urllib.request.urlopen(req,timeout=180).read(); open({pod_path!r},'wb').write(a); print('OK_VOICE',len(a))\n"
+                "except urllib.error.HTTPError as e:\n"
+                "    print('VOICE_HTTP',e.code,e.read().decode('utf-8','replace')[:300])\n"
             )
             out = pj.run(code, timeout=240)
-            print("   ", [l for l in out.splitlines() if l.startswith("OK_VOICE")])
-            n = fetch_b64(pj, f"{INPUT_DIR}/{uid}.mp3", f"outputs/voice/{uid}.mp3")
-            print(f"    -> outputs/voice/{uid}.mp3 ({n//1024} KB)")
+            tag = [l for l in out.splitlines() if l.startswith(("OK_VOICE", "VOICE_HTTP"))]
+            print("   ", tag)
+            if any(l.startswith("OK_VOICE") for l in tag):
+                n = fetch_b64(pj, pod_path, local_path)
+                print(f"    -> {local_path} ({n//1024} KB)")
+                return True
+            return False
+
+        for s in ugc:                              # diálogo del avatar -> input (lip-sync)
+            uid = s["uid"]; dialog = (s["seg"].get("avatar") or {}).get("dialogo", "")
+            print(f"[2] voz avatar {uid} (Cristina)…", flush=True)
+            if not gen_voice(dialog, f"{INPUT_DIR}/{uid}.mp3", f"outputs/voice/{uid}.mp3"):
+                print("    !! voz falló — revisar voice_id (¿Cristina añadida a la cuenta?)")
+        for s in pipeline.iter_segments(pkg):      # voz en off de segmentos narrados
+            vo = s["seg"].get("voz_off")
+            if not vo or s["formato"] == "ugc":
+                continue
+            uid = s["uid"]
+            print(f"[2b] voz en off {uid} (Cristina)…", flush=True)
+            gen_voice(vo, f"{INPUT_DIR}/{uid}_vo.mp3", f"outputs/voice/{uid}_vo.mp3")
 
         # ---- 3. música de acción (ElevenLabs Music) ----
         secs = sum(s["seg"].get("duracion_s", 5) for s in pipeline.iter_segments(pkg)) + 3.2

@@ -24,7 +24,7 @@
     },
     "voz_off": {
       "motor": "elevenlabs",
-      "voz_id": "KHCvMklQZZo0O30ERnVn",
+      "voz_id": "dNjJKg63Fr5AXwIdkATa",
       "idioma": "es"
     }
   },
@@ -55,43 +55,43 @@
           "id": "s1",
           "formato": "ugc",
           "personaje": "li_creadora",
-          "duracion_s": 7,
+          "duracion_s": 12,
           "avatar": {
-            "dialogo": "Vale, voy a confesar algo incómodo. Despedí a la persona que más trabajaba en mi consulta. Y fue la mejor decisión de mi carrera."
+            "dialogo": "Para. Para todo lo que estás haciendo. Si eres psicólogo y todavía lo gestionas todo a mano, escúchame: estás perdiendo dinero cada día. Esto es Marli, la mejor inteligencia artificial para psicólogos que existe."
           },
-          "texto_pantalla": "«Despedí a mi mejor empleada»",
+          "texto_pantalla": "Esto es IA para psicólogos",
           "seed": 7101
         },
         {
           "id": "s2",
           "formato": "cinematic",
           "duracion_s": 5,
-          "texto_pantalla": "Tu consulta depende 100% de ti.",
-          "voz_off": "Mensajes sin responder. Informes a mano. Todo cae sobre ti."
+          "texto_pantalla": "Deja de hacerlo todo tú",
+          "voz_off": "Tu agenda, tus informes, tus mensajes... todo cae sobre ti. Y eso, hoy, se acaba."
         },
         {
           "id": "s3",
           "formato": "pov_phone",
           "duracion_s": 5,
-          "texto_pantalla": "Li lo ordena todo por ti.",
-          "voz_off": "Con Li, no. Confirma tus citas y redacta tus informes solo."
+          "texto_pantalla": "Marli lo hace por ti",
+          "voz_off": "Marli confirma tus citas, redacta tus informes y responde a tus pacientes. Sola. En automático."
         },
         {
           "id": "s4",
           "formato": "product",
           "duracion_s": 5,
-          "texto_pantalla": "No es una herramienta. Es un sistema.",
-          "voz_off": "Tú acompañas a tus pacientes. Li te acompaña a ti."
+          "texto_pantalla": "La mejor inversión",
+          "voz_off": "Y escúchame bien: esto no es un gasto. Es la mejor inversión que vas a hacer este año."
         },
         {
           "id": "s5",
           "formato": "ugc",
           "personaje": "li_creadora",
-          "duracion_s": 9,
+          "duracion_s": 15,
           "avatar": {
-            "dialogo": "Esa empleada era yo, contestando mensajes a medianoche. Hoy Li agenda, confirma y hace el seguimiento por mí. Pago único, y se queda conmigo para siempre."
+            "dialogo": "Así que te lo digo claro, mirándote a los ojos: esto es lo mejor que existe para tu consulta, y lo quiero en tus manos hoy. Pago único, tuyo para siempre. No lo pienses más. Cómpralo ahora."
           },
-          "texto_pantalla": "«Era yo. Ahora es Li.»",
+          "texto_pantalla": "Cómpralo ahora",
           "seed": 7105
         },
         {
@@ -100,7 +100,7 @@
           "duracion_s": 7,
           "kenburns": true,
           "texto_pantalla": null,
-          "voz_off": "Pago único. Sin cuotas. Para siempre.",
+          "voz_off": "Pago único, sin cuotas, para siempre. La mejor decisión para tu consulta. Hazlo ya.",
           "imagenes": [
             {"prompt": "{ESTILO}. The Marli robot Li glowing on a tidy desk, a calm wall clock, sense of time regained", "texto": "+30% de tu tiempo"},
             {"prompt": "{ESTILO}. Close-up of a clean professional psychological report auto-generated on a laptop", "texto": "Informes en segundos"},

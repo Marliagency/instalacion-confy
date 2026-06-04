@@ -21,18 +21,18 @@ FONT_B   = "assets/fonts/Inter-Bold.ttf"
 FONT_SB  = "assets/fonts/Inter-SemiBold.ttf"
 FONT_M   = "assets/fonts/Inter-Medium.ttf"
 W, H, FPS = 1080, 1920, 30
-T = 0.5  # crossfade
+T = 0.4  # transición (más corta = más dinámica)
 
-# --- Marco editorial (frame alrededor de la imagen) ---
-# Doble filete inset de los bordes: línea roja Marli + filete crema interior.
-# Da un acabado "foto enmarcada" premium y unifica todos los formatos.
+# --- Marco (frame alrededor de la imagen) ---
+# Borde BLANCO sólido inset de los bordes: acabado limpio y consistente en todos
+# los formatos. (Antes era rojo+crema; ahora blanco sólido por petición.)
 MARCO = True
+WHITE = "0xFFFFFF"
 def frame_vf():
     """Filtro ffmpeg del marco (se aplica DESPUÉS de escalar a WxH)."""
     if not MARCO:
         return ""
-    return (f"drawbox=x=26:y=26:w=iw-52:h=ih-52:color={RED}@0.95:t=9,"
-            f"drawbox=x=41:y=41:w=iw-82:h=ih-82:color={CREAM}@0.85:t=2")
+    return f"drawbox=x=24:y=24:w=iw-48:h=ih-48:color={WHITE}@1.0:t=16"
 
 def run(cmd):
     p = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)

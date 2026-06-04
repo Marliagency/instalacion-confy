@@ -34,6 +34,11 @@ def normalize_clip(src, out):
 # formatos que YA llevan su texto dentro del clip (no añadir lower-third encima)
 SELF_CAPTIONED = {"slideshow", "kinetic_text", "stat_reveal", "before_after"}
 
+# Transiciones dinámicas y sólidas (se rotan entre segmentos) — slides/wipes en vez
+# de un fundido suave, para dar ritmo al anuncio. Todos son nombres válidos de xfade.
+TRANSITIONS = ["slideleft", "wiperight", "slideup", "circleopen", "slideright",
+               "smoothdown", "wipeleft", "slidedown"]
+
 
 def build_video(segs, pkg, tmp, cierre):
     """Genera los clips normalizados/captionados + tarjeta de cierre (de UNA pieza)."""
@@ -116,7 +121,8 @@ def assemble_piece(pieza_id, segs, pkg, out_dir, tmp, no_audio):
     fc = []; prev = "[0:v]"; total = durs[0]
     for i in range(1, len(clips)):
         off = max(0.0, total - af.T); lbl = f"[x{i}]"
-        fc.append(f"{prev}[{i}:v]xfade=transition=fade:duration={af.T}:offset={off:.3f}{lbl}")
+        trans = TRANSITIONS[(i - 1) % len(TRANSITIONS)]   # rota transiciones dinámicas
+        fc.append(f"{prev}[{i}:v]xfade=transition={trans}:duration={af.T}:offset={off:.3f}{lbl}")
         prev = lbl; total = total + durs[i] - af.T
     video_only = os.path.join(ptmp, "video.mp4")
     af.run(["ffmpeg", "-y", *inputs, "-filter_complex", ";".join(fc), "-map", prev,
