@@ -80,6 +80,10 @@ def main():
     print(f"[i] {len(segs)} segmentos de ComfyUI (los slideshow se montan en local)")
     ok, fail = [], []
     for s in segs:
+        dest = os.path.join(args.out, f"{s['uid']}.mp4")
+        if os.path.isfile(dest) and os.path.getsize(dest) > 100_000:
+            print(f"  [{s['order']}] {s['uid']} ya existe (skip)", flush=True)
+            ok.append(s["id"]); continue
         try:
             run_segment(base, s, pkg, args.out, args.audio_dir)
             ok.append(s["id"])
