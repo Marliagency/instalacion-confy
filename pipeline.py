@@ -131,7 +131,7 @@ def iter_image_items(pkg):
         for seg in pieza["segmentos"]:
             uid = f"{pid}__{seg['id']}"
             fmt = seg["formato"]
-            if fmt == "slideshow":
+            if fmt in ("slideshow", "before_after"):   # varias imágenes desde imagenes[]
                 for i, im in enumerate(seg.get("imagenes", []), 1):
                     yield {
                         "id": f"{uid}_{i}",
@@ -141,8 +141,8 @@ def iter_image_items(pkg):
                         "size": size, "uid": uid, "pieza_id": pid,
                         "seg_id": seg["id"], "formato": fmt, "idx": i,
                     }
-            elif seg.get("personaje"):
-                # usa el retrato del personaje (generado una vez) -> NO regenerar imagen
+            elif fmt in ("kinetic_text", "stat_reveal") or seg.get("personaje"):
+                # texto puro (sin imagen) o usa el retrato del personaje -> no generar imagen
                 continue
             else:
                 im = seg.get("imagen", {})
