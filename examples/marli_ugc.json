@@ -1,29 +1,82 @@
 {
-  "marca": {"nombre":"marli","tagline":"IA para psicólogos",
-    "paleta":{"primario":"#E24B4A","fondo":"#FAF6F1","tinta":"#2C2C2C","muted":"#6B6B6B"},
-    "fuente":"Inter",
-    "estilo_visual":"ultra-clean 3D render in the style of Octane and Unreal Engine, soft cinematic lighting, modern minimalist psychology office, deep red (#E24B4A) accents, cream (#FAF6F1) tones, premium editorial advertising aesthetic, no neon, no cyberpunk",
-    "robot_li":true},
-  "salida": {"aspecto":"9:16","resolucion":[1080,1920],"fps":30,"duracion_objetivo_s":30,
-    "musica":{"tipo":"ambiental","ruta":"assets/bed.wav"},
-    "voz_off":{"motor":"elevenlabs","voz_id":"REEMPLAZAR_VOZ_ID","idioma":"es"}},
-  "generacion": {"imagenes":{"motor":"openai","modelo":"gpt-image-1","calidad":"medium","tamano":"1024x1536"}},
+  "marca": {
+    "nombre": "marli",
+    "tagline": "IA para psicólogos",
+    "paleta": {
+      "primario": "#E24B4A",
+      "fondo": "#FAF6F1",
+      "tinta": "#2C2C2C",
+      "muted": "#6B6B6B"
+    },
+    "fuente": "Inter",
+    "estilo_visual": "ultra-clean 3D render in the style of Octane and Unreal Engine, soft cinematic lighting, modern minimalist psychology office, deep red (#E24B4A) accents, cream (#FAF6F1) tones, premium editorial advertising aesthetic, no neon, no cyberpunk",
+    "robot_li": true
+  },
+  "salida": {
+    "aspecto": "9:16",
+    "resolucion": [
+      1080,
+      1920
+    ],
+    "fps": 30,
+    "duracion_objetivo_s": 30,
+    "musica": {
+      "tipo": "ambiental",
+      "ruta": "assets/bed.wav"
+    },
+    "voz_off": {
+      "motor": "elevenlabs",
+      "voz_id": "KHCvMklQZZo0O30ERnVn",
+      "idioma": "es"
+    }
+  },
+  "generacion": {
+    "imagenes": {
+      "motor": "openai",
+      "modelo": "gpt-image-1",
+      "calidad": "medium",
+      "tamano": "1024x1536"
+    }
+  },
   "personajes": [
-    {"id":"li_psicologa","calidad":"high",
-     "prompt":"{ESTILO}. Ultra-detailed close-up portrait of a calm, warm female psychologist in her 30s (stylized 3D character, NOT a real recognizable person): natural soft skin texture, gentle confident smile, expressive eyes looking straight into the camera, shoulder-length dark hair, simple cream knit sweater, seated in a bright minimalist psychology office with soft bokeh, large softbox window light from camera-left, 50mm lens, shallow depth of field, casual selfie framing, premium editorial look",
-     "negativo":"text, watermark, recognizable celebrity, deformed face, extra fingers, asymmetric eyes, plastic skin, neon, oversaturated"}
+    {
+      "id": "li_psicologa",
+      "calidad": "high",
+      "prompt": "{ESTILO}. Ultra-detailed close-up portrait of a calm, warm female psychologist in her 30s (stylized 3D character, NOT a real recognizable person): natural soft skin texture, gentle confident smile, expressive eyes looking straight into the camera, shoulder-length dark hair, simple cream knit sweater, seated in a bright minimalist psychology office with soft bokeh, large softbox window light from camera-left, 50mm lens, shallow depth of field, casual selfie framing, premium editorial look",
+      "negativo": "text, watermark, recognizable celebrity, deformed face, extra fingers, asymmetric eyes, plastic skin, neon, oversaturated"
+    }
   ],
-  "piezas": [{
-    "id":"ugc01","concepto":"Testimonio Li — personaje persistente",
-    "gancho":"Una psicóloga confiesa que dejó de hacerlo todo ella misma (open loop: ¿qué cambió?)",
-    "cierre_marca":true,
-    "segmentos":[
-      {"id":"hook","formato":"ugc","personaje":"li_psicologa","duracion_s":6,"frames":96,
-       "avatar":{"dialogo":"¿Sabes qué cambió mi consulta? Dejé de intentar hacerlo todo yo."},
-       "texto_pantalla":"«Dejé de hacerlo todo yo.»","seed":2101},
-      {"id":"organico","formato":"ugc","personaje":"li_psicologa","duracion_s":20,
-       "avatar":{"dialogo":"Antes pasaba ocho horas a la semana en papeleo. Ahora Li confirma mis citas, responde a mis pacientes y redacta los informes mientras yo descanso. Recuperé mis tardes, y no pago ninguna cuota: lo compré una vez y es mío para siempre."},
-       "texto_pantalla":null,"seed":2102}
-    ]
-  }]
+  "piezas": [
+    {
+      "id": "ugc01",
+      "concepto": "Testimonio Li — personaje persistente",
+      "gancho": "Una psicóloga confiesa que dejó de hacerlo todo ella misma (open loop: ¿qué cambió?)",
+      "cierre_marca": true,
+      "segmentos": [
+        {
+          "id": "hook",
+          "formato": "ugc",
+          "personaje": "li_psicologa",
+          "duracion_s": 6,
+          "frames": 96,
+          "avatar": {
+            "dialogo": "¿Sabes qué cambió mi consulta? Dejé de intentar hacerlo todo yo."
+          },
+          "texto_pantalla": "«Dejé de hacerlo todo yo.»",
+          "seed": 2101
+        },
+        {
+          "id": "organico",
+          "formato": "ugc",
+          "personaje": "li_psicologa",
+          "duracion_s": 20,
+          "avatar": {
+            "dialogo": "Antes pasaba ocho horas a la semana en papeleo. Ahora Li confirma mis citas, responde a mis pacientes y redacta los informes mientras yo descanso. Recuperé mis tardes, y no pago ninguna cuota: lo compré una vez y es mío para siempre."
+          },
+          "texto_pantalla": null,
+          "seed": 2102
+        }
+      ]
+    }
+  ]
 }
