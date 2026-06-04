@@ -24,6 +24,10 @@ el vídeo (lo hace la S3).
 1. **Saldo + pod**: verificar `myself.clientBalance`; crear pod H100 SXM (receta en
    CLAUDE.md); esperar `/system_stats`. **No matar el gestor de descargas** (tumba el pod).
 2. **Doctor**: `comfy_doctor.py` (modelos OK antes de gastar).
+2-ter. **Modelos mínimos**: `python3 fetch_models.py --package …` baja SOLO lo que el
+   lote necesita (stack InfiniteTalk únicamente si hay `ugc`; i2v ya viene con
+   `download_wan22`; lotes solo-ffmpeg = 0 descargas). ffmpeg local lo instala el
+   SessionStart hook automáticamente.
 2-bis. **Personajes (una vez, máxima calidad)**: `build_characters.py --package …`
    (gpt-image-1 `high` → `assets/characters/<id>.png`; reutiliza si ya existe). **Sube
    los retratos al input del pod** (`<id>.png`) — son el `start_image` de los UGC.
