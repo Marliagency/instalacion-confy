@@ -39,13 +39,15 @@ LIPSYNC_MODELS = [
 
 def fetch_b64(pj, pod_path, local_path):
     """Lee un fichero del pod en base64 (troceado) y lo guarda en local."""
+    # Trocea con sleep para no superar el iopub data-rate-limit de Jupyter (~1MB/s)
     code = (
-        "import base64,sys\n"
+        "import base64,time\n"
         f"d=open({pod_path!r},'rb').read()\n"
         "b=base64.b64encode(d).decode()\n"
-        "print('LEN',len(d))\n"
-        "[print('B64',b[i:i+120000]) for i in range(0,len(b),120000)]\n"
-        "print('END')\n"
+        "print('LEN',len(d),flush=True)\n"
+        "for i in range(0,len(b),90000):\n"
+        "    print('B64',b[i:i+90000],flush=True); time.sleep(0.25)\n"
+        "print('END',flush=True)\n"
     )
     out = pj.run(code, timeout=300)
     chunks = [l[4:] for l in out.splitlines() if l.startswith("B64 ")]
