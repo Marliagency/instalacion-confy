@@ -13,7 +13,8 @@
         "negativo": "app interface, phone screen ui, text, watermark, deformed"
       },
       "captura": "01_habitos.png",
-      "texto_pantalla": "Hoy no se negocia."
+      "texto_pantalla": "Hoy no se negocia.",
+      "voz_off": "Antes de que salga el sol, tú ya estás en marcha. Hoy no se negocia."
     },
     {
       "id": "s2",
@@ -24,7 +25,8 @@
         "negativo": "app interface, phone screen ui, text, watermark, deformed"
       },
       "captura": "02_entrenos_progreso.png",
-      "texto_pantalla": "El progreso no descansa."
+      "texto_pantalla": "El progreso no descansa.",
+      "voz_off": "Cada repetición cuenta. El progreso no descansa, y QYRO lo mide por ti."
     },
     {
       "id": "s3",
@@ -35,7 +37,8 @@
         "negativo": "app interface, phone screen ui, text, watermark, deformed"
       },
       "captura": "03_nutricion_hoy.png",
-      "texto_pantalla": "Cuida la máquina."
+      "texto_pantalla": "Cuida la máquina.",
+      "voz_off": "Recupérate, hidrátate. Cuida la máquina que te lleva hasta la meta."
     },
     {
       "id": "s4",
@@ -46,7 +49,8 @@
         "negativo": "app interface, phone screen ui, text, watermark, deformed"
       },
       "captura": "04_nutricion_alimentos.png",
-      "texto_pantalla": "Come para ganar."
+      "texto_pantalla": "Come para ganar.",
+      "voz_off": "Come para ganar. QYRO sabe lo que necesitas en cada plato."
     },
     {
       "id": "s5",
@@ -56,7 +60,8 @@
         "prompt": "The same fit athletic man running at sunrise and planting his feet looking ahead, epic wide, golden light, triumphant",
         "negativo": "app interface, phone screen ui, text, watermark, deformed"
       },
-      "texto_pantalla": "Conviértete en tu mejor versión."
+      "texto_pantalla": "Conviértete en tu mejor versión.",
+      "voz_off": "Esto no va de hoy. Va de en quién te conviertes. QYRO, conviértete en tu mejor versión."
     }
   ]
 }

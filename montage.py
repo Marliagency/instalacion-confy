@@ -110,8 +110,38 @@ def build_closing(out, shots, nombre, tagline, accent, bg, W, H, FPS, seconds=3.
     return out, dur(out)
 
 
-def build(slug, brand, piece, clips_dir, screenshots_dir, music, out_path, T=0.25):
-    """Monta la pieza con insertos de captura. Devuelve out_path."""
+def _offsets(durs, T):
+    offs, t = [], 0.0
+    for d in durs:
+        offs.append(max(0.0, t)); t += d - T
+    return offs
+
+
+def build_audio(voice_jobs, music, total_s, out):
+    """Mezcla música (con ducking bajo la voz) + voces en off colocadas por offset."""
+    if not voice_jobs and not (music and os.path.isfile(music)):
+        return None
+    inputs, fc, labels, idx = [], [], [], 0
+    if music and os.path.isfile(music):
+        inputs += ["-i", music]
+        gain = "0.55"
+        for _p, off, vd in voice_jobs:                 # baja a 0.18 durante cada voz
+            gain = f"({gain})*(1-0.72*between(t,{off:.3f},{off+vd:.3f}))"
+        fc.append(f"[{idx}:a]volume=eval=frame:volume='{gain}',afade=t=in:st=0:d=0.8,"
+                  f"afade=t=out:st={max(0,total_s-1.5):.2f}:d=1.5,atrim=0:{total_s:.2f}[m]")
+        labels.append("[m]"); idx += 1
+    for p, off, _vd in voice_jobs:
+        inputs += ["-i", p]
+        fc.append(f"[{idx}:a]adelay={int(off*1000)}|{int(off*1000)},volume=1.35[v{idx}]")
+        labels.append(f"[v{idx}]"); idx += 1
+    fc.append("".join(labels) + f"amix=inputs={len(labels)}:normalize=0,alimiter=limit=0.95[a]")
+    run(["ffmpeg", "-y", *inputs, "-filter_complex", ";".join(fc), "-map", "[a]",
+         "-c:a", "aac", "-b:a", "192k", out])
+    return out
+
+
+def build(slug, brand, piece, clips_dir, screenshots_dir, music, out_path, voice_dir=None, T=0.25):
+    """Monta la pieza con insertos de captura + voz en off + música. Devuelve out_path."""
     os.makedirs(TMP, exist_ok=True); os.makedirs(os.path.dirname(os.path.abspath(out_path)), exist_ok=True)
     pal = brand["marca"].get("paleta", {})
     accent = _hex(pal.get("primario"), "E24B4A"); bg = _hex(pal.get("fondo"), "0B1220")
@@ -151,11 +181,20 @@ def build(slug, brand, piece, clips_dir, screenshots_dir, music, out_path, T=0.2
          "-c:v", "libx264", "-preset", "slow", "-crf", "18", "-pix_fmt", "yuv420p",
          "-movflags", "+faststart", "-r", str(FPS), video])
     total_s = dur(video)
-    if music and os.path.isfile(music):
-        run(["ffmpeg", "-y", "-i", video, "-i", music, "-filter_complex",
-             f"[1:a]atrim=0:{total_s:.3f},afade=t=in:st=0:d=0.6,afade=t=out:st={max(0,total_s-1.5):.2f}:d=1.5,volume=0.95[a]",
-             "-map", "0:v", "-map", "[a]", "-c:v", "copy", "-c:a", "aac", "-b:a", "192k",
-             "-movflags", "+faststart", "-shortest", out_path])
+    # voces en off colocadas en su segmento (música baja bajo la voz)
+    offs = _offsets(durs, T)
+    voice_jobs = []
+    if voice_dir:
+        for i, seg in enumerate(piece["segmentos"]):
+            uid = f"{piece['id']}__{seg['id']}"
+            vp = os.path.join(voice_dir, f"{uid}_vo.mp3")
+            if os.path.isfile(vp):
+                voice_jobs.append((vp, offs[i] + 0.15, dur(vp)))
+    audio = build_audio(voice_jobs, music, total_s, os.path.join(TMP, "audio.m4a"))
+    if audio:
+        run(["ffmpeg", "-y", "-i", video, "-i", audio, "-map", "0:v", "-map", "1:a",
+             "-c:v", "copy", "-c:a", "aac", "-b:a", "192k", "-movflags", "+faststart",
+             "-shortest", out_path])
     else:
         run(["ffmpeg", "-y", "-i", video, "-c", "copy", "-movflags", "+faststart", out_path])
     return out_path

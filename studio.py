@@ -346,7 +346,7 @@ def cmd_produce(args):
     print(f"\n[montaje] → {out}")
     if _uses_inserts(piece):
         import montage
-        montage.build(args.slug, brand, piece, P["clips"], P["screenshots"], music, out)
+        montage.build(args.slug, brand, piece, P["clips"], P["screenshots"], music, out, voice_dir=P["voice"])
     else:
         # ensamblaje clásico multi-formato (assemble_pkg) sobre un paquete temporal
         import json as _j, subprocess as _sp, tempfile
