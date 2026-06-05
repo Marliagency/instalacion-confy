@@ -41,8 +41,31 @@ jobs:
       - name: Download SDXL-Turbo checkpoint
         run: |
           mkdir -p comfyui/models/checkpoints
-          curl -L --fail -o comfyui/models/checkpoints/sd_xl_turbo_1.0_fp16.safetensors \
-            https://huggingface.co/stabilityai/sdxl-turbo/resolve/main/sd_xl_turbo_1.0_fp16.safetensors
+          DEST=comfyui/models/checkpoints/sd_xl_turbo_1.0_fp16.safetensors
+          # HuggingFace devuelve 429 (rate-limit) a descargas anónimas: reintentar
+          # con backoff sobre TODOS los errores y probar fuentes alternativas.
+          URLS=(
+            "https://huggingface.co/stabilityai/sdxl-turbo/resolve/main/sd_xl_turbo_1.0_fp16.safetensors?download=true"
+            "https://huggingface.co/stabilityai/sdxl-turbo/resolve/main/sd_xl_turbo_1.0_fp16.safetensors"
+            "https://hf-mirror.com/stabilityai/sdxl-turbo/resolve/main/sd_xl_turbo_1.0_fp16.safetensors"
+          )
+          ok=0
+          for url in "${URLS[@]}"; do
+            echo "Descargando checkpoint desde: $url"
+            if curl -L --fail --retry 10 --retry-delay 20 --retry-all-errors \
+                 -H "User-Agent: Mozilla/5.0 (compatible; ci-bot)" \
+                 -o "$DEST" "$url"; then
+              ok=1; break
+            fi
+            echo "Fuente falló; probando la siguiente tras 15s..."; sleep 15
+          done
+          if [ "$ok" -ne 1 ]; then echo "ERROR: no se pudo descargar el checkpoint"; exit 1; fi
+          # Validar que es un safetensors real (~6.9 GB), no una página de error
+          sz=$(stat -c%s "$DEST")
+          echo "Tamaño descargado: $sz bytes"
+          if [ "$sz" -lt 1000000000 ]; then
+            echo "ERROR: archivo demasiado pequeño ($sz bytes) — descarga inválida"; exit 1
+          fi
           ls -lh comfyui/models/checkpoints
 
       - name: Start ComfyUI (CPU)
