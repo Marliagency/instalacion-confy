@@ -301,14 +301,71 @@ def cmd_new_piece(args):
     print(f"Pieza creada: {dst}" + (f" (desde blueprint {args.blueprint})" if args.blueprint else ""))
 
 
+def _uses_inserts(piece):
+    """True si la pieza usa insertos de captura (t2v/screenshot_insert con 'captura')."""
+    for seg in piece["segmentos"]:
+        if seg.get("captura") or seg.get("formato") == "screenshot_insert":
+            return True
+    return False
+
+
+def _missing_clips(slug, piece):
+    P = paths(slug); miss = []
+    for seg in piece["segmentos"]:
+        uid = f"{piece['id']}__{seg['id']}"
+        engine = (FORMAT_DEPS.get(seg.get("formato")) or {}).get("engine", "")
+        clip = os.path.join(P["clips"], f"{uid}.mp4")
+        if not os.path.isfile(clip):
+            miss.append((uid, seg.get("formato"), engine, clip))
+    return miss
+
+
 def cmd_produce(args):
-    # Verificación previa (mismo gate que plan): no gastar GPU si hay bloqueos.
+    # 1) Gate: no gastar nada si la estructura está rota.
     if cmd_plan(args) != 0:
         sys.exit("⛔ Hay bloqueos en el plan. Resuélvelos antes de producir (ver arriba).")
-    print("\n[produce] El gate ha pasado. La ejecución de fases A→J (pod + GPU) se conecta en la"
-          " siguiente iteración del estudio; de momento usa el plan como contrato validado.\n"
-          "Orden garantizado: A personajes → B imágenes → C voces → D música → E modelos →"
-          " F clips GPU → G clips locales → H gate → I montaje → J entrega + apagar pod.")
+    brand = load_brand(args.slug); piece = load_piece(args.slug, args.pieza)
+    P = paths(args.slug)
+    for d in P.values():
+        os.makedirs(d, exist_ok=True)
+
+    # 2) Clips: reutiliza los que existan; avisa de los que faltan (fase GPU).
+    miss = _missing_clips(args.slug, piece)
+    if miss:
+        print("\n⚠️  Faltan clips por generar (fase F/G con pod):")
+        for uid, fmt, eng, _ in miss:
+            print(f"     - {uid} [{fmt} → {eng}]")
+        print("\n   La generación GPU end-to-end (pod) se ejecuta en la fase de render; "
+              "coloca/renderiza estos clips en projects/%s/outputs/clips/ y reintenta." % args.slug)
+        if not args.yes:
+            sys.exit("   (aborto: faltan clips). Usa --yes para forzar el montaje con lo que haya.")
+
+    # 3) Montaje (fase I). Insertos de captura -> montage; clásico -> assemble_pkg.
+    out = os.path.join(P["out"], f"{args.pieza}.mp4")
+    music = ((brand["salida"].get("musica") or {}).get("ruta")) or None
+    print(f"\n[montaje] → {out}")
+    if _uses_inserts(piece):
+        import montage
+        montage.build(args.slug, brand, piece, P["clips"], P["screenshots"], music, out)
+    else:
+        # ensamblaje clásico multi-formato (assemble_pkg) sobre un paquete temporal
+        import json as _j, subprocess as _sp, tempfile
+        pkg = compose_package(brand, piece)
+        # assemble_pkg espera outputs/clips y outputs/voice; se conectará al layout por proyecto
+        # en la fase de render. Para piezas clásicas usa el flujo de assemble_pkg directamente.
+        tmp = tempfile.NamedTemporaryFile("w", suffix=".json", delete=False)
+        _j.dump(pkg, tmp); tmp.close()
+        _sp.run([sys.executable, "assemble_pkg.py", "--package", tmp.name, "--out-dir", P["out"]], check=True)
+    print(f"\n✅ Pieza montada: {out}  ({_dur(out):.1f}s)")
+    return 0
+
+
+def _dur(p):
+    import subprocess
+    o = subprocess.run(["ffprobe", "-v", "error", "-show_entries", "format=duration",
+                        "-of", "default=nokey=1:noprint_wrappers=1", p], stdout=subprocess.PIPE, text=True).stdout.strip()
+    try: return float(o)
+    except: return 0.0
 
 
 def main():
