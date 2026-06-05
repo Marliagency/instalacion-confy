@@ -313,7 +313,10 @@ def download_outputs(comfy_url, prompt_id, out_dir, vid_id):
                 url = f"{comfy_url}/view?{params}"
                 local_name = f"{vid_id}_{fname}" if not fname.startswith(vid_id) else fname
                 local_path = os.path.join(out_dir, local_name)
-                urllib.request.urlretrieve(url, local_path)
+                # /view devuelve 403 sin User-Agent (proxy de RunPod) -> usar Request con UA
+                req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
+                with urllib.request.urlopen(req, timeout=120) as r, open(local_path, "wb") as f:
+                    f.write(r.read())
                 saved.append(local_path)
     return saved
 
