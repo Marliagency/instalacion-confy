@@ -1,0 +1,10 @@
+{
+  "id": "REEMPLAZAR", "concepto": "Testimonio UGC + b-roll + CTA (≈30s)", "gancho": "Gancho con factor inesperado (open loop).", "cierre_marca": true,
+  "segmentos": [
+    {"id":"s1","formato":"ugc","personaje":"REEMPLAZAR","duracion_s":8,"avatar":{"dialogo":"GANCHO + open loop aquí."},"texto_pantalla":"FRASE GANCHO"},
+    {"id":"s2","formato":"cinematic","duracion_s":5,"imagen":{"prompt":"{ESTILO}. ...","negativo":"blurry, text"},"texto_pantalla":"DOLOR","voz_off":"..."},
+    {"id":"s3","formato":"product","duracion_s":5,"imagen":{"prompt":"{ESTILO}. ...","referencias":[]},"texto_pantalla":"SOLUCIÓN","voz_off":"..."},
+    {"id":"s4","formato":"ugc","personaje":"REEMPLAZAR","duracion_s":7,"avatar":{"dialogo":"CTA persuasivo aquí."},"texto_pantalla":"CTA"},
+    {"id":"s5","formato":"slideshow","duracion_s":6,"voz_off":"Cierre.","imagenes":[{"prompt":"{ESTILO}. ...","texto":"PUNTO 1"},{"prompt":"{ESTILO}. ...","texto":"PUNTO 2"},{"prompt":"{ESTILO}. ...","texto":"PUNTO 3"}]}
+  ]
+}

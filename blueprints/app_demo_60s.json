@@ -1,0 +1,9 @@
+{
+  "id": "REEMPLAZAR", "concepto": "Demo de app estilo deportivo: b-roll t2v + capturas reales incrustadas (≈45-60s)", "gancho": "Imperativo épico.", "cierre_marca": true,
+  "segmentos": [
+    {"id":"s1","formato":"t2v","duracion_s":5,"imagen":{"prompt":"...","negativo":"app interface, phone screen ui, text"},"captura":"01.png","texto_pantalla":"COPY 1"},
+    {"id":"s2","formato":"t2v","duracion_s":5,"imagen":{"prompt":"...","negativo":"app interface, phone screen ui, text"},"captura":"02.png","texto_pantalla":"COPY 2"},
+    {"id":"s3","formato":"t2v","duracion_s":5,"imagen":{"prompt":"...","negativo":"app interface, phone screen ui, text"},"captura":"03.png","texto_pantalla":"COPY 3"},
+    {"id":"s4","formato":"t2v","duracion_s":5,"imagen":{"prompt":"...","negativo":"app interface, phone screen ui, text"},"texto_pantalla":"COPY CIERRE"}
+  ]
+}

@@ -21,3 +21,4 @@ venv/
 # Artefactos temporales de orquestación (reintento de pod)
 .retry_pod.py
 .pod_result.json
+projects/*/outputs/

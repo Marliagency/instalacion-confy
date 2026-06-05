@@ -1,0 +1,68 @@
+{
+  "slug": "marli",
+  "marca": {
+    "nombre": "marli",
+    "tagline": "IA para psicólogos",
+    "paleta": {
+      "primario": "#E24B4A",
+      "acento": "#FF3B30",
+      "fondo": "#FAF6F1",
+      "tinta": "#2C2C2C",
+      "muted": "#6B6B6B"
+    },
+    "fuente": "Inter",
+    "estilo_visual": "ultra-clean 3D render in the style of Octane and Unreal Engine, soft cinematic lighting, modern minimalist psychology office, deep red (#E24B4A) accents, cream (#FAF6F1) tones, premium editorial advertising aesthetic, no neon, no cyberpunk, no oversaturation. The Marli mascot 'Li' is a friendly HUMANOID robot with a glossy deep red and white body, a rounded-square head that is a black screen displaying a simple white pixel smiley face (two dot eyes and a curved smile), and a silver chest plate reading 'MARLI'",
+    "robot_li": true
+  },
+  "salida": {
+    "aspecto": "9:16",
+    "resolucion": [
+      1080,
+      1920
+    ],
+    "fps": 30,
+    "duracion_objetivo_s": 35,
+    "musica": {
+      "tipo": "accion",
+      "ruta": "outputs/music_action.mp3"
+    },
+    "voz_off": {
+      "motor": "elevenlabs",
+      "voz_id": "dNjJKg63Fr5AXwIdkATa",
+      "idioma": "es"
+    }
+  },
+  "generacion": {
+    "imagenes": {
+      "motor": "openai",
+      "modelo": "gpt-image-1",
+      "calidad": "medium",
+      "tamano": "1024x1536"
+    }
+  },
+  "personajes": [
+    {
+      "id": "li_creadora",
+      "calidad": "high",
+      "prompt": "{ESTILO}. Ultra-detailed close-up beauty portrait of a strikingly beautiful warm female content creator in her late 20s (stylized 3D character, not a real recognizable person): flawless luminous natural skin with soft freckles, radiant captivating smile, large expressive almond eyes looking straight to camera, long glossy wavy chestnut hair framing the face, delicate elegant minimal makeup, soft cream blazer over a fitted white top, small gold earrings, bright airy minimalist psychology office with a soft cream wall behind, beauty-dish softbox window light camera-left, gentle rim light, 50mm, shallow depth of field, premium vertical UGC selfie framing, photoreal premium advertising quality",
+      "negativo": "text, watermark, logo, celebrity likeness, real person, deformed face, asymmetric eyes, extra fingers, plastic waxy skin, heavy makeup, neon, oversaturated, low quality, blurry"
+    }
+  ],
+  "info": {
+    "descripcion": "Sistema de IA para psicólogos: CRM + automatización + chatbot. Pago único (no SaaS): 'un sistema, no una herramienta'.",
+    "publico": "Psicólogos y terapeutas con consulta propia que pierden tiempo en tareas administrativas.",
+    "propuesta_valor": [
+      "Pago único, tuyo para siempre",
+      "Automatiza agenda, recordatorios e informes",
+      "Mascota Li (robot rojo) como asistente"
+    ],
+    "tono": "Cercano, profesional, empático; remate persuasivo permitido.",
+    "evitar": [
+      "Promesas médicas",
+      "Jerga técnica de IA",
+      "Marcas/famosos reconocibles"
+    ],
+    "enlaces": [],
+    "notas": []
+  }
+}

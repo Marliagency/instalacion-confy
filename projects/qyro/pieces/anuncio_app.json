@@ -1,0 +1,62 @@
+{
+  "id": "anuncio_app",
+  "concepto": "Anuncio QYRO estilo deportivo: un día de disciplina con la app incrustada por composición.",
+  "gancho": "Imperativo épico; la app aparece como el sistema que ordena el día.",
+  "cierre_marca": true,
+  "segmentos": [
+    {
+      "id": "s1",
+      "formato": "t2v",
+      "duracion_s": 5,
+      "imagen": {
+        "prompt": "A fit athletic man in his late 20s with short dark hair and light stubble, lean muscular build, waking before sunrise and rising to his feet with quiet determination, modern minimalist bedroom, moody cinematic, slow push-in, soft blue dawn light",
+        "negativo": "app interface, phone screen ui, text, watermark, deformed"
+      },
+      "captura": "01_habitos.png",
+      "texto_pantalla": "Hoy no se negocia."
+    },
+    {
+      "id": "s2",
+      "formato": "t2v",
+      "duracion_s": 5,
+      "imagen": {
+        "prompt": "The same fit athletic man, explosive heavy barbell lift in a moody gym, sweat and grit, dramatic side light, determination",
+        "negativo": "app interface, phone screen ui, text, watermark, deformed"
+      },
+      "captura": "02_entrenos_progreso.png",
+      "texto_pantalla": "El progreso no descansa."
+    },
+    {
+      "id": "s3",
+      "formato": "t2v",
+      "duracion_s": 5,
+      "imagen": {
+        "prompt": "The same fit athletic man drinking water and breathing after training, gym background, cinematic, droplets, focus",
+        "negativo": "app interface, phone screen ui, text, watermark, deformed"
+      },
+      "captura": "03_nutricion_hoy.png",
+      "texto_pantalla": "Cuida la máquina."
+    },
+    {
+      "id": "s4",
+      "formato": "t2v",
+      "duracion_s": 5,
+      "imagen": {
+        "prompt": "The same fit athletic man preparing a healthy meal and photographing the plate with his phone, bright modern kitchen, cinematic",
+        "negativo": "app interface, phone screen ui, text, watermark, deformed"
+      },
+      "captura": "04_nutricion_alimentos.png",
+      "texto_pantalla": "Come para ganar."
+    },
+    {
+      "id": "s5",
+      "formato": "t2v",
+      "duracion_s": 5,
+      "imagen": {
+        "prompt": "The same fit athletic man running at sunrise and planting his feet looking ahead, epic wide, golden light, triumphant",
+        "negativo": "app interface, phone screen ui, text, watermark, deformed"
+      },
+      "texto_pantalla": "Conviértete en tu mejor versión."
+    }
+  ]
+}

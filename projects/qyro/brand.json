@@ -1,0 +1,63 @@
+{
+  "slug": "qyro",
+  "marca": {
+    "nombre": "QYRO",
+    "tagline": "Conviértete en tu mejor versión",
+    "paleta": {
+      "primario": "#2563EB",
+      "acento": "#2563EB",
+      "fondo": "#0B1220",
+      "tinta": "#0B1220",
+      "muted": "#6B7280"
+    },
+    "fuente": "Inter",
+    "estilo_visual": "cinematic athletic advertising, high-energy, dramatic moody lighting, sweat and grit, photorealistic, premium sports commercial aesthetic, vertical 9:16, no app interface or phone screen ui (the real app is composited in post)"
+  },
+  "salida": {
+    "aspecto": "9:16",
+    "resolucion": [
+      1080,
+      1920
+    ],
+    "fps": 30,
+    "duracion_objetivo_s": 30,
+    "musica": {
+      "tipo": "accion",
+      "ruta": "projects/qyro/assets/music/qyro_music.mp3"
+    },
+    "voz_off": {
+      "motor": "elevenlabs",
+      "voz_id": "dNjJKg63Fr5AXwIdkATa",
+      "idioma": "es"
+    }
+  },
+  "generacion": {
+    "imagenes": {
+      "motor": "openai",
+      "modelo": "gpt-image-1",
+      "calidad": "medium",
+      "tamano": "1024x1536"
+    }
+  },
+  "personajes": [],
+  "info": {
+    "descripcion": "App de hábitos, entrenamiento y nutrición con IA. Registro por foto con IA, progreso de entrenos, agua y dietas por objetivo.",
+    "publico": "Personas fitness/wellness que quieren disciplina y resultados medibles.",
+    "propuesta_valor": [
+      "Hábitos + rachas",
+      "Progreso de fuerza con sugerencias",
+      "Nutrición con foto IA y planes por objetivo"
+    ],
+    "tono": "Imperativo, épico, motivador (estilo deportivo, 'no excuses').",
+    "persona_protagonista": "Hombre atlético, finales de los 20, pelo corto oscuro, barba ligera, complexión magra y musculada, piel tono medio cálido, ropa deportiva negra/carbón, expresión decidida.",
+    "regla_app": "La UI real NO se genera con IA: los clips muestran solo lifestyle (negativo: app interface, phone screen ui) y la captura REAL se incrusta en el montaje.",
+    "capturas": {
+      "01_habitos.png": "Hábitos: checklist del día + racha",
+      "02_entrenos_progreso.png": "Entrenamientos · Progreso (sugerencias, atascados)",
+      "03_nutricion_hoy.png": "Nutrición · Hoy (agua, foto con IA)",
+      "04_nutricion_alimentos.png": "Nutrición · Alimentos (planes por objetivo)"
+    },
+    "enlaces": [],
+    "notas": []
+  }
+}
