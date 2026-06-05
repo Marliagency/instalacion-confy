@@ -1,8 +1,92 @@
-run: 26993204461
-status_job: failure
+run: 26993308701
+status_job: success
 === outputs dir ===
-total 256K
--rw-r--r-- 1 runner runner   57 Jun  5 03:18 _ci_status.txt
--rw-r--r-- 1 runner runner 252K Jun  5 03:17 comfytest01_comfytest_00001_.png
+total 2.2M
+-rw-r--r-- 1 runner runner   57 Jun  5 03:29 _ci_status.txt
+-rw-r--r-- 1 runner runner  225 Jun  5 03:29 _reporte_lote.json
+-rw-r--r-- 1 runner runner 252K Jun  5 03:21 comfytest01_comfytest_00001_.png
+-rw-r--r-- 1 runner runner 235K Jun  5 03:29 qyro_brand_gradient_qyro_00006_.png
+-rw-r--r-- 1 runner runner 283K Jun  5 03:28 qyro_evening_qyro_00005_.png
+-rw-r--r-- 1 runner runner 332K Jun  5 03:26 qyro_mealprep_qyro_00003_.png
+-rw-r--r-- 1 runner runner 332K Jun  5 03:24 qyro_morning_qyro_00001_.png
+-rw-r--r-- 1 runner runner 375K Jun  5 03:25 qyro_run_qyro_00002_.png
+-rw-r--r-- 1 runner runner 344K Jun  5 03:27 qyro_workspace_qyro_00004_.png
 === ComfyUI log (tail) ===
-(sin log)
+[32m[INFO][0m setup plugin alembic.autogenerate.schemas
+[32m[INFO][0m setup plugin alembic.autogenerate.tables
+[32m[INFO][0m setup plugin alembic.autogenerate.types
+[32m[INFO][0m setup plugin alembic.autogenerate.constraints
+[32m[INFO][0m setup plugin alembic.autogenerate.defaults
+[32m[INFO][0m setup plugin alembic.autogenerate.comments
+[32m[INFO][0m Found comfy_kitchen backend cuda: {'available': False, 'disabled': True, 'unavailable_reason': 'CUDA not available on this system', 'capabilities': []}
+[32m[INFO][0m Found comfy_kitchen backend eager: {'available': True, 'disabled': False, 'unavailable_reason': None, 'capabilities': ['apply_rope', 'apply_rope1', 'apply_rope_split_half', 'apply_rope_split_half1', 'dequantize_mxfp8', 'dequantize_nvfp4', 'dequantize_per_tensor_fp8', 'gemv_awq_w4a16', 'quantize_mxfp8', 'quantize_nvfp4', 'quantize_per_tensor_fp8', 'quantize_svdquant_w4a4', 'scaled_mm_mxfp8', 'scaled_mm_nvfp4', 'scaled_mm_svdquant_w4a4', 'stochastic_rounding_fp8']}
+[32m[INFO][0m Found comfy_kitchen backend triton: {'available': False, 'disabled': True, 'unavailable_reason': "ImportError: No module named 'triton'", 'capabilities': []}
+[32m[INFO][0m Checkpoint files will always be loaded safely.
+[32m[INFO][0m Total VRAM 15990 MB, total RAM 15990 MB
+[32m[INFO][0m pytorch version: 2.12.0+cpu
+[32m[INFO][0m Set vram state to: DISABLED
+[32m[INFO][0m Device: cpu
+[32m[INFO][0m Using sub quadratic optimization for attention, if you have memory or speed issues try using: --use-split-cross-attention
+[32m[INFO][0m Python version: 3.11.15 (main, Mar  3 2026, 16:10:12) [GCC 13.3.0]
+[32m[INFO][0m ComfyUI version: 0.24.0
+[32m[INFO][0m comfy-aimdo version: 0.4.8
+[32m[INFO][0m comfy-kitchen version: 0.2.10
+[1m[33m[WARNING][0m ****** User settings have been changed to be stored on the server instead of browser storage. ******
+[1m[33m[WARNING][0m ****** For multi-user setups add the --multi-user CLI argument to enable multiple user profiles. ******
+[32m[INFO][0m comfyui-frontend-package version: 1.45.15
+[32m[INFO][0m comfyui-workflow-templates version: 0.9.98
+[32m[INFO][0m comfyui-embedded-docs version: 0.5.2
+[32m[INFO][0m comfy-kitchen version: 0.2.10
+[32m[INFO][0m comfy-aimdo version: 0.4.8
+[32m[INFO][0m [Prompt Server] web root: /opt/hostedtoolcache/Python/3.11.15/x64/lib/python3.11/site-packages/comfyui_frontend_package/static
+[32m[INFO][0m Asset seeder disabled
+[32m[INFO][0m 
+Import times for custom nodes:
+[32m[INFO][0m    0.0 seconds: /home/runner/work/instalacion-confy/instalacion-confy/comfyui/custom_nodes/websocket_image_save.py
+[32m[INFO][0m 
+[32m[INFO][0m Context impl SQLiteImpl.
+[32m[INFO][0m Will assume non-transactional DDL.
+[32m[INFO][0m Context impl SQLiteImpl.
+[32m[INFO][0m Will assume non-transactional DDL.
+[32m[INFO][0m Running upgrade  -> 0001_assets, Initial assets schema
+Revision ID: 0001_assets
+Revises: None
+Create Date: 2025-12-10 00:00:00
+[32m[INFO][0m Running upgrade 0001_assets -> 0002_merge_to_asset_references, Merge AssetInfo and AssetCacheState into unified asset_references table.
+[32m[INFO][0m Running upgrade 0002_merge_to_asset_references -> 0003_add_metadata_job_id, Add system_metadata and job_id columns to asset_references.
+Change preview_id FK from assets.id to asset_references.id.
+[32m[INFO][0m Database upgraded from None to 0003_add_metadata_job_id
+[32m[INFO][0m Using RAM pressure cache.
+[32m[INFO][0m Starting server
+
+[32m[INFO][0m To see the GUI go to: http://127.0.0.1:8188
+[32m[INFO][0m got prompt
+[32m[INFO][0m model weight dtype torch.float32, manual cast: None
+[32m[INFO][0m model_type EPS
+[32m[INFO][0m Using split attention in VAE
+[32m[INFO][0m Using split attention in VAE
+[32m[INFO][0m VAE load device: cpu, offload device: cpu, dtype: torch.float32
+[32m[INFO][0m Requested to load SDXLClipModel
+[32m[INFO][0m loaded completely;  1560.80 MB loaded, full load: True
+[32m[INFO][0m CLIP/text encoder model load device: cpu, offload device: cpu, current: cpu, dtype: torch.float16
+[32m[INFO][0m Requested to load SDXL
+[32m[INFO][0m loaded completely;  9794.10 MB loaded, full load: True
+  0%|          | 0/4 [00:00<?, ?it/s] 25%|██▌       | 1/4 [00:10<00:32, 10.73s/it] 50%|█████     | 2/4 [00:21<00:21, 10.60s/it] 75%|███████▌  | 3/4 [00:31<00:10, 10.59s/it]100%|██████████| 4/4 [00:42<00:00, 10.54s/it]100%|██████████| 4/4 [00:42<00:00, 10.57s/it]
+[32m[INFO][0m Requested to load AutoencoderKL
+[32m[INFO][0m loaded completely;  319.11 MB loaded, full load: True
+[32m[INFO][0m [32mPrompt executed in 71.75 seconds[0m
+[32m[INFO][0m got prompt
+  0%|          | 0/4 [00:00<?, ?it/s] 25%|██▌       | 1/4 [00:12<00:38, 13.00s/it] 50%|█████     | 2/4 [00:23<00:22, 11.26s/it] 75%|███████▌  | 3/4 [00:33<00:10, 10.70s/it]100%|██████████| 4/4 [00:43<00:00, 10.43s/it]100%|██████████| 4/4 [00:43<00:00, 10.78s/it]
+[32m[INFO][0m [32mPrompt executed in 60.02 seconds[0m
+[32m[INFO][0m got prompt
+  0%|          | 0/4 [00:00<?, ?it/s] 25%|██▌       | 1/4 [00:16<00:48, 16.17s/it] 50%|█████     | 2/4 [00:26<00:25, 12.62s/it] 75%|███████▌  | 3/4 [00:36<00:11, 11.48s/it]100%|██████████| 4/4 [00:46<00:00, 11.00s/it]100%|██████████| 4/4 [00:46<00:00, 11.67s/it]
+[32m[INFO][0m [32mPrompt executed in 63.79 seconds[0m
+[32m[INFO][0m got prompt
+  0%|          | 0/4 [00:00<?, ?it/s] 25%|██▌       | 1/4 [00:14<00:44, 14.83s/it] 50%|█████     | 2/4 [00:25<00:24, 12.13s/it] 75%|███████▌  | 3/4 [00:35<00:11, 11.30s/it]100%|██████████| 4/4 [00:45<00:00, 10.86s/it]100%|██████████| 4/4 [00:45<00:00, 11.39s/it]
+[32m[INFO][0m [32mPrompt executed in 62.64 seconds[0m
+[32m[INFO][0m got prompt
+  0%|          | 0/4 [00:00<?, ?it/s] 25%|██▌       | 1/4 [00:15<00:47, 15.82s/it] 50%|█████     | 2/4 [00:25<00:24, 12.47s/it] 75%|███████▌  | 3/4 [00:36<00:11, 11.42s/it]100%|██████████| 4/4 [00:46<00:00, 10.90s/it]100%|██████████| 4/4 [00:46<00:00, 11.55s/it]
+[32m[INFO][0m [32mPrompt executed in 64.16 seconds[0m
+[32m[INFO][0m got prompt
+  0%|          | 0/4 [00:00<?, ?it/s] 25%|██▌       | 1/4 [00:14<00:42, 14.26s/it] 50%|█████     | 2/4 [00:24<00:23, 11.81s/it] 75%|███████▌  | 3/4 [00:34<00:11, 11.01s/it]100%|██████████| 4/4 [00:44<00:00, 10.64s/it]100%|██████████| 4/4 [00:44<00:00, 11.12s/it]
+[32m[INFO][0m [32mPrompt executed in 61.71 seconds[0m
