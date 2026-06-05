@@ -1,12 +1,62 @@
 [
   {
-    "id": "comfytest01",
+    "id": "qyro_morning",
     "tipo": "imagen",
-    "prompt": "a sleek glass perfume bottle on a marble pedestal, soft studio lighting, elegant product photography, highly detailed",
-    "negativo": "blurry, low quality, watermark, text, deformed, ugly",
+    "prompt": "young person (25-30, gender neutral) waking up and reaching for a smartphone on the nightstand, soft golden morning light through a side window, minimalist tidy bedroom, serene and determined expression, warm beige and off-white tones with a subtle electric blue (#29A8E0) glow from the phone screen, premium lifestyle brand photography, cinematic, photorealistic, shallow depth of field",
+    "negativo": "blurry, low quality, watermark, text, letters, logo, ui, deformed, ugly, extra fingers, distorted hands, oversaturated",
     "formato": "1:1",
     "width": 512,
     "height": 512,
-    "seed": 12345
+    "seed": 71001
+  },
+  {
+    "id": "qyro_run",
+    "tipo": "imagen",
+    "prompt": "person running through a quiet city street at dawn seen from behind, wireless earbuds, steady habitual pace, blue hour pre-dawn deep blue sky transitioning to warm orange on the horizon, streetlights as warm points of light, neutral athletic wear, cinematic Nike morning-run aesthetic, photorealistic, premium lifestyle",
+    "negativo": "blurry, low quality, watermark, text, letters, logo, deformed, ugly, distorted limbs, motion blur artifacts",
+    "formato": "1:1",
+    "width": 512,
+    "height": 512,
+    "seed": 71002
+  },
+  {
+    "id": "qyro_mealprep",
+    "tipo": "imagen",
+    "prompt": "close-up of hands preparing healthy food in a minimalist kitchen, colorful fresh vegetables, light wood cutting board, white countertop, clean editorial food photography, soft natural overhead daylight, no harsh shadows, mindful and calm mood, photorealistic, premium clean-eating aesthetic",
+    "negativo": "blurry, low quality, watermark, text, letters, logo, deformed, ugly, extra fingers, distorted hands",
+    "formato": "1:1",
+    "width": 512,
+    "height": 512,
+    "seed": 71003
+  },
+  {
+    "id": "qyro_workspace",
+    "tipo": "imagen",
+    "prompt": "tidy minimalist desk workspace, open laptop, notebook, glass of water, small green plant, hands writing in the notebook, calm focused productivity, soft natural side light, neutral whites greys and light wood, Notion and Linear premium lifestyle aesthetic, photorealistic",
+    "negativo": "blurry, low quality, watermark, text, letters, logo, ui, deformed, ugly, extra fingers, distorted hands, clutter",
+    "formato": "1:1",
+    "width": 512,
+    "height": 512,
+    "seed": 71004
+  },
+  {
+    "id": "qyro_evening",
+    "tipo": "imagen",
+    "prompt": "young person journaling in a notebook at night under a warm desk lamp, calm reflective mood, dark moody background (#0A0A0F) with subtle electric blue (#29A8E0) and purple (#7B4FBF) accent rim light, cozy minimalist interior, cinematic, photorealistic, premium lifestyle brand",
+    "negativo": "blurry, low quality, watermark, text, letters, logo, deformed, ugly, extra fingers, distorted hands, harsh flash",
+    "formato": "1:1",
+    "width": 512,
+    "height": 512,
+    "seed": 71005
+  },
+  {
+    "id": "qyro_brand_gradient",
+    "tipo": "imagen",
+    "prompt": "abstract premium brand background, smooth flowing gradient waves from electric blue (#29A8E0) through mid blue (#4B6FD4) to purple (#7B4FBF), soft volumetric light, minimal modern tech aesthetic, clean depth, subtle grain, high-end app branding visual, 3d render look",
+    "negativo": "blurry, low quality, watermark, text, letters, logo, noisy, ugly, banding, oversaturated",
+    "formato": "1:1",
+    "width": 512,
+    "height": 512,
+    "seed": 71006
   }
 ]
