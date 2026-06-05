@@ -1,5 +1,27 @@
 # Producción QYRO — 5 vídeos estilo Nike (app de hábitos con IA)
 
+## 🚀 EMPIEZA AQUÍ (sesión nueva, aprobado por el usuario)
+
+El usuario aprobó renderizar el lote completo. Plan exacto a seguir en cuanto la
+red esté desbloqueada:
+
+1. **Gate de red (obligatorio antes de gastar):**
+   `curl -s https://gy9p9fryeh1yex-8188.proxy.runpod.net/system_stats`
+   - Responde `Host not in allowlist` → red aún mal: AVISAR y NO gastar GPU.
+   - Responde JSON / cualquier otra cosa → seguir.
+2. `python3 runpod_ctl.py list` (confirmar que el pod existe / API accesible).
+3. Encender **4090 o 3090 spot en EUR-IS-1** (NO el H100 a ~$3/h):
+   `python3 runpod_ctl.py start gy9p9fryeh1yex --wait-comfy`
+4. Construir el `workflows/wan_t2v.json` real con los nombres de modelos del pod
+   (`/object_info`) e iterar contra `/prompt` hasta validar.
+5. Render: `python3 comfy_batch.py --comfy-url https://gy9p9fryeh1yex-8188.proxy.runpod.net --prompts ./batch_prompts.json --out ./outputs --workflow-video ./workflows/wan_t2v.json`
+6. Entregar los `.mp4` de `./outputs` con SendUserFile + recordar el plan de
+   composición (tabla de abajo) para incrustar las capturas reales de QYRO.
+7. **APAGAR SIEMPRE:** `python3 runpod_ctl.py stop gy9p9fryeh1yex`
+
+---
+
+
 > Estado: **PREPARADO, sin renderizar.** El pipeline RunPod/ComfyUI está bloqueado
 > por la red de esta sesión (`host_not_allowed` en `api/rest.runpod.io` y el proxy).
 > Estos archivos quedan listos para renderizar de un tirón en cuanto se desbloquee
