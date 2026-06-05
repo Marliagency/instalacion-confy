@@ -1,0 +1,20 @@
+{
+  "name": "qyro-remotion",
+  "version": "1.0.0",
+  "scripts": {
+    "render": "remotion render"
+  },
+  "dependencies": {
+    "@remotion/cli": "4.0.290",
+    "remotion": "4.0.290",
+    "react": "19.0.0",
+    "react-dom": "19.0.0"
+  },
+  "devDependencies": {
+    "@types/react": "19.0.0",
+    "typescript": "5.5.4"
+  },
+  "remotion": {
+    "entry": "src/index.ts"
+  }
+}

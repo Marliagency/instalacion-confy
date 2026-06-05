@@ -22,3 +22,6 @@ venv/
 .retry_pod.py
 .pod_result.json
 projects/*/outputs/
+remotion/node_modules/
+remotion/out/
+remotion/.remotion/
