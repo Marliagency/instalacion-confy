@@ -106,8 +106,8 @@ def build_clip(i, clip, shot, copy, t_in, side, out):
         # con un segundo overlay negro a 35% desplazado (+14,+18).
         fc = (
             f"[0:v]{base_vf()}[bg];"
-            f"[1:v]scale=-2:{ch},pad=iw+20:ih+20:10:10:white,setsar=1[card];"
-            f"[card]format=rgba,colorchannelmixer=rr=0:gg=0:bb=0:aa=0.32[sh];"
+            f"[1:v]scale=-2:{ch},pad=iw+20:ih+20:10:10:white,setsar=1,split=2[card][cardb];"
+            f"[cardb]format=rgba,colorchannelmixer=rr=0:gg=0:bb=0:aa=0.32[sh];"
             f"[bg][sh]overlay=x='({xexpr})+16':y='({yexpr})+20':format=auto[b1];"
             f"[b1][card]overlay=x='{xexpr}':y='{yexpr}':format=auto[b2];"
             f"[b2]{copy_drawtext(i, copy, D)}[v]"
