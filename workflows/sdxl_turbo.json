@@ -42,7 +42,7 @@
   },
   "9": {
     "class_type": "SaveImage",
-    "inputs": { "filename_prefix": "comfytest", "images": ["8", 0] },
+    "inputs": { "filename_prefix": "qyro", "images": ["8", 0] },
     "_meta": { "title": "Save Image" }
   }
 }
