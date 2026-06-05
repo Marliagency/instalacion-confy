@@ -1,12 +1,52 @@
 [
   {
-    "id": "comfytest01",
-    "tipo": "imagen",
-    "prompt": "a sleek glass perfume bottle on a marble pedestal, soft studio lighting, elegant product photography, highly detailed",
-    "negativo": "blurry, low quality, watermark, text, deformed, ugly",
-    "formato": "1:1",
-    "width": 512,
-    "height": 512,
-    "seed": 12345
+    "id": "qyro01_despertar",
+    "tipo": "video",
+    "prompt": "A fit athletic man in his late 20s with short dark hair and light stubble, lean muscular build, warm medium skin tone, wearing a charcoal long-sleeve activewear top, waking before sunrise, sitting up on the edge of the bed and rising to his feet with quiet determination, modern minimalist bedroom, moody cinematic style, slow push-in handheld camera, soft blue dawn light through a window with warm rim light, photorealistic, highly detailed skin, vertical 9:16",
+    "negativo": "blurry, low quality, distorted, deformed face, deformed hands, extra fingers, extra limbs, watermark, text, logo, ugly, plastic skin, flicker, static frame, app interface, phone screen ui",
+    "formato": "9:16",
+    "width": 480,
+    "height": 832,
+    "frames": 81
+  },
+  {
+    "id": "qyro02_gimnasio",
+    "tipo": "video",
+    "prompt": "The same fit athletic man in his late 20s, short dark hair, light stubble, lean muscular build, gripping a loaded barbell and driving through an explosive heavy lift, veins and sweat on the skin, breath visible, gritty industrial gym with chalk dust in the air, high-contrast dramatic cinematic style, dynamic low-angle camera with slow motion, hard directional spotlight and deep shadows, photorealistic, highly detailed, vertical 9:16",
+    "negativo": "blurry, low quality, distorted, deformed face, deformed hands, extra fingers, extra limbs, watermark, text, logo, ugly, plastic skin, flicker, static frame, app interface, phone screen ui",
+    "formato": "9:16",
+    "width": 480,
+    "height": 832,
+    "frames": 81
+  },
+  {
+    "id": "qyro03_hidratacion",
+    "tipo": "video",
+    "prompt": "The same fit athletic man in his late 20s, short dark hair, light stubble, athletic build, drinking water from a bottle and wiping sweat from his brow after training, chest rising with heavy breathing, sunlit modern gym corner with plants, fresh vibrant cinematic style, smooth slow-motion close-up camera, bright natural morning light, photorealistic, highly detailed skin, vertical 9:16",
+    "negativo": "blurry, low quality, distorted, deformed face, deformed hands, extra fingers, extra limbs, watermark, text, logo, ugly, plastic skin, flicker, static frame, app interface, phone screen ui",
+    "formato": "9:16",
+    "width": 480,
+    "height": 832,
+    "frames": 81
+  },
+  {
+    "id": "qyro04_nutricion",
+    "tipo": "video",
+    "prompt": "The same fit athletic man in his late 20s, short dark hair, light stubble, preparing a healthy colorful meal on a clean kitchen counter, plating grilled chicken with fresh vegetables, then lifting his phone to photograph the plate from above, warm inviting cinematic style, smooth overhead-to-side camera move, soft natural window light, photorealistic, highly detailed, vertical 9:16",
+    "negativo": "blurry, low quality, distorted, deformed face, deformed hands, extra fingers, extra limbs, watermark, text, logo, ugly, plastic skin, flicker, static frame, app interface, phone screen ui, unappetizing food",
+    "formato": "9:16",
+    "width": 480,
+    "height": 832,
+    "frames": 81
+  },
+  {
+    "id": "qyro05_manifiesto",
+    "tipo": "video",
+    "prompt": "The same fit athletic man in his late 20s, short dark hair, light stubble, lean muscular build, running hard down an empty urban street at sunrise, then slowing to a stop and looking ahead with calm confidence, epic inspirational cinematic style, sweeping tracking shot rising into a crane move, golden sunrise backlight with subtle lens flare and long shadows, photorealistic, highly detailed, vertical 9:16",
+    "negativo": "blurry, low quality, distorted, deformed face, deformed hands, extra fingers, extra limbs, watermark, text, logo, ugly, plastic skin, flicker, static frame, app interface, phone screen ui",
+    "formato": "9:16",
+    "width": 480,
+    "height": 832,
+    "frames": 81
   }
 ]
