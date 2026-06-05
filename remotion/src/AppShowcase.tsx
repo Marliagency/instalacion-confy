@@ -29,14 +29,15 @@ export const AppShowcase: React.FC<AppShowcaseProps> = ({screenshot, title, badg
     <AbsoluteFill style={{background: bgGradient, opacity: out}}>
       <Fonts />
       {/* título */}
-      <div style={{position: 'absolute', top: height * 0.085, width: '100%', textAlign: 'center',
+      <div style={{position: 'absolute', top: height * 0.06, width: '100%', textAlign: 'center',
                    transform: `translateY(${titleY}px)`, opacity: titleOp}}>
         {badge && (
           <div style={{display: 'inline-block', background: BLUE, color: 'white', fontWeight: 700,
-                       fontSize: 34, padding: '10px 26px', borderRadius: 999, marginBottom: 22,
+                       fontSize: 32, padding: '10px 26px', borderRadius: 999, marginBottom: 18,
                        letterSpacing: 1}}>{badge}</div>
         )}
-        <div style={{color: 'white', fontWeight: 700, fontSize: 64, letterSpacing: 1, padding: '0 60px'}}>{title}</div>
+        <div style={{color: 'white', fontWeight: 700, fontSize: 58, letterSpacing: 0.5, lineHeight: 1.05,
+                     padding: '0 70px', whiteSpace: 'nowrap'}}>{title}</div>
       </div>
       {/* móvil con la captura real */}
       <AbsoluteFill style={{justifyContent: 'center', alignItems: 'center'}}>

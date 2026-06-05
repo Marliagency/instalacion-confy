@@ -22,16 +22,18 @@ OUT = "projects/qyro/outputs/anuncio_app.mp4"
 # Timeline: cada herramienta para su formato
 TIMELINE = [
     {"kind": "remotion", "comp": "KineticText", "props": {"lines": ["HOY", "NO SE", "NEGOCIA"], "accentLine": 2}},
-    {"kind": "broll", "file": "outputs/qyro01_despertar.mp4", "vo": "anuncio_app__s1_vo.mp3"},
-    {"kind": "remotion", "comp": "AppShowcase", "props": {"screenshot": "screenshots/01_habitos.png", "title": "TUS HÁBITOS, BAJO CONTROL", "badge": "RACHA 2 DÍAS"}},
-    {"kind": "broll", "file": "outputs/qyro02_gimnasio.mp4", "vo": "anuncio_app__s2_vo.mp3"},
+    {"kind": "broll", "file": "outputs/qyro01_despertar.mp4", "vo": "anuncio_app__s1_vo.mp3", "caption": "EMPIEZA GANANDO"},
+    {"kind": "remotion", "comp": "AppShowcase", "props": {"screenshot": "screenshots/01_habitos.png", "title": "TUS HÁBITOS", "badge": "RACHA 2 DÍAS"}},
+    {"kind": "broll", "file": "outputs/qyro02_gimnasio.mp4", "vo": "anuncio_app__s2_vo.mp3", "caption": "UNA MÁS"},
     {"kind": "remotion", "comp": "StatReveal", "props": {"value": 1, "prefix": "+", "suffix": " REP", "label": "EL PROGRESO NO DESCANSA"}},
-    {"kind": "remotion", "comp": "AppShowcase", "props": {"screenshot": "screenshots/02_entrenos_progreso.png", "title": "TU PROGRESO, MEDIDO", "badge": "6 SUGERENCIAS"}},
-    {"kind": "broll", "file": "outputs/qyro03_hidratacion.mp4", "vo": "anuncio_app__s3_vo.mp3"},
+    {"kind": "remotion", "comp": "AppShowcase", "props": {"screenshot": "screenshots/02_entrenos_progreso.png", "title": "TU PROGRESO", "badge": "6 SUGERENCIAS"}},
+    {"kind": "broll", "file": "outputs/qyro03_hidratacion.mp4", "vo": "anuncio_app__s3_vo.mp3", "caption": "RECUPERA"},
     {"kind": "remotion", "comp": "AppShowcase", "props": {"screenshot": "screenshots/03_nutricion_hoy.png", "title": "NUTRICIÓN CON IA", "badge": "FOTO CON IA"}},
-    {"kind": "broll", "file": "outputs/qyro05_manifiesto.mp4", "vo": "anuncio_app__s5_vo.mp3"},
+    {"kind": "broll", "file": "outputs/qyro05_manifiesto.mp4", "vo": "anuncio_app__s5_vo.mp3", "caption": "NO PARES"},
     {"kind": "remotion", "comp": "Closing", "props": {"brand": "QYRO", "tagline": "CONVIÉRTETE EN TU MEJOR VERSIÓN"}},
 ]
+FONT_B = "assets/fonts/Inter-Bold.ttf"
+BLUE = "0x2563EB"
 
 
 def run(cmd, **kw):
@@ -55,10 +57,17 @@ def render_remotion(i, comp, props):
     return out
 
 
-def normalize_broll(i, src):
+def normalize_broll(i, src, caption=None):
     out = os.path.join(TMP, f"seg{i}.mp4")
-    run(["ffmpeg", "-y", "-i", src, "-an",
-         "-vf", f"scale={W}:{H}:force_original_aspect_ratio=increase,crop={W}:{H},setsar=1,fps={FPS},format=yuv420p",
+    vf = f"scale={W}:{H}:force_original_aspect_ratio=increase,crop={W}:{H},setsar=1,fps={FPS},format=yuv420p"
+    if caption:
+        tf = os.path.join(TMP, f"cap{i}.txt"); open(tf, "w").write(caption.upper())
+        tfp = tf.replace(":", "\\:")
+        ty = int(H * 0.80)
+        vf += (f",drawbox=x=(iw-150)/2:y={ty-44}:w=150:h=8:color={BLUE}@0.95:t=fill,"
+               f"drawtext=fontfile={FONT_B}:textfile={tfp}:fontcolor=white:fontsize=62:"
+               f"x=(w-text_w)/2:y={ty}:box=1:boxcolor=black@0.42:boxborderw=28:expansion=none")
+    run(["ffmpeg", "-y", "-i", src, "-an", "-vf", vf,
          "-c:v", "libx264", "-preset", "medium", "-crf", "18", "-pix_fmt", "yuv420p", out])
     return out
 
@@ -93,7 +102,7 @@ def main():
             src = item["file"]
             if not os.path.isfile(src):
                 sys.exit(f"Falta b-roll {src}")
-            o = normalize_broll(i, src)
+            o = normalize_broll(i, src, item.get("caption"))
             print(f"  [b-roll] {os.path.basename(src)}", flush=True)
         d = dur(o); segs.append(o); durs.append(d)
         vo_idx.append(item.get("vo"))
