@@ -1,3 +1,26 @@
+# OPERACIÓN (v2): el estudio se maneja por COMANDOS, no por prompts
+
+La operación está colapsada en **dos acciones humanas** (ver `README.md`):
+
+1. **Alta de empresa (una vez):** `studio.py new-project <slug>` → `studio.py
+   init-brand <slug> --info <file>` → soltar assets en `projects/<slug>/assets/`.
+2. **Crear un vídeo:** `studio.py make <slug> --brief "<idea>"` (o el webhook de
+   n8n, `n8n/README.md`).
+
+Lo mecánico (rellenar huecos, imágenes/voces, plan, gate, montaje, encender/apagar
+pod, reporte) son **subcomandos de `studio.py`**, no prompts a mano. Los dos pasos
+creativos (brief→pieza, copy) los hace `studio.py` por dentro vía la API de
+Anthropic (`engine/llm.py`, modelo configurable en `brand.generacion.texto.modelo`,
+clave `ANTHROPIC_API_KEY`). El manifiesto + gate de `studio.py` y
+`schema/production_package.schema.json` son la **única fuente de verdad**; ningún
+subcomando los bypassea. No se gasta GPU sin el gate en verde y (coste ≤ `--max-cost`
+o tu OK). Los prompts manuales antiguos están archivados en `docs/prompts_legacy.md`.
+
+> Todo lo de abajo es la **máquina subyacente** (RunPod/ComfyUI/ElevenLabs/montaje)
+> que esos comandos orquestan. Sigue vigente como referencia técnica.
+
+---
+
 # Orquestación de producción en masa (imágenes y video) — RunPod + ComfyUI
 
 Eres el orquestador de un pipeline de generación de **imágenes y video** en masa.

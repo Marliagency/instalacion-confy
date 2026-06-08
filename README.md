@@ -1,4 +1,36 @@
-# Pipeline de producción en masa (imágenes y video): RunPod + ComfyUI + Claude Code
+# Estudio de producción de vídeo multi-empresa
+
+> **Operación reducida a dos acciones humanas.** Todo lo mecánico es un comando de
+> `studio.py`; los dos pasos creativos (brief→pieza y copy) los hace `studio.py` por
+> dentro llamando a la API de Anthropic (`engine/llm.py`). Ver `STUDIO_PLAN.md` y
+> `docs/prompts_legacy.md`.
+
+### 1) Dar de alta una empresa (una sola vez)
+```bash
+python3 studio.py new-project <slug>
+python3 studio.py init-brand <slug> --info brief_empresa.txt   # rellena brand.json (LLM); lista pendientes + assets a aportar
+# soltar assets en projects/<slug>/assets/ (refs/, screenshots/, characters/, music/)
+```
+
+### 2) Crear un vídeo (un solo comando)
+```bash
+python3 studio.py make <slug> --brief "anuncio UGC de 30s sobre X con gancho Y" [--max-cost 5] [--yes]
+```
+`make` encadena: brief→pieza → fill (rellena huecos) → plan+gate → **Parada 1** si
+faltan assets de usuario → **Parada 2** si el coste supera `--max-cost` → produce →
+reporte. Sin paradas, produce el vídeo de principio a fin. Vía n8n: ver `n8n/README.md`
+(un webhook `{slug, brief, max_cost}` = un vídeo).
+
+**Subcomandos** (todos pasan por el manifiesto + gate; ninguno lo bypassea):
+`new-project · init-brand · brief2piece · fill · plan · make · produce · regen-segment ·
+add-scene · flf-end · status`. Requisito: `ANTHROPIC_API_KEY` en el entorno.
+
+`add-scene`/`flf-end` (ediciones de imagen que conservan identidad) están a la espera
+del motor **FLUX.2 Dev + Qwen-Image-Edit** en el pod.
+
+---
+
+## Máquina subyacente: RunPod + ComfyUI
 
 Das un brief → Claude Code expande el lote de prompts → enciende una GPU en la
 nube → genera todas las **imágenes y/o videos** → te los descarga → apaga la GPU.
