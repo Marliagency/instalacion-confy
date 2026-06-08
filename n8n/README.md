@@ -33,15 +33,33 @@ que ejecuta `studio.py make <slug> --brief "<brief>" --max-cost N`.
 - **Faltan assets de usuario o estructura incompleta** → `make` **para** (PARADA 1)
   y lista exactamente qué archivos faltan y en qué ruta. `ok: false`. No se gasta GPU.
 
-## Flujo n8n sugerido (nodos)
+## Importar el workflow (listo para usar)
 
-1. **Webhook** (trigger) → recibe `{slug, brief, max_cost}`.
-2. **Execute Command / SSH** → llama al entrypoint en el pod (o un runner con el repo
-   y `RUNPOD_API_KEY` + `ANTHROPIC_API_KEY` + claves de motores en el entorno).
-3. **IF `ok == false` y log contiene "PARADA 2"** → notificar (Slack/email) con el
-   coste y un botón que reenvía el mismo webhook con `approve: true`.
-4. **IF `ok == false` y "PARADA 1"** → notificar la lista de assets a aportar.
-5. **IF `ok == true`** → publicar/avisar con `outputs_dir`.
+`n8n/workflow.json` es un workflow **importable**: en n8n → *Workflows → Import from
+File* → elige `n8n/workflow.json`. Nodos:
+
+1. **Webhook (POST `make-video`)** — recibe `{slug, brief, max_cost, approve?}` en el body.
+2. **Execute Command** — corre `studio_webhook.py` en el host del runner:
+   `cd ${REPO_DIR:-/workspace/instalacion-confy} && python3 studio_webhook.py '{{ JSON.stringify($json.body) }}'`
+3. **IF `ok`** — `true` (vídeo) → responde 200; `false` (PARADA coste/assets) → responde 422
+   con el plan/log. n8n decide notificar y, para aprobar, reenvía el webhook con
+   `"approve": true`.
+
+**Setup del runner** (host donde corre el Execute Command):
+- Define `REPO_DIR` apuntando al repo clonado (o edita el comando).
+- Env: `ANTHROPIC_API_KEY`, `RUNPOD_API_KEY`, claves ElevenLabs/OpenAI.
+- El nodo Execute Command exige que n8n tenga acceso shell a ese host (self-hosted
+  n8n, o un nodo SSH al runner).
+
+**Briefs con apóstrofes:** el comando por defecto pasa el JSON entre comillas simples.
+Si tus briefs llevan `'`, usa la variante **base64** (sin problemas de comillas):
+`... python3 studio_webhook.py --b64 {{ Buffer.from(JSON.stringify($json.body)).toString('base64') }}`
+
+## Notificaciones (opcional, añádelas tú)
+
+- **PARADA 2 (coste)** → Slack/email con el coste + botón que reenvía con `approve:true`.
+- **PARADA 1 (assets)** → notifica la lista exacta de archivos a aportar.
+- **OK** → publica/avisa con `outputs_dir`.
 
 ## Requisitos del runner/pod
 

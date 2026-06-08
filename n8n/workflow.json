@@ -1,0 +1,85 @@
+{
+  "name": "Estudio — make video (un webhook = un vídeo)",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "make-video",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook-make",
+      "name": "Webhook (POST make-video)",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [240, 300],
+      "webhookId": "make-video"
+    },
+    {
+      "parameters": {
+        "command": "=cd ${REPO_DIR:-/workspace/instalacion-confy} && python3 studio_webhook.py '{{ JSON.stringify($json.body) }}'"
+      },
+      "id": "exec-make",
+      "name": "studio.py make (Execute Command)",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [520, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": { "caseSensitive": true, "typeValidation": "loose" },
+          "conditions": [
+            {
+              "leftValue": "={{ JSON.parse($json.stdout).ok }}",
+              "rightValue": true,
+              "operator": { "type": "boolean", "operation": "true", "singleValue": true }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "if-ok",
+      "name": "¿ok? (true = vídeo / false = parada)",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [780, 300]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json.stdout }}",
+        "options": {}
+      },
+      "id": "respond-ok",
+      "name": "Responder OK (vídeo)",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [1040, 200]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json.stdout }}",
+        "options": { "responseCode": 422 }
+      },
+      "id": "respond-stop",
+      "name": "Responder PARADA (coste/assets)",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [1040, 420]
+    }
+  ],
+  "connections": {
+    "Webhook (POST make-video)": { "main": [[{ "node": "studio.py make (Execute Command)", "type": "main", "index": 0 }]] },
+    "studio.py make (Execute Command)": { "main": [[{ "node": "¿ok? (true = vídeo / false = parada)", "type": "main", "index": 0 }]] },
+    "¿ok? (true = vídeo / false = parada)": {
+      "main": [
+        [{ "node": "Responder OK (vídeo)", "type": "main", "index": 0 }],
+        [{ "node": "Responder PARADA (coste/assets)", "type": "main", "index": 0 }]
+      ]
+    }
+  },
+  "settings": { "executionOrder": "v1" }
+}

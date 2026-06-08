@@ -18,7 +18,12 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 
 
 def main():
-    raw = (sys.argv[1] if len(sys.argv) > 1 else None) or os.environ.get("WEBHOOK_JSON") or sys.stdin.read()
+    args = sys.argv[1:]
+    if args and args[0] == "--b64":  # JSON en base64 (robusto ante comillas en el brief)
+        import base64
+        raw = base64.b64decode(args[1]).decode("utf-8")
+    else:
+        raw = (args[0] if args else None) or os.environ.get("WEBHOOK_JSON") or sys.stdin.read()
     try:
         req = json.loads(raw)
     except Exception as e:
