@@ -18,7 +18,7 @@ Comandos:
 
 Ver STUDIO_PLAN.md para el diseño completo.
 """
-import argparse, json, os, sys, glob
+import argparse, json, os, sys, glob, time, random
 
 PROJECTS = "projects"
 
@@ -368,6 +368,150 @@ def _dur(p):
     except: return 0.0
 
 
+def _find_pending(obj, path=""):
+    out = []
+    if isinstance(obj, dict):
+        for k, v in obj.items():
+            out += _find_pending(v, f"{path}.{k}" if path else k)
+    elif isinstance(obj, list):
+        for i, v in enumerate(obj):
+            out += _find_pending(v, f"{path}[{i}]")
+    elif isinstance(obj, str) and obj.strip().upper() == "PENDIENTE":
+        out.append(path)
+    return out
+
+
+def _read_arg(val):
+    """Devuelve texto desde '-', un fichero, o el propio string."""
+    if val == "-":
+        return sys.stdin.read()
+    if os.path.isfile(val):
+        return open(val, encoding="utf-8").read()
+    return val
+
+
+def _write_piece(slug, pieza, piece):
+    dst = os.path.join(proj_dir(slug), "pieces", f"{pieza}.json")
+    json.dump(piece, open(dst, "w"), ensure_ascii=False, indent=2)
+    return dst
+
+
+# --- Subcomandos creativos / de operación (cada uno termina en el gate `plan`) ---
+def cmd_init_brand(args):
+    import engine.llm as llm
+    d = proj_dir(args.slug)
+    if not os.path.isdir(d):
+        sys.exit(f"No existe el proyecto {args.slug}. Crea antes: studio.py new-project {args.slug}")
+    info = _read_arg(args.info)
+    base = load_brand(args.slug) if os.path.isfile(os.path.join(d, "brand.json")) else {}
+    brand = llm.info_to_brand(args.slug, info, base)
+    json.dump(brand, open(os.path.join(d, "brand.json"), "w"), ensure_ascii=False, indent=2)
+    print(f"brand.json actualizado para {args.slug}.")
+    pend = _find_pending(brand)
+    if pend:
+        print("\n⚠️  Campos PENDIENTES (rellénalos a mano o reejecuta con más info):")
+        for p in pend:
+            print(f"     - {p}")
+    print(f"\n📂 Aporta assets en projects/{args.slug}/assets/:")
+    print("     - refs/        referencias de producto/mascota (R7)")
+    print("     - screenshots/ capturas reales para insertos")
+    print("     - characters/  retratos base si defines personajes UGC")
+    return 0
+
+
+def cmd_brief2piece(args):
+    import engine.llm as llm
+    brand = load_brand(args.slug)
+    bp = None
+    if args.blueprint:
+        bpp = os.path.join("blueprints", f"{args.blueprint}.json")
+        if os.path.isfile(bpp):
+            bp = json.load(open(bpp))
+        else:
+            sys.exit(f"No existe blueprint {bpp}")
+    piece = llm.brief_to_piece(brand, _read_arg(args.brief), bp)
+    piece["id"] = args.pieza
+    print(f"Pieza escrita: {_write_piece(args.slug, args.pieza, piece)}")
+    return cmd_plan(args)
+
+
+def cmd_fill(args):
+    import engine.llm as llm
+    brand = load_brand(args.slug)
+    piece = llm.fill_copy(brand, load_piece(args.slug, args.pieza))
+    print(f"Pieza rellenada: {_write_piece(args.slug, args.pieza, piece)}")
+    return cmd_plan(args)
+
+
+def cmd_regen_segment(args):
+    piece = load_piece(args.slug, args.pieza)
+    seg = next((s for s in piece["segmentos"] if s["id"] == args.seg_id), None)
+    if not seg:
+        sys.exit(f"Segmento {args.seg_id} no encontrado en {args.pieza}")
+    seg["seed"] = args.seed if args.seed is not None else random.randint(0, 2_147_483_646)
+    _write_piece(args.slug, args.pieza, piece)
+    clip = os.path.join(paths(args.slug)["clips"], f"{args.pieza}__{args.seg_id}.mp4")
+    if os.path.isfile(clip):
+        os.remove(clip)
+        print(f"clip borrado para re-render: {clip}")
+    print(f"segmento {args.seg_id} a regenerar (seed {seg['seed']})" + (f" · motivo: {args.reason}" if args.reason else ""))
+    return cmd_plan(args)
+
+
+def cmd_add_scene(args):
+    brand = load_brand(args.slug)
+    chars = {c["id"] for c in brand.get("personajes", [])}
+    if args.character_id not in chars:
+        sys.exit(f"personaje '{args.character_id}' no definido en brand.personajes")
+    P = paths(args.slug)
+    print(f"add-scene: variantes de '{args.character_id}' como EDICIÓN de su retrato (conserva identidad):")
+    for sc in [s.strip() for s in args.scenes.split(",") if s.strip()]:
+        key = "".join(ch if ch.isalnum() else "_" for ch in sc.lower())[:30]
+        print(f"  - {sc:<30} → {os.path.join(P['characters'], f'{args.character_id}__{key}.png')}")
+    sys.exit("⏳ PENDIENTE: requiere motor de edición de imagen (FLUX.2 Dev + Qwen-Image-Edit) en el pod. "
+             "Elegiste esperar a ese motor; cuando esté, este comando generará las ediciones en esas rutas.")
+
+
+def cmd_flf_end(args):
+    piece = load_piece(args.slug, args.pieza)
+    seg = next((s for s in piece["segmentos"] if s["id"] == args.seg_id), None)
+    if not seg:
+        sys.exit(f"Segmento {args.seg_id} no encontrado")
+    out = os.path.join(paths(args.slug)["images"], f"{args.pieza}__{args.seg_id}_fin.png")
+    print(f"flf-end: imagen_fin como EDICIÓN de imagen_inicio del segmento {args.seg_id}")
+    print(f"  cambio: {args.change}\n  → {out}")
+    sys.exit("⏳ PENDIENTE: requiere FLUX.2 Dev + Qwen-Image-Edit. Cuando esté, generará imagen_fin en esa ruta.")
+
+
+def cmd_make(args):
+    """Un único comando: brief → pieza → fill → plan/gate → (paradas) → produce → reporte."""
+    import engine.llm as llm
+    brand = load_brand(args.slug)
+    pieza = args.name or f"auto_{int(time.time())}"
+    bp = None
+    if args.blueprint:
+        bpp = os.path.join("blueprints", f"{args.blueprint}.json")
+        bp = json.load(open(bpp)) if os.path.isfile(bpp) else sys.exit(f"No existe blueprint {bpp}")
+    # 1) brief → pieza  2) fill huecos
+    piece = llm.brief_to_piece(brand, _read_arg(args.brief), bp)
+    piece["id"] = pieza
+    piece = llm.fill_copy(brand, piece)
+    dst = _write_piece(args.slug, pieza, piece)
+    print(f"\n[make] pieza: {dst}")
+    # 3) plan + gate (parada 1: estructura / assets de usuario)
+    pa = argparse.Namespace(slug=args.slug, pieza=pieza)
+    if cmd_plan(pa) != 0:
+        sys.exit("⛔ PARADA 1 (assets/estructura): faltan piezas que debes aportar o el guion está "
+                 "incompleto (ver lista arriba). No se gasta GPU. Resuelve y reejecuta.")
+    # 5) parada 2: coste
+    _, usd = cost_estimate(segment_manifest(args.slug, brand, piece))
+    if usd > args.max_cost and not args.yes:
+        sys.exit(f"⛔ PARADA 2 (coste): estimado ~${usd:.2f} > --max-cost ${args.max_cost:.2f}. "
+                 "Reejecuta con --yes o sube --max-cost.")
+    # 6) produce
+    return cmd_produce(argparse.Namespace(slug=args.slug, pieza=pieza, yes=True))
+
+
 def main():
     ap = argparse.ArgumentParser(description="Estudio de producción multi-empresa.")
     sub = ap.add_subparsers(dest="cmd", required=True)
@@ -376,6 +520,13 @@ def main():
     sp = sub.add_parser("new-project"); sp.add_argument("slug"); sp.set_defaults(f=cmd_new_project)
     sp = sub.add_parser("new-piece");   sp.add_argument("slug"); sp.add_argument("pieza"); sp.add_argument("--blueprint"); sp.set_defaults(f=cmd_new_piece)
     sp = sub.add_parser("produce");     sp.add_argument("slug"); sp.add_argument("pieza"); sp.add_argument("--yes", action="store_true"); sp.set_defaults(f=cmd_produce)
+    sp = sub.add_parser("init-brand");  sp.add_argument("slug"); sp.add_argument("--info", required=True, help="fichero, '-' (stdin) o texto"); sp.set_defaults(f=cmd_init_brand)
+    sp = sub.add_parser("brief2piece"); sp.add_argument("slug"); sp.add_argument("pieza"); sp.add_argument("--brief", required=True); sp.add_argument("--blueprint"); sp.set_defaults(f=cmd_brief2piece)
+    sp = sub.add_parser("fill");        sp.add_argument("slug"); sp.add_argument("pieza"); sp.set_defaults(f=cmd_fill)
+    sp = sub.add_parser("regen-segment"); sp.add_argument("slug"); sp.add_argument("pieza"); sp.add_argument("seg_id"); sp.add_argument("--reason"); sp.add_argument("--seed", type=int); sp.set_defaults(f=cmd_regen_segment)
+    sp = sub.add_parser("add-scene");   sp.add_argument("slug"); sp.add_argument("character_id"); sp.add_argument("--scenes", required=True, help="lista separada por comas"); sp.set_defaults(f=cmd_add_scene)
+    sp = sub.add_parser("flf-end");     sp.add_argument("slug"); sp.add_argument("pieza"); sp.add_argument("seg_id"); sp.add_argument("--change", required=True); sp.set_defaults(f=cmd_flf_end)
+    sp = sub.add_parser("make");        sp.add_argument("slug"); sp.add_argument("--brief", required=True); sp.add_argument("--name"); sp.add_argument("--blueprint"); sp.add_argument("--max-cost", type=float, default=5.0, dest="max_cost"); sp.add_argument("--yes", action="store_true"); sp.set_defaults(f=cmd_make)
     args = ap.parse_args()
     rc = args.f(args)
     sys.exit(rc or 0)

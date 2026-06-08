@@ -3,7 +3,12 @@
   "title": "Marli — Paquete de Producción (contrato Sesión A → Sesión B)",
   "description": "Artefacto único que escribe la Sesión A (Guionista/Arquitecto) y ejecuta la Sesión B (Productor). Define marca, salida, generación y las piezas con sus segmentos por formato.",
   "type": "object",
-  "required": ["marca", "salida", "generacion", "piezas"],
+  "required": [
+    "marca",
+    "salida",
+    "generacion",
+    "piezas"
+  ],
   "additionalProperties": false,
   "properties": {
     "personajes": {
@@ -11,55 +16,153 @@
       "description": "Personajes persistentes (avatares). Se generan UNA vez con el mejor modelo (gpt-image-1 high) y su retrato se REUTILIZA en todos los segmentos que lo referencien (consistencia + ahorro). Los UGC usan el retrato como start_image del lip-sync.",
       "items": {
         "type": "object",
-        "required": ["id", "prompt"],
+        "required": [
+          "id",
+          "prompt"
+        ],
         "properties": {
-          "id": {"type": "string"},
-          "prompt": {"type": "string", "description": "Retrato ULTRADETALLADO del personaje (con {ESTILO})."},
-          "negativo": {"type": "string"},
-          "calidad": {"type": "string", "enum": ["low", "medium", "high"], "default": "high"},
-          "retrato": {"type": "string", "description": "Ruta del retrato (def. assets/characters/<id>.png). Si existe, se reutiliza (no se regenera)."}
+          "id": {
+            "type": "string"
+          },
+          "prompt": {
+            "type": "string",
+            "description": "Retrato ULTRADETALLADO del personaje (con {ESTILO})."
+          },
+          "negativo": {
+            "type": "string"
+          },
+          "calidad": {
+            "type": "string",
+            "enum": [
+              "low",
+              "medium",
+              "high"
+            ],
+            "default": "high"
+          },
+          "retrato": {
+            "type": "string",
+            "description": "Ruta del retrato (def. assets/characters/<id>.png). Si existe, se reutiliza (no se regenera)."
+          }
         }
       }
     },
     "marca": {
       "type": "object",
-      "required": ["nombre"],
+      "required": [
+        "nombre"
+      ],
       "properties": {
-        "nombre": {"type": "string"},
-        "tagline": {"type": "string"},
+        "nombre": {
+          "type": "string"
+        },
+        "tagline": {
+          "type": "string"
+        },
         "paleta": {
           "type": "object",
           "properties": {
-            "primario": {"type": "string"}, "acento": {"type": "string"},
-            "fondo": {"type": "string"}, "tinta": {"type": "string"}, "muted": {"type": "string"}
+            "primario": {
+              "type": "string"
+            },
+            "acento": {
+              "type": "string"
+            },
+            "fondo": {
+              "type": "string"
+            },
+            "tinta": {
+              "type": "string"
+            },
+            "muted": {
+              "type": "string"
+            }
           }
         },
-        "fuente": {"type": "string", "default": "Inter"},
-        "estilo_visual": {"type": "string", "description": "Pista de estilo común que se inyecta en TODOS los prompts de imagen."},
-        "robot_li": {"type": "boolean", "default": true}
+        "fuente": {
+          "type": "string",
+          "default": "Inter"
+        },
+        "estilo_visual": {
+          "type": "string",
+          "description": "Pista de estilo común que se inyecta en TODOS los prompts de imagen."
+        },
+        "robot_li": {
+          "type": "boolean",
+          "default": true
+        }
       }
     },
     "salida": {
       "type": "object",
-      "required": ["aspecto", "resolucion", "fps"],
+      "required": [
+        "aspecto",
+        "resolucion",
+        "fps"
+      ],
       "properties": {
-        "aspecto": {"type": "string", "enum": ["9:16", "1:1", "16:9", "4:5"]},
-        "resolucion": {"type": "array", "items": {"type": "integer"}, "minItems": 2, "maxItems": 2},
-        "fps": {"type": "integer", "default": 30},
-        "duracion_objetivo_s": {"type": "number", "description": "Informativo; la duración real = suma de segmentos + cierre."},
+        "aspecto": {
+          "type": "string",
+          "enum": [
+            "9:16",
+            "1:1",
+            "16:9",
+            "4:5"
+          ]
+        },
+        "resolucion": {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          },
+          "minItems": 2,
+          "maxItems": 2
+        },
+        "fps": {
+          "type": "integer",
+          "default": 30
+        },
+        "duracion_objetivo_s": {
+          "type": "number",
+          "description": "Informativo; la duración real = suma de segmentos + cierre."
+        },
         "musica": {
           "type": "object",
           "properties": {
-            "tipo": {"type": "string", "enum": ["ambiental", "libreria", "ninguna"]},
-            "ruta": {"type": "string", "description": "Ruta local del audio (si tipo=libreria o ambiental ya generado)."}
+            "tipo": {
+              "type": "string",
+              "enum": [
+                "ambiental",
+                "libreria",
+                "ninguna",
+                "accion",
+                "energica"
+              ]
+            },
+            "ruta": {
+              "type": "string",
+              "description": "Ruta local del audio (si tipo=libreria o ambiental ya generado)."
+            }
           }
         },
         "voz_off": {
           "type": "object",
           "properties": {
-            "motor": {"type": "string", "enum": ["elevenlabs", "openai", "ninguno"]},
-            "voz_id": {"type": "string"},
-            "idioma": {"type": "string", "default": "es"}
+            "motor": {
+              "type": "string",
+              "enum": [
+                "elevenlabs",
+                "openai",
+                "ninguno"
+              ]
+            },
+            "voz_id": {
+              "type": "string"
+            },
+            "idioma": {
+              "type": "string",
+              "default": "es"
+            }
           }
         }
       }
@@ -70,10 +173,35 @@
         "imagenes": {
           "type": "object",
           "properties": {
-            "motor": {"type": "string", "enum": ["openai"], "default": "openai"},
-            "modelo": {"type": "string", "default": "gpt-image-1"},
-            "calidad": {"type": "string", "enum": ["low", "medium", "high"], "default": "medium"},
-            "tamano": {"type": "string", "enum": ["1024x1024", "1024x1536", "1536x1024"], "default": "1024x1536"}
+            "motor": {
+              "type": "string",
+              "enum": [
+                "openai"
+              ],
+              "default": "openai"
+            },
+            "modelo": {
+              "type": "string",
+              "default": "gpt-image-1"
+            },
+            "calidad": {
+              "type": "string",
+              "enum": [
+                "low",
+                "medium",
+                "high"
+              ],
+              "default": "medium"
+            },
+            "tamano": {
+              "type": "string",
+              "enum": [
+                "1024x1024",
+                "1024x1536",
+                "1536x1024"
+              ],
+              "default": "1024x1536"
+            }
           }
         }
       }
@@ -83,16 +211,31 @@
       "minItems": 1,
       "items": {
         "type": "object",
-        "required": ["id", "segmentos"],
+        "required": [
+          "id",
+          "segmentos"
+        ],
         "properties": {
-          "id": {"type": "string"},
-          "concepto": {"type": "string"},
-          "gancho": {"type": "string", "description": "El factor inesperado / pattern interrupt de la pieza (R2.2) y el open loop (R2.3)."},
-          "cierre_marca": {"type": "boolean", "default": true},
+          "id": {
+            "type": "string"
+          },
+          "concepto": {
+            "type": "string"
+          },
+          "gancho": {
+            "type": "string",
+            "description": "El factor inesperado / pattern interrupt de la pieza (R2.2) y el open loop (R2.3)."
+          },
+          "cierre_marca": {
+            "type": "boolean",
+            "default": true
+          },
           "segmentos": {
             "type": "array",
             "minItems": 1,
-            "items": {"$ref": "#/definitions/segmento"}
+            "items": {
+              "$ref": "#/definitions/segmento"
+            }
           }
         }
       }
@@ -101,25 +244,63 @@
   "definitions": {
     "segmento": {
       "type": "object",
-      "required": ["id", "formato"],
+      "required": [
+        "id",
+        "formato"
+      ],
       "properties": {
-        "id": {"type": "string", "description": "Identificador del clip de salida (outputs/clips/<id>.mp4)."},
+        "id": {
+          "type": "string",
+          "description": "Identificador del clip de salida (outputs/clips/<id>.mp4)."
+        },
         "formato": {
           "type": "string",
-          "enum": ["cinematic", "pov_phone", "product", "screen_demo", "hands_asmr", "slideshow", "kinetic_text", "stat_reveal", "before_after", "ugc"],
+          "enum": [
+            "cinematic",
+            "pov_phone",
+            "product",
+            "screen_demo",
+            "hands_asmr",
+            "slideshow",
+            "kinetic_text",
+            "stat_reveal",
+            "before_after",
+            "ugc"
+          ],
           "description": "cinematic/pov_phone/product/screen_demo/hands_asmr => wan_i2v · slideshow/kinetic_text/stat_reveal/before_after => ffmpeg (sin GPU) · ugc => wan_lipsync (audio)"
         },
-        "duracion_s": {"type": "number", "default": 5},
-        "frames": {"type": "integer", "description": "Solo motores WAN; ~81 = 5s @16fps (sweet spot)."},
+        "duracion_s": {
+          "type": "number",
+          "default": 5
+        },
+        "frames": {
+          "type": "integer",
+          "description": "Solo motores WAN; ~81 = 5s @16fps (sweet spot)."
+        },
         "imagen": {
           "type": "object",
           "description": "Imagen base (formatos de un solo fotograma: cinematic/pov_phone/product/ugc).",
           "properties": {
-            "prompt": {"type": "string"},
-            "negativo": {"type": "string"},
-            "ref_producto": {"type": ["string", "null"], "description": "(alias de referencias) ruta única de referencia."},
-            "referencias": {"type": "array", "items": {"type": "string"},
-              "description": "Rutas a imágenes de referencia (mascota/producto) que se PRESERVAN sin cambiar diseño/forma (R7). Se generan vía edición image-to-image."}
+            "prompt": {
+              "type": "string"
+            },
+            "negativo": {
+              "type": "string"
+            },
+            "ref_producto": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "description": "(alias de referencias) ruta única de referencia."
+            },
+            "referencias": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Rutas a imágenes de referencia (mascota/producto) que se PRESERVAN sin cambiar diseño/forma (R7). Se generan vía edición image-to-image."
+            }
           }
         },
         "imagenes": {
@@ -127,33 +308,87 @@
           "description": "Solo formato slideshow: lista de stills (3-6). 'texto' = tarjeta de valor sobreimpresa en ese still.",
           "items": {
             "type": "object",
-            "properties": {"prompt": {"type": "string"}, "negativo": {"type": "string"}, "texto": {"type": "string"}}
+            "properties": {
+              "prompt": {
+                "type": "string"
+              },
+              "negativo": {
+                "type": "string"
+              },
+              "texto": {
+                "type": "string"
+              }
+            }
           }
         },
         "animacion": {
           "type": "object",
           "description": "Solo motores WAN: guía de movimiento/cámara.",
           "properties": {
-            "prompt_movimiento": {"type": "string"},
-            "camara": {"type": "string", "description": "p.ej. 'slow push-in', 'handheld', 'orbit'"}
+            "prompt_movimiento": {
+              "type": "string"
+            },
+            "camara": {
+              "type": "string",
+              "description": "p.ej. 'slow push-in', 'handheld', 'orbit'"
+            }
           }
         },
-        "personaje": {"type": "string", "description": "ID de un personaje persistente (personajes[]). Su retrato se reutiliza como start_image (UGC) o como referencia — no se regenera la imagen del segmento."},
+        "personaje": {
+          "type": "string",
+          "description": "ID de un personaje persistente (personajes[]). Su retrato se reutiliza como start_image (UGC) o como referencia — no se regenera la imagen del segmento."
+        },
         "avatar": {
           "type": "object",
           "description": "Solo formato ugc: diálogo que dice el avatar (lip-sync a audio ElevenLabs).",
           "properties": {
-            "dialogo": {"type": "string"},
-            "voz_id": {"type": "string"}
+            "dialogo": {
+              "type": "string"
+            },
+            "voz_id": {
+              "type": "string"
+            }
           }
         },
-        "kenburns": {"type": "boolean", "description": "Solo slideshow: aplica zoom/paneo Ken Burns.", "default": true},
-        "lineas": {"type": "array", "items": {"type": "string"}, "description": "Solo kinetic_text: frases que se animan en secuencia."},
-        "subtexto": {"type": "string", "description": "Solo stat_reveal: etiqueta bajo el número grande."},
-        "variaciones": {"type": "integer", "minimum": 1, "description": "Nº de tomas (seeds distintas) a generar para que la S3 elija la mejor. Por defecto 1.", "default": 1},
-        "texto_pantalla": {"type": ["string", "null"], "description": "Lower-third de marca; null = sin texto."},
-        "voz_off": {"type": ["string", "null"], "description": "Línea de locución para este segmento (motor = salida.voz_off.motor)."},
-        "seed": {"type": "integer"}
+        "kenburns": {
+          "type": "boolean",
+          "description": "Solo slideshow: aplica zoom/paneo Ken Burns.",
+          "default": true
+        },
+        "lineas": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Solo kinetic_text: frases que se animan en secuencia."
+        },
+        "subtexto": {
+          "type": "string",
+          "description": "Solo stat_reveal: etiqueta bajo el número grande."
+        },
+        "variaciones": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Nº de tomas (seeds distintas) a generar para que la S3 elija la mejor. Por defecto 1.",
+          "default": 1
+        },
+        "texto_pantalla": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Lower-third de marca; null = sin texto."
+        },
+        "voz_off": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Línea de locución para este segmento (motor = salida.voz_off.motor)."
+        },
+        "seed": {
+          "type": "integer"
+        }
       }
     }
   }
