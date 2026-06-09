@@ -33,7 +33,33 @@ que ejecuta `studio.py make <slug> --brief "<brief>" --max-cost N`.
 - **Faltan assets de usuario o estructura incompleta** → `make` **para** (PARADA 1)
   y lista exactamente qué archivos faltan y en qué ruta. `ok: false`. No se gasta GPU.
 
-## Importar el workflow (listo para usar)
+## n8n Cloud (sin Execute Command) → `studio_server.py` por HTTP
+
+En **n8n Cloud** (`marliagency.app.n8n.cloud`) **no existe** el nodo *Execute Command*:
+n8n no puede ejecutar `studio.py` directamente. Solución fiel al contrato: n8n hace un
+**HTTP POST** a un endpoint que ejecuta `studio.py make`. Ese endpoint es `studio_server.py`
+(stdlib, sin dependencias nuevas).
+
+**Workflow ya creado en la cuenta:** *"Estudio — make video (HTTP → studio.py)"*
+(`Webhook POST make-video` → `Normalizar petición` → `Disparar studio.py make` (HTTP) →
+`IF ok` → responde 200 vídeo / 422 PARADA). Queda **inactivo** hasta configurar 2 cosas:
+
+1. **Levantar el endpoint** en un host con el repo + claves (no necesita GPU propia;
+   `studio.py make` enciende/apaga el pod por la API de RunPod durante el lote):
+   ```
+   STUDIO_TOKEN=<secreto> python3 studio_server.py     # escucha en :8099, POST /make-video
+   ```
+   Env del host: `ANTHROPIC_API_KEY`, `RUNPOD_API_KEY`, claves OpenAI/ElevenLabs.
+2. **En el nodo HTTP "Disparar studio.py make":** poner la URL pública del endpoint
+   (`https://TU-HOST:8099/make-video`) y crear la credencial *Header Auth* con
+   Name=`X-Auth-Token`, Value=`<secreto>` (el mismo `STUDIO_TOKEN`).
+
+Contrato HTTP del endpoint (idéntico al del webhook): `POST /make-video` con
+`{slug, brief, max_cost, approve?}` → `200 {ok:true,...}` vídeo · `422 {ok:false,...}`
+PARADA (coste/assets) · `400` petición inválida · `401` token incorrecto. `GET /health`
+para liveness. Como `make` tarda minutos (GPU), el nodo HTTP usa timeout de 60 min.
+
+## Importar el workflow (self-hosted, Execute Command)
 
 `n8n/workflow.json` es un workflow **importable**: en n8n → *Workflows → Import from
 File* → elige `n8n/workflow.json`. Nodos:
